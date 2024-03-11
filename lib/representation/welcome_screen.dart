@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:video_sharing_app/representation/main_screen.dart';
+import 'package:video_sharing_app/representation/auth/auth_method_screen.dart';
+import 'package:video_sharing_app/service/shared_preferences_service.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -107,9 +108,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_currentPageIndex == 2) {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
+                    (await SharedPreferencesService.getInstance()).isFirstLaunched = true;
+                    if (context.mounted) {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AuthMethodScreen()));
+                    }
                   } else {
                     _currentPageIndex++;
                     _pageViewController.animateToPage(_currentPageIndex, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
