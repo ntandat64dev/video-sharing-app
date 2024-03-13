@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:video_sharing_app/representation/auth/auth_method_screen.dart';
-import 'package:video_sharing_app/service/shared_preferences_service.dart';
+import 'package:provider/provider.dart';
+import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
+import 'package:video_sharing_app/domain/repository/user_repository.dart';
+import 'package:video_sharing_app/presentation/shared/asset.dart';
+import 'package:video_sharing_app/presentation/auth/auth_methods_page.dart';
+import 'package:video_sharing_app/presentation/routing_change_notifier.dart';
 
-class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({super.key});
+class WelcomePage extends StatefulWidget {
+  const WelcomePage({super.key});
 
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
+  State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateMixin {
+class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin {
+  final UserRepository _userRepository = UserRepositoryImpl();
   late PageController _pageViewController;
   late TabController _tabController;
   var _currentPageIndex = 0;
@@ -45,7 +50,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                   color: backgroundColor,
                   child: Column(
                     children: [
-                      Image.asset('assets/images/smart_home_bro.png', width: 350),
+                      Image.asset(Asset.illustration1, width: 350),
                       const SizedBox(height: 32),
                       Text(
                         'Watch interesting videos from around the world',
@@ -62,7 +67,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                   color: backgroundColor,
                   child: Column(
                     children: [
-                      Image.asset('assets/images/smart_home_cuate.png', width: 350),
+                      Image.asset(Asset.illustration2, width: 350),
                       const SizedBox(height: 32),
                       Text(
                         'Watch interesting videos easily from your smartphone',
@@ -79,7 +84,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                   color: backgroundColor,
                   child: Column(
                     children: [
-                      Image.asset('assets/images/smart_home_pana.png', width: 350),
+                      Image.asset(Asset.illustration3, width: 350),
                       const SizedBox(height: 32),
                       Text(
                         'Let\'s explore videos around the world with MeTube now!',
@@ -108,19 +113,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton(
-                onPressed: () async {
-                  if (_currentPageIndex == 2) {
-                    (await SharedPreferencesService.getInstance()).isFirstLaunched = true;
-                    if (context.mounted) {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AuthMethodScreen()));
-                    }
-                  } else {
-                    _currentPageIndex++;
-                    _pageViewController.animateToPage(_currentPageIndex, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                    _tabController.animateTo(_currentPageIndex);
-                    setState(() {});
-                  }
-                },
+                onPressed: next,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
                 child: Text(_currentPageIndex == 2 ? 'Get Started' : 'Next', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
               ),
@@ -130,5 +123,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
         ],
       ),
     );
+  }
+
+  void next() async {
+    if (_currentPageIndex == 2) {
+      _userRepository.markFirstLaunch();
+      if (context.mounted) {
+        Provider.of<RoutingProvider>(context, listen: false).route = const AuthMethodsPage();
+      }
+    } else {
+      _currentPageIndex++;
+      _pageViewController.animateToPage(_currentPageIndex, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _tabController.animateTo(_currentPageIndex);
+      setState(() {});
+    }
   }
 }

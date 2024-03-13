@@ -1,5 +1,5 @@
 class Video {
-  Video({
+  const Video({
     required this.id,
     required this.title,
     required this.description,
@@ -7,9 +7,9 @@ class Video {
     required this.url,
   });
 
-  int id;
-  String title;
-  String description;
-  String thumbnail;
-  String url;
+  final int id;
+  final String title;
+  final String description;
+  final String thumbnail;
+  final String url;
 }

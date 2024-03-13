@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:video_sharing_app/data/video_repository.dart';
-import 'package:video_sharing_app/domain/video.dart';
-import 'package:video_sharing_app/representation/home/video_detail.dart';
+import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/domain/entity/video.dart';
+import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:video_sharing_app/presentation/feature/home/video_player_page.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomePageState extends State<HomePage> {
   final VideoRepository videoRepository = VideoRepositoryImpl();
 
   @override
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 final video = snapshot.data![index];
                 return GestureDetector(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoDetail(video: video))),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerPage(video: video))),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(

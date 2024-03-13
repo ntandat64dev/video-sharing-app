@@ -1,17 +1,26 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_sharing_app/domain/entity/user.dart';
 
 const String _kFirstLaunch = 'is_first_launch';
-const String _kLoggedIn = 'is_logged_in';
+const String _kUser = 'user';
 
 class SharedPreferencesService {
   static SharedPreferencesService? _instance;
   static late SharedPreferences _prefs;
+  static bool _isInit = false;
 
   SharedPreferencesService._();
 
-  static Future<SharedPreferencesService> getInstance() async {
-    _instance ??= SharedPreferencesService._();
+  static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+    _isInit = true;
+  }
+
+  static SharedPreferencesService getInstance() {
+    if (_isInit == false) throw Exception('SharedPreferences was not initialized!');
+    _instance ??= SharedPreferencesService._();
     return _instance!;
   }
 
@@ -37,6 +46,6 @@ class SharedPreferencesService {
   bool get isFirstLaunched => _getData(_kFirstLaunch) ?? false;
   set isFirstLaunched(bool value) => _setData(_kFirstLaunch, value);
 
-  bool get isLoggedIn => _getData(_kLoggedIn) ?? false;
-  set isLoggedIn(bool value) => _setData(_kLoggedIn, value);
+  User? getUser() => _getData(_kUser) != null ? User.fromJson(jsonDecode(_getData(_kUser))) : null;
+  void setUser(User user) => _setData(_kUser, jsonEncode(user.toJson()));
 }

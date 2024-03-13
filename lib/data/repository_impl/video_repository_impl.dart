@@ -1,14 +1,11 @@
-import 'package:video_sharing_app/domain/video.dart';
-
-abstract class VideoRepository {
-  Future<List<Video>> getVideos();
-}
+import 'package:video_sharing_app/domain/entity/video.dart';
+import 'package:video_sharing_app/domain/repository/video_repository.dart';
 
 class VideoRepositoryImpl implements VideoRepository {
   @override
   Future<List<Video>> getVideos() async {
     Future.delayed(const Duration(seconds: 2));
-    return [
+    return const [
       Video(
         id: 1,
         title: 'Big Buck Bunny and A Little Cute of Big Car with a Aggressive Man Big Buck Bunny and A Little Cute of Big Car with a Aggressive Man',

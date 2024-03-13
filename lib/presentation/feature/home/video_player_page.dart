@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_sharing_app/domain/video.dart';
+import 'package:video_sharing_app/domain/entity/video.dart';
 
-class VideoDetail extends StatefulWidget {
-  const VideoDetail({
+class VideoPlayerPage extends StatefulWidget {
+  const VideoPlayerPage({
     super.key,
     required Video video,
   }) : _video = video;
@@ -11,10 +11,10 @@ class VideoDetail extends StatefulWidget {
   final Video _video;
 
   @override
-  State<VideoDetail> createState() => _VideoDetailState();
+  State<VideoPlayerPage> createState() => _VideoPlayerPageState();
 }
 
-class _VideoDetailState extends State<VideoDetail> {
+class _VideoPlayerPageState extends State<VideoPlayerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,7 +167,7 @@ class _VideoDetailState extends State<VideoDetail> {
                         children: [
                           for (var i = 0; i < 10; i++)
                             GestureDetector(
-                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoDetail(video: video))),
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerPage(video: video))),
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Column(
