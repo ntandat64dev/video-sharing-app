@@ -47,12 +47,14 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Row(
+                          Row(
                             children: [
                               CircleAvatar(
-                                  backgroundImage: NetworkImage('https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg')),
-                              SizedBox(width: 16.0),
-                              Column(
+                                  backgroundImage: NetworkImage(widget._video.user.photoUrl.isNotEmpty
+                                      ? widget._video.user.photoUrl
+                                      : 'https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg')),
+                              const SizedBox(width: 16.0),
+                              const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text('Remix Music', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -175,7 +177,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(20),
-                                      child: Image.network(video.thumbnail, fit: BoxFit.cover),
+                                      child: Image.network(video.thumbnailUrl, fit: BoxFit.cover),
                                     ),
                                     const SizedBox(height: 16.0),
                                     Row(
@@ -233,7 +235,7 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
   @override
   void initState() {
     super.initState();
-    _videoController = VideoPlayerController.networkUrl(Uri.parse(widget._video.url));
+    _videoController = VideoPlayerController.networkUrl(Uri.parse(widget._video.videoUrl));
     _initializeVideoPlayerFuture = _videoController.initialize();
     _videoController.play();
   }

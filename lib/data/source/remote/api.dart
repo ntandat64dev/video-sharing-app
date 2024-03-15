@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:video_sharing_app/domain/entity/user.dart';
+import 'package:video_sharing_app/domain/entity/video.dart';
 
 const String _baseUrl = 'http://10.0.2.2:8080';
 
 abstract class Api {
   Future<User?> signUp({required String email, required String password});
   Future<User?> signIn({required String email, required String password});
+  Future<List<Video>> fetchVideos();
 }
 
 class ApiImpl implements Api {
@@ -44,6 +46,20 @@ class ApiImpl implements Api {
       return User.fromJson(jsonDecode(response.body)['userInfo']);
     } catch (_) {
       return null;
+    }
+  }
+
+  @override
+  Future<List<Video>> fetchVideos() async {
+    try {
+      var response = await http.get(
+        Uri.parse('$_baseUrl/api/videos'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      );
+      if (response.statusCode != 200) return [];
+      return jsonDecode(response.body).map<Video>((e) => Video.fromJson(e)).toList();
+    } catch (e) {
+      return [];
     }
   }
 }

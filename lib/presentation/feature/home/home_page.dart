@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return FutureBuilder<List<Video>>(
       future: videoRepository.getVideos(),
-      builder: (context, snapshot) {
+      builder: (conatext, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -34,18 +34,22 @@ class _HomePageState extends State<HomePage> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: FadeInImage.assetNetwork(
+                              fadeInDuration: const Duration(milliseconds: 300),
+                              fadeOutDuration: const Duration(milliseconds: 1),
                               height: 250,
                               width: double.infinity,
                               fit: BoxFit.cover,
                               placeholder: 'assets/gifs/placeholder.gif',
-                              image: video.thumbnail),
+                              image: video.thumbnailUrl),
                         ),
                         const SizedBox(height: 16.0),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const CircleAvatar(
-                                backgroundImage: NetworkImage('https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg')),
+                            CircleAvatar(
+                                backgroundImage: NetworkImage(video.user.photoUrl.isNotEmpty
+                                    ? video.user.photoUrl
+                                    : 'https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg')),
                             const SizedBox(width: 16.0),
                             Expanded(
                               child: Column(
