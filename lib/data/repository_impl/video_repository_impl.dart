@@ -9,4 +9,9 @@ class VideoRepositoryImpl implements VideoRepository {
   Future<List<Video>> getVideos() async {
     return await _api.fetchVideos();
   }
+
+  @override
+  Future<bool> upload({required String videoPath, required String title, required String description}) async {
+    return await _api.uploadVideo(videoPath: videoPath, title: title, description: description);
+  }
 }
