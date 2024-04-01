@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
+import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/feature/home/video_player_page.dart';
+import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,12 +15,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final UserRepository userRepository = UserRepositoryImpl();
   final VideoRepository videoRepository = VideoRepositoryImpl();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Video>>(
-      future: videoRepository.getVideos(),
+      future: videoRepository.getVideos(userRepository.getLoggedUser()!.id),
       builder: (conatext, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
@@ -39,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                               height: 250,
                               width: double.infinity,
                               fit: BoxFit.cover,
-                              placeholder: 'assets/gifs/placeholder.gif',
+                              placeholder: Asset.placeholder,
                               image: video.thumbnailUrl),
                         ),
                         const SizedBox(height: 16.0),
@@ -47,9 +51,7 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CircleAvatar(
-                                backgroundImage: NetworkImage(video.user.photoUrl.isNotEmpty
-                                    ? video.user.photoUrl
-                                    : 'https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg')),
+                                backgroundImage: NetworkImage(video.channel.pictureUrl)),
                             const SizedBox(width: 16.0),
                             Expanded(
                               child: Column(

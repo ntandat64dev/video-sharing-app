@@ -6,8 +6,8 @@ class VideoRepositoryImpl implements VideoRepository {
   final Api _api = ApiImpl();
 
   @override
-  Future<List<Video>> getVideos() async {
-    return await _api.fetchVideos();
+  Future<List<Video>> getVideos(String userId) async {
+    return await _api.fetchRecommendVideos(userId);
   }
 
   @override

@@ -10,7 +10,7 @@ const String _baseUrl = 'http://10.0.2.2:8080';
 abstract class Api {
   Future<User?> signUp({required String email, required String password});
   Future<User?> signIn({required String email, required String password});
-  Future<List<Video>> fetchVideos();
+  Future<List<Video>> fetchRecommendVideos(String userId);
   Future<bool> uploadVideo({required String videoPath, required String title, required String description});
 }
 
@@ -52,7 +52,7 @@ class ApiImpl implements Api {
   }
 
   @override
-  Future<List<Video>> fetchVideos() async {
+  Future<List<Video>> fetchRecommendVideos(String userId) async {
     try {
       var response = await http.get(
         Uri.parse('$_baseUrl/api/videos'),
@@ -71,13 +71,14 @@ class ApiImpl implements Api {
       final request = http.MultipartRequest('POST', Uri.parse('$_baseUrl/api/videos'));
       final videoFile = await http.MultipartFile.fromPath('videoFile', videoPath);
       final metadata = http.MultipartFile.fromString(
-          'metadata',
-          jsonEncode({
-            'title': title,
-            'description': description,
-            'user': {'id': 1}
-          }),
-          contentType: MediaType('application', 'json'));
+        'metadata',
+        jsonEncode({
+          'title': title,
+          'description': description,
+          'user': {'id': 1}
+        }),
+        contentType: MediaType('application', 'json'),
+      );
       request.files.add(videoFile);
       request.files.add(metadata);
       var response = await request.send();

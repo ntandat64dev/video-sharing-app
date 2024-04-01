@@ -49,10 +49,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(
-                                  backgroundImage: NetworkImage(widget._video.user.photoUrl.isNotEmpty
-                                      ? widget._video.user.photoUrl
-                                      : 'https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg')),
+                              CircleAvatar(backgroundImage: NetworkImage(widget._video.channel.pictureUrl)),
                               const SizedBox(width: 16.0),
                               const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,26 +133,26 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.white10,
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.only(left: 16.0, top: 12.0, right: 16.0, bottom: 16.0),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16.0, top: 12.0, right: 16.0, bottom: 16.0),
                           child: Column(
                             children: [
-                              Row(
+                              const Row(
                                 children: [
                                   Text('Comments', style: TextStyle(fontSize: 15)),
                                   SizedBox(width: 8.0),
                                   Text('8K', style: TextStyle(color: Colors.white70)),
                                 ],
                               ),
-                              SizedBox(height: 8.0),
+                              const SizedBox(height: 8.0),
                               Row(
                                 children: [
                                   CircleAvatar(
-                                    backgroundImage: NetworkImage('https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg'),
+                                    backgroundImage: NetworkImage(widget._video.channel.pictureUrl),
                                     maxRadius: 12,
                                   ),
-                                  SizedBox(width: 8.0),
-                                  Text('Nhạc hay quá! Rất xinh đẹp, tuyệt vời!')
+                                  const SizedBox(width: 8.0),
+                                  const Text('Nhạc hay quá! Rất xinh đẹp, tuyệt vời!')
                                 ],
                               )
                             ],
@@ -182,9 +179,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                     const SizedBox(height: 16.0),
                                     Row(
                                       children: [
-                                        const CircleAvatar(
-                                            backgroundImage:
-                                                NetworkImage('https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg')),
+                                        CircleAvatar(backgroundImage: NetworkImage(widget._video.channel.pictureUrl)),
                                         const SizedBox(width: 16.0),
                                         Expanded(
                                           child: Column(
