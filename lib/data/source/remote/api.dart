@@ -5,13 +5,14 @@ import 'package:http_parser/http_parser.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 
-const String _baseUrl = 'http://10.0.2.2:8080';
+const String _baseUrl = '10.0.2.2:8080';
 
 abstract class Api {
   Future<User?> signUp({required String email, required String password});
   Future<User?> signIn({required String email, required String password});
   Future<List<Video>> fetchRecommendVideos(String userId);
   Future<bool> uploadVideo({required String videoPath, required String title, required String description});
+  Future<List<String>> fetchHashtags(String userId);
 }
 
 class ApiImpl implements Api {
@@ -19,7 +20,7 @@ class ApiImpl implements Api {
   Future<User?> signIn({required String email, required String password}) async {
     try {
       var response = await http.post(
-        Uri.parse('$_baseUrl/api/auth/signin'),
+        Uri.http(_baseUrl, '/api/auth/signin'),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode({
           'email': email,
@@ -37,7 +38,7 @@ class ApiImpl implements Api {
   Future<User?> signUp({required String email, required String password}) async {
     try {
       var response = await http.post(
-        Uri.parse('$_baseUrl/api/auth/signup'),
+        Uri.http(_baseUrl, '/api/auth/signup'),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode({
           'email': email,
@@ -55,7 +56,7 @@ class ApiImpl implements Api {
   Future<List<Video>> fetchRecommendVideos(String userId) async {
     try {
       var response = await http.get(
-        Uri.parse('$_baseUrl/api/videos'),
+        Uri.http(_baseUrl, '/api/videos'),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
       );
       if (response.statusCode != 200) return [];
@@ -68,7 +69,7 @@ class ApiImpl implements Api {
   @override
   Future<bool> uploadVideo({required String videoPath, required String title, required String description}) async {
     try {
-      final request = http.MultipartRequest('POST', Uri.parse('$_baseUrl/api/videos'));
+      final request = http.MultipartRequest('POST', Uri.http(_baseUrl, '/api/videos'));
       final videoFile = await http.MultipartFile.fromPath('videoFile', videoPath);
       final metadata = http.MultipartFile.fromString(
         'metadata',
@@ -86,6 +87,20 @@ class ApiImpl implements Api {
       return false;
     } catch (e) {
       return false;
+    }
+  }
+
+  @override
+  Future<List<String>> fetchHashtags(String userId) async {
+    try {
+      var response = await http.get(
+        Uri.http(_baseUrl, '/api/user/hashtags/$userId'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      );
+      if (response.statusCode != 200) return [];
+      return List<String>.from(jsonDecode(response.body));
+    } catch (_) {
+      return [];
     }
   }
 }
