@@ -43,9 +43,12 @@ class SharedPreferencesService {
     }
   }
 
+  void _removeData(String key) => _prefs.remove(key);
+
   bool get isFirstLaunched => _getData(_kFirstLaunch) ?? false;
   set isFirstLaunched(bool value) => _setData(_kFirstLaunch, value);
 
   User? getUser() => _getData(_kUser) != null ? User.fromJson(jsonDecode(_getData(_kUser))) : null;
   void setUser(User user) => _setData(_kUser, jsonEncode(user.toJson()));
+  void removeUser() => _removeData(_kUser);
 }

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
-import 'package:video_sharing_app/presentation/shared/asset.dart';
 import 'package:video_sharing_app/presentation/pages/auth/auth_methods_page.dart';
 import 'package:video_sharing_app/presentation/route_provider.dart';
+import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});

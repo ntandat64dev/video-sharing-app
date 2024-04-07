@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:video_sharing_app/presentation/feature/home/home_page.dart';
-import 'package:video_sharing_app/presentation/feature/notifications/notifications_page.dart';
-import 'package:video_sharing_app/presentation/feature/profile/profile_page.dart';
-import 'package:video_sharing_app/presentation/feature/shorts/shorts_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/home/home_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/notifications/notifications_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/profile/profile_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/shorts/shorts_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -19,8 +19,8 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (index) => setState(() => _currentNavIndex = index),
-        indicatorColor: Theme.of(context).colorScheme.primary,
         selectedIndex: _currentNavIndex,
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
         destinations: const [
           NavigationDestination(label: 'Home', icon: Icon(Icons.home)),
           NavigationDestination(label: 'Shorts', icon: Icon(Icons.videocam)),

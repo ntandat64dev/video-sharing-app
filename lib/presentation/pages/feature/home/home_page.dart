@@ -1,11 +1,13 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
-import 'package:video_sharing_app/presentation/feature/home/video_player_page.dart';
-import 'package:video_sharing_app/presentation/feature/upload/upload_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/upload/upload_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,24 +28,21 @@ class _HomePageState extends State<HomePage> {
         future: videoRepository.getVideos(userRepository.getLoggedUser()!.id),
         builder: (conatext, snapshot) {
           if (snapshot.hasData) {
+            final videos = snapshot.data!;
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  backgroundColor: Theme.of(context).colorScheme.background,
                   leading: const Icon(Icons.videocam),
-                  title: const Text('MeTube'),
+                  title: const Text('MeTube', style: TextStyle(fontWeight: FontWeight.w500)),
                   titleSpacing: 0.0,
                   actions: [
-                    IconButton(
-                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const UploadPage())),
-                      icon: const Icon(Icons.add),
-                    ),
+                    IconButton(onPressed: () => onUploadClicked(context), icon: const Icon(Icons.add)),
                     IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
                   ],
                   bottom: PreferredSize(
                     preferredSize: const Size.fromHeight(kToolbarHeight),
                     child: SizedBox(
-                      height: kToolbarHeight - 16,
+                      height: kToolbarHeight - 8.0,
                       child: Column(
                         children: [
                           Expanded(
@@ -51,14 +50,15 @@ class _HomePageState extends State<HomePage> {
                               future: userRepository.getHasgtags(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
+                                  final hashtags = snapshot.data!;
                                   return ListView.separated(
                                     separatorBuilder: (context, index) => const SizedBox(width: 4.0),
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data!.length + 1,
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    itemCount: hashtags.length + 1,
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
                                     itemBuilder: (context, index) => ElevatedButton(
                                       onPressed: () {},
-                                      child: index == 0 ? const Text('All') : Text(snapshot.data![index - 1]),
+                                      child: index == 0 ? const Text('All') : Text(hashtags[index - 1]),
                                     ),
                                   );
                                 } else {
@@ -73,10 +73,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SliverList.builder(
-                  itemCount: snapshot.data!.length,
+                  itemCount: videos.length,
                   itemBuilder: (context, index) {
-                    final video = snapshot.data![index];
-                    return GestureDetector(
+                    final video = videos[index];
+                    return InkWell(
                       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerPage(video: video))),
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                               child: FadeInImage.assetNetwork(
                                   fadeInDuration: const Duration(milliseconds: 300),
                                   fadeOutDuration: const Duration(milliseconds: 1),
-                                  height: 250,
+                                  height: 220,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
                                   placeholder: Asset.placeholder,
@@ -104,8 +104,31 @@ class _HomePageState extends State<HomePage> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(video.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16.0)),
-                                      const Text('David  |  124K views  |  3 months ago', style: TextStyle(color: Colors.white70)),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              video.title,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4.0),
+                                      Text(
+                                        '${video.channel.name}  ∙  ${video.viewCount} views  ∙  ${timeago.format(video.uploadDate)}',
+                                        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                                      ),
                                     ],
                                   ),
                                 )
@@ -125,5 +148,19 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  void onUploadClicked(context) async {
+    var results = await FilePicker.platform.pickFiles(
+      type: FileType.video,
+      allowMultiple: false,
+    );
+    if (results != null && results.count > 0) {
+      var videoPath = results.paths.first;
+      if (videoPath == null) return;
+      if (context.mounted) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => UploadPage(videoPath: videoPath)));
+      }
+    }
   }
 }

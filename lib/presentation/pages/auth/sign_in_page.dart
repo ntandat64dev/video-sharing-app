@@ -27,7 +27,13 @@ class _SignInPageState extends State<SignInPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Row(children: [IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back))]),
+              AppBar(
+                surfaceTintColor: Colors.transparent,
+                leading: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back),
+                ),
+              ),
               Image.asset(Asset.youtubeLogo, width: 128),
               Padding(
                 padding: const EdgeInsets.all(16.0),

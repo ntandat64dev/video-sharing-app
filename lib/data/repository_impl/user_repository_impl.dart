@@ -34,4 +34,14 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<List<String>> getHasgtags() => _api.fetchHashtags(getLoggedUser()!.id);
+
+  @override
+  Future<bool> signOut() async {
+    try {
+      _prefs.removeUser();
+    } catch (_) {
+      return false;
+    }
+    return true;
+  }
 }
