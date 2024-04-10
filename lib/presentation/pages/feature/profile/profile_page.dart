@@ -20,9 +20,9 @@ class _ProfilePageState extends State<ProfilePage> {
     return SafeArea(
       child: Center(
         child: ElevatedButton(
-          onPressed: () async {
-            var isSignedOut = await userRepository.signOut();
-            if (isSignedOut && context.mounted) {
+          onPressed: () {
+            userRepository.signOut();
+            if (context.mounted) {
               Provider.of<RouteProvider>(context, listen: false).route = const AuthMethodsPage();
             }
           },

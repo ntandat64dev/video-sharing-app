@@ -9,15 +9,15 @@ class Channel {
 
   final String id;
   final String name;
-  final String description;
+  final String? description;
   final String pictureUrl;
   final DateTime joinDate;
 
   factory Channel.fromJson(Map<String, dynamic> json) => Channel(
-        id: json['id'] ?? '',
-        name: json['name'] ?? '',
-        description: json['description'] ?? '',
-        pictureUrl: json['pictureUrl'] != null ? 'http://10.0.2.2:8080${json['pictureUrl']}' : '',
+        id: json['id'],
+        name: json['name'],
+        description: json['description'],
+        pictureUrl: json['pictureUrl'],
         joinDate: DateTime.parse(json['joinDate']),
       );
 

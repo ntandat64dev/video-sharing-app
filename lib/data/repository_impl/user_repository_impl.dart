@@ -1,10 +1,12 @@
-import 'package:video_sharing_app/data/source/local/shared_preferences_service.dart';
+import 'package:video_sharing_app/data/source/local/preferences_service.dart';
+import 'package:video_sharing_app/data/source/local/preferences_service_impl.dart';
 import 'package:video_sharing_app/data/source/remote/api.dart';
+import 'package:video_sharing_app/data/source/remote/api_impl.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {
-  final _prefs = SharedPreferencesService.getInstance();
+  final PreferencesService _prefs = PreferencesServiceImpl.getInstance();
   final Api _api = ApiImpl();
 
   @override
@@ -24,6 +26,9 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  void signOut() => _prefs.removeUser();
+
+  @override
   User? getLoggedUser() => _prefs.getUser();
 
   @override
@@ -33,15 +38,5 @@ class UserRepositoryImpl implements UserRepository {
   void markFirstLaunch() => _prefs.isFirstLaunched = true;
 
   @override
-  Future<List<String>> getHasgtags() => _api.fetchHashtags(getLoggedUser()!.id);
-
-  @override
-  Future<bool> signOut() async {
-    try {
-      _prefs.removeUser();
-    } catch (_) {
-      return false;
-    }
-    return true;
-  }
+  Future<List<String>> getHasgtags() => _api.fetchHashtags(userId: getLoggedUser()!.id);
 }

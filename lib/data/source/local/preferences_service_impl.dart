@@ -1,26 +1,27 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_sharing_app/data/source/local/preferences_service.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
 
 const String _kFirstLaunch = 'is_first_launch';
 const String _kUser = 'user';
 
-class SharedPreferencesService {
-  static SharedPreferencesService? _instance;
+class PreferencesServiceImpl implements PreferencesService {
+  static PreferencesServiceImpl? _instance;
   static late SharedPreferences _prefs;
   static bool _isInit = false;
 
-  SharedPreferencesService._();
+  PreferencesServiceImpl._();
 
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     _isInit = true;
   }
 
-  static SharedPreferencesService getInstance() {
+  static PreferencesServiceImpl getInstance() {
     if (_isInit == false) throw Exception('SharedPreferences was not initialized!');
-    _instance ??= SharedPreferencesService._();
+    _instance ??= PreferencesServiceImpl._();
     return _instance!;
   }
 
@@ -45,10 +46,18 @@ class SharedPreferencesService {
 
   void _removeData(String key) => _prefs.remove(key);
 
+  @override
   bool get isFirstLaunched => _getData(_kFirstLaunch) ?? false;
+
+  @override
   set isFirstLaunched(bool value) => _setData(_kFirstLaunch, value);
 
+  @override
   User? getUser() => _getData(_kUser) != null ? User.fromJson(jsonDecode(_getData(_kUser))) : null;
+
+  @override
   void setUser(User user) => _setData(_kUser, jsonEncode(user.toJson()));
+
+  @override
   void removeUser() => _removeData(_kUser);
 }

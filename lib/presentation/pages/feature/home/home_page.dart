@@ -1,14 +1,12 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
-import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/home/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/upload_page.dart';
-import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: FutureBuilder<List<Video>>(
-        future: videoRepository.getVideos(userRepository.getLoggedUser()!.id),
+        future: videoRepository.getRecommendVideos(),
         builder: (conatext, snapshot) {
           if (snapshot.hasData) {
             final videos = snapshot.data!;
@@ -76,68 +74,7 @@ class _HomePageState extends State<HomePage> {
                   itemCount: videos.length,
                   itemBuilder: (context, index) {
                     final video = videos[index];
-                    return InkWell(
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerPage(video: video))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: FadeInImage.assetNetwork(
-                                  fadeInDuration: const Duration(milliseconds: 300),
-                                  fadeOutDuration: const Duration(milliseconds: 1),
-                                  height: 220,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  placeholder: Asset.placeholder,
-                                  image: video.thumbnailUrl),
-                            ),
-                            const SizedBox(height: 16.0),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CircleAvatar(backgroundImage: NetworkImage(video.channel.pictureUrl)),
-                                const SizedBox(width: 16.0),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              video.title,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16.0,
-                                              ),
-                                            ),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {},
-                                            icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                                          )
-                                        ],
-                                      ),
-                                      const SizedBox(height: 4.0),
-                                      Text(
-                                        '${video.channel.name}  ∙  ${video.viewCount} views  ∙  ${timeago.format(video.uploadDate)}',
-                                        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    );
+                    return VideoCard(video: video);
                   },
                 )
               ],

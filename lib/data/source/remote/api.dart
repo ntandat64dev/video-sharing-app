@@ -1,106 +1,28 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
+import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
-
-const String _baseUrl = '10.0.2.2:8080';
+import 'package:video_sharing_app/domain/entity/video_rating.dart';
 
 abstract class Api {
   Future<User?> signUp({required String email, required String password});
+
   Future<User?> signIn({required String email, required String password});
-  Future<List<Video>> fetchRecommendVideos(String userId);
-  Future<bool> uploadVideo({required String videoPath, required String title, required String description});
-  Future<List<String>> fetchHashtags(String userId);
-}
 
-class ApiImpl implements Api {
-  @override
-  Future<User?> signIn({required String email, required String password}) async {
-    try {
-      var response = await http.post(
-        Uri.http(_baseUrl, '/api/auth/signin'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      );
-      if (response.statusCode != 200) return null;
-      return User.fromJson(jsonDecode(response.body)['userInfo']);
-    } catch (_) {
-      return null;
-    }
-  }
+  Future<List<Video>> fetchRecommendVideos({required String userId});
 
-  @override
-  Future<User?> signUp({required String email, required String password}) async {
-    try {
-      var response = await http.post(
-        Uri.http(_baseUrl, '/api/auth/signup'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      );
-      if (response.statusCode != 201) return null;
-      return User.fromJson(jsonDecode(response.body)['userInfo']);
-    } catch (_) {
-      return null;
-    }
-  }
+  Future<Video?> fetchVideoById({required String videoId});
 
-  @override
-  Future<List<Video>> fetchRecommendVideos(String userId) async {
-    try {
-      var response = await http.get(
-        Uri.http(_baseUrl, '/api/videos'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      );
-      if (response.statusCode != 200) return [];
-      return jsonDecode(response.body).map<Video>((e) => Video.fromJson(e)).toList();
-    } catch (e) {
-      return [];
-    }
-  }
+  Future<Video> uploadVideo({required String videoPath, required String title, required String description});
 
-  @override
-  Future<bool> uploadVideo({required String videoPath, required String title, required String description}) async {
-    try {
-      final request = http.MultipartRequest('POST', Uri.http(_baseUrl, '/api/videos'));
-      final videoFile = await http.MultipartFile.fromPath('videoFile', videoPath);
-      final metadata = http.MultipartFile.fromString(
-        'metadata',
-        jsonEncode({
-          'title': title,
-          'description': description,
-          'user': {'id': 1}
-        }),
-        contentType: MediaType('application', 'json'),
-      );
-      request.files.add(videoFile);
-      request.files.add(metadata);
-      var response = await request.send();
-      if (response.statusCode == 201) return true;
-      return false;
-    } catch (e) {
-      return false;
-    }
-  }
+  Future<List<String>> fetchHashtags({required String userId});
 
-  @override
-  Future<List<String>> fetchHashtags(String userId) async {
-    try {
-      var response = await http.get(
-        Uri.http(_baseUrl, '/api/user/hashtags/$userId'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      );
-      if (response.statusCode != 200) return [];
-      return List<String>.from(jsonDecode(response.body));
-    } catch (_) {
-      return [];
-    }
-  }
+  Future<bool> viewVideo({required String videoId, required String userId});
+
+  Future<VideoRating> fetchVideoRating({required String videoId, required String userId});
+
+  Future<List<Video>> fetchRelatedVideos({required String videoId, required String userId});
+
+  Future<Comment?> fetchMostLikeComment({required String videoId});
+
+  Future<bool> rateVideo({required String videoId, required String userId, required String rating});
 }

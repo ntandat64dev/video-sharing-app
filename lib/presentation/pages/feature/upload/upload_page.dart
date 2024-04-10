@@ -142,13 +142,11 @@ class _UploadPageState extends State<UploadPage> {
 
   void _uploadVideo() async {
     setState(() => _processingVideo = true);
-    bool result = await _videoRepository.upload(
+    await _videoRepository.uploadVideo(
       videoPath: widget.videoPath,
       title: _titleController.text,
       description: _descriptionController.text,
     );
-    if (result == true) {
-      setState(() => Navigator.pop(context));
-    }
+    setState(() => Navigator.pop(context));
   }
 }
