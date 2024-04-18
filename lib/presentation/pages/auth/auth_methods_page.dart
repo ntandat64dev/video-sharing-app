@@ -14,18 +14,17 @@ class AuthMethodsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 64),
+              const SizedBox(height: 48),
               Image.asset(Asset.illustration2, width: 200),
-              Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Text(
-                  'Let\'s you in',
-                  style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                ),
+              const SizedBox(height: 24.0),
+              Text(
+                'Let\'s you in',
+                style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
               ),
+              const SizedBox(height: 32.0),
               SizedBox(
                 width: double.infinity,
                 child: Padding(
@@ -52,7 +51,7 @@ class AuthMethodsPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 8.0),
               SizedBox(
                 width: double.infinity,
                 child: Padding(
@@ -79,7 +78,7 @@ class AuthMethodsPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 8.0),
               SizedBox(
                 width: double.infinity,
                 child: Padding(

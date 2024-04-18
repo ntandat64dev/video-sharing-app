@@ -1,9 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
-import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/upload_page.dart';
@@ -16,14 +14,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final UserRepository userRepository = UserRepositoryImpl();
   final VideoRepository videoRepository = VideoRepositoryImpl();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: FutureBuilder<List<Video>>(
-        future: videoRepository.getRecommendVideos(),
+        future: videoRepository.getVideosByAllCategories(),
         builder: (conatext, snapshot) {
           if (snapshot.hasData) {
             final videos = snapshot.data!;
@@ -45,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Expanded(
                             child: FutureBuilder(
-                              future: userRepository.getHasgtags(),
+                              future: videoRepository.getVideoCategories(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   final hashtags = snapshot.data!;

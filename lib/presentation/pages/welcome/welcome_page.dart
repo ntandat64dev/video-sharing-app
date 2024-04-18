@@ -52,13 +52,16 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                     children: [
                       Image.asset(Asset.illustration1, width: 350),
                       const SizedBox(height: 32),
-                      Text(
-                        'Watch interesting videos from around the world',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          'Watch interesting videos from around the world',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                       ),
                     ],
                   ),
@@ -69,13 +72,16 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                     children: [
                       Image.asset(Asset.illustration2, width: 350),
                       const SizedBox(height: 32),
-                      Text(
-                        'Watch interesting videos easily from your smartphone',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          'Watch interesting videos easily from your smartphone',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                       ),
                     ],
                   ),
@@ -86,13 +92,16 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                     children: [
                       Image.asset(Asset.illustration3, width: 350),
                       const SizedBox(height: 32),
-                      Text(
-                        'Let\'s explore videos around the world with MeTube now!',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          'Let\'s explore videos around the world with MeTube now!',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                       ),
                     ],
                   ),

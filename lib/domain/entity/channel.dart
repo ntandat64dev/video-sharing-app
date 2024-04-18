@@ -1,31 +1,35 @@
+import 'package:video_sharing_app/domain/entity/thumbnail.dart';
+
 class Channel {
   const Channel({
     required this.id,
-    required this.name,
+    required this.title,
     required this.description,
-    required this.pictureUrl,
-    required this.joinDate,
+    required this.publishedAt,
+    required this.thumbnails,
   });
 
   final String id;
-  final String name;
+  final String title;
   final String? description;
-  final String pictureUrl;
-  final DateTime joinDate;
+  final DateTime publishedAt;
+  final Map<String, Thumbnail> thumbnails;
 
   factory Channel.fromJson(Map<String, dynamic> json) => Channel(
         id: json['id'],
-        name: json['name'],
-        description: json['description'],
-        pictureUrl: json['pictureUrl'],
-        joinDate: DateTime.parse(json['joinDate']),
+        title: json['snippet']['title'],
+        description: json['snippet']['description'],
+        publishedAt: DateTime.parse(json['snippet']['publishedAt']),
+        thumbnails: (json['snippet']['thumbnails'] as Map<String, dynamic>).map((key, value) => MapEntry(key, Thumbnail.fromJson(value))),
       );
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'name': name,
-        'description': description,
-        'pictureUrl': pictureUrl,
-        'joinDate': joinDate.toIso8601String(),
+        'snippet': {
+          'title': title,
+          'description': description,
+          'publishedAt': publishedAt.toIso8601String(),
+          'thumbnails': thumbnails.map((key, value) => MapEntry(key, value.toJson())),
+        }
       };
 }

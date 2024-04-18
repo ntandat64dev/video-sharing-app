@@ -12,28 +12,24 @@ class VideoRepositoryImpl implements VideoRepository {
   final Api _api = ApiImpl();
 
   @override
-  Future<List<Video>> getRecommendVideos() => _api.fetchRecommendVideos(userId: _prefs.getUser()!.id);
+  Future<Video> uploadVideo({required String videoPath, required Video video}) => _api.postVideo(videoLocalPath: videoPath, video: video);
 
   @override
-  Future<Video?> getVideoById({required String videoId}) => _api.fetchVideoById(videoId: videoId);
+  Future<List<Video>> getVideosByAllCategories() => _api.getVideosByAllCategories(userId: _prefs.getUser()!.id);
 
   @override
-  Future<Video> uploadVideo({required String videoPath, required String title, required String description}) =>
-      _api.uploadVideo(videoPath: videoPath, title: title, description: description);
-
-  @override
-  Future<bool> viewVideo({required String videoId}) => _api.viewVideo(videoId: videoId, userId: _prefs.getUser()!.id);
-
-  @override
-  Future<VideoRating> getVideoRating({required String videoId}) => _api.fetchVideoRating(videoId: videoId, userId: _prefs.getUser()!.id);
-
-  @override
-  Future<List<Video>> getRelatedVideos({required String videoId}) => _api.fetchRelatedVideos(videoId: videoId, userId: _prefs.getUser()!.id);
-
-  @override
-  Future<Comment?> getMostLikeComment({required String videoId}) => _api.fetchMostLikeComment(videoId: videoId);
+  Future<VideoRating> getVideoRating({required String videoId}) => _api.getVideoRating(videoId: videoId, userId: _prefs.getUser()!.id);
 
   @override
   Future<bool> rateVideo({required String videoId, required Rating rating}) =>
-      _api.rateVideo(videoId: videoId, userId: _prefs.getUser()!.id, rating: rating.name);
+      _api.postVideoRating(videoId: videoId, userId: _prefs.getUser()!.id, rating: rating.name);
+
+  @override
+  Future<List<Video>> getRelatedVideos({required String videoId}) => _api.getRelatedVideos(videoId: videoId, userId: _prefs.getUser()!.id);
+
+  @override
+  Future<List<String>> getVideoCategories() => _api.getVideoCategories(userId: _prefs.getUser()!.id);
+
+  @override
+  Future<Comment?> getTopLevelComment({required String videoId}) => _api.getTopLevelComment(videoId: videoId);
 }

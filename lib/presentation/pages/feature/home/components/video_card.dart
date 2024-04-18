@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
@@ -26,7 +27,7 @@ class _VideoCardState extends State<VideoCard> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12.0),
               child: FadeInImage.assetNetwork(
                   fadeInDuration: const Duration(milliseconds: 300),
                   fadeOutDuration: const Duration(milliseconds: 1),
@@ -34,44 +35,66 @@ class _VideoCardState extends State<VideoCard> {
                   width: double.infinity,
                   fit: BoxFit.cover,
                   placeholder: Asset.placeholder,
-                  image: widget.video.thumbnailUrl),
+                  image: widget.video.thumbnails![Thumbnail.kDefault]!.url),
             ),
-            const SizedBox(height: 16.0),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(backgroundImage: NetworkImage(widget.video.channel.pictureUrl)),
-                const SizedBox(width: 16.0),
                 Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.video.title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                              ),
+                      const SizedBox(height: 16.0),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(widget.video.channelImageUrl!),
+                            radius: 22.0,
+                          ),
+                          const SizedBox(width: 12.0),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.video.title!,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          height: 1.25,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4.0),
+                                      Text(
+                                        'BBC Learning  ∙  ${widget.video.viewCount} views  ∙  ${timeago.format(widget.video.publishedAt!)}',
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          height: 1.25,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 4.0),
-                            Text(
-                              '${widget.video.channel.name}  ∙  ${widget.video.viewCount} views  ∙  ${timeago.format(widget.video.uploadDate)}',
-                              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                      )
                     ],
+                  ),
+                ),
+                // More button
+                Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20.0),
                   ),
                 )
               ],

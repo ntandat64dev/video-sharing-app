@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 
 class UploadPage extends StatefulWidget {
@@ -142,11 +143,18 @@ class _UploadPageState extends State<UploadPage> {
 
   void _uploadVideo() async {
     setState(() => _processingVideo = true);
-    await _videoRepository.uploadVideo(
-      videoPath: widget.videoPath,
+    final video = Video.upload(
+      publishedAt: DateTime.now(),
       title: _titleController.text,
       description: _descriptionController.text,
+      hashtags: [],
+      location: null,
+      privacy: 'public',
+      madeForKids: false,
+      ageRestricted: false,
+      commentAllowed: true,
     );
+    await _videoRepository.uploadVideo(videoPath: widget.videoPath, video: video);
     setState(() => Navigator.pop(context));
   }
 }

@@ -36,7 +36,4 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   void markFirstLaunch() => _prefs.isFirstLaunched = true;
-
-  @override
-  Future<List<String>> getHasgtags() => _api.fetchHashtags(userId: getLoggedUser()!.id);
 }

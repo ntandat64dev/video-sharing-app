@@ -14,6 +14,4 @@ abstract class UserRepository {
   bool isFirstLaunch();
 
   void markFirstLaunch();
-
-  Future<List<String>> getHasgtags();
 }

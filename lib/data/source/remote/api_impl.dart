@@ -16,75 +16,13 @@ class ApiImpl implements Api {
   var _baseUrl = '10.0.2.2:8080';
 
   @override
-  Future<User?> signIn({required String email, required String password}) async {
+  Future<Video> postVideo({required String videoLocalPath, required Video video}) async {
     try {
-      var response = await http.post(
-        Uri.http(_baseUrl, '/api/auth/signin'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      );
-      if (response.statusCode != 200) return null;
-      return User.fromJson(jsonDecode(response.body)['userInfo']);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  @override
-  Future<User?> signUp({required String email, required String password}) async {
-    try {
-      var response = await http.post(
-        Uri.http(_baseUrl, '/api/auth/signup'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      );
-      if (response.statusCode != 201) return null;
-      return User.fromJson(jsonDecode(response.body)['userInfo']);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  @override
-  Future<List<Video>> fetchRecommendVideos({required String userId}) async {
-    try {
-      var response = await http.get(Uri.http(_baseUrl, '/api/videos/recommend', {'userId': userId}));
-      if (response.statusCode != 200) return [];
-      return jsonDecode(response.body).map<Video>((e) => Video.fromJson(e)).toList();
-    } catch (e) {
-      return [];
-    }
-  }
-
-  @override
-  Future<Video?> fetchVideoById({required String videoId}) async {
-    try {
-      var response = await http.get(Uri.http(_baseUrl, '/api/videos/$videoId'));
-      if (response.statusCode != 200) return null;
-      return Video.fromJson(jsonDecode(response.body));
-    } catch (e) {
-      return null;
-    }
-  }
-
-  @override
-  Future<Video> uploadVideo({required String videoPath, required String title, required String description}) async {
-    try {
-      final request = http.MultipartRequest('POST', Uri.http(_baseUrl, '/api/videos'));
-      final videoFile = await http.MultipartFile.fromPath('videoFile', videoPath);
+      final request = http.MultipartRequest('POST', Uri.http(_baseUrl, '/api/v1/videos'));
+      final videoFile = await http.MultipartFile.fromPath('videoFile', videoLocalPath);
       final metadata = http.MultipartFile.fromString(
         'metadata',
-        jsonEncode({
-          'title': title,
-          'description': description,
-          'user': {'id': 1}
-        }),
+        jsonEncode(video.toJson()),
         contentType: MediaType('application', 'json'),
       );
       request.files.add(videoFile);
@@ -98,33 +36,20 @@ class ApiImpl implements Api {
   }
 
   @override
-  Future<List<String>> fetchHashtags({required String userId}) async {
+  Future<List<Video>> getVideosByAllCategories({required String userId}) async {
     try {
-      var response = await http.get(Uri.http(_baseUrl, '/api/user/hashtags/$userId'));
+      var response = await http.get(Uri.http(_baseUrl, '/api/v1/videos/category/all', {'userId': userId}));
       if (response.statusCode != 200) return [];
-      return List<String>.from(jsonDecode(response.body));
+      return jsonDecode(response.body).map<Video>((e) => Video.fromJson(e)).toList();
     } catch (e) {
       return [];
     }
   }
 
   @override
-  Future<bool> viewVideo({required String videoId, required String userId}) async {
+  Future<VideoRating> getVideoRating({required String videoId, required String userId}) async {
     try {
-      var response = await http.post(Uri.http(_baseUrl, '/api/videos/view'), body: {
-        'videoId': videoId,
-        'userId': userId,
-      });
-      return response.statusCode == 201;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  @override
-  Future<VideoRating> fetchVideoRating({required String videoId, required String userId}) async {
-    try {
-      var response = await http.get(Uri.http(_baseUrl, '/api/videos/rate', {
+      var response = await http.get(Uri.http(_baseUrl, '/api/v1/videos/rate', {
         'videoId': videoId,
         'userId': userId,
       }));
@@ -135,9 +60,25 @@ class ApiImpl implements Api {
   }
 
   @override
-  Future<List<Video>> fetchRelatedVideos({required String videoId, required String userId}) async {
+  Future<bool> postVideoRating({required String videoId, required String userId, required String rating}) async {
     try {
-      var response = await http.get(Uri.http(_baseUrl, '/api/videos/related', {
+      var response = await http.post(
+          Uri.http(_baseUrl, '/api/v1/videos/rate', {
+            'videoId': videoId,
+            'userId': userId,
+            'rating': rating.toLowerCase(),
+          }),
+          headers: {'Content-Type': 'application/json'});
+      return (response.statusCode == 204);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<List<Video>> getRelatedVideos({required String videoId, required String userId}) async {
+    try {
+      var response = await http.get(Uri.http(_baseUrl, '/api/v1/videos/related', {
         'videoId': videoId,
         'userId': userId,
       }));
@@ -149,9 +90,20 @@ class ApiImpl implements Api {
   }
 
   @override
-  Future<Comment?> fetchMostLikeComment({required String videoId}) async {
+  Future<List<String>> getVideoCategories({required String userId}) async {
     try {
-      var response = await http.get(Uri.http(_baseUrl, '/api/comments/most-like', {'videoId': videoId}));
+      var response = await http.get(Uri.http(_baseUrl, '/api/v1/user/video-categories', {'userId': userId}));
+      if (response.statusCode != 200) return [];
+      return List<String>.from(jsonDecode(response.body));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @override
+  Future<Comment?> getTopLevelComment({required String videoId}) async {
+    try {
+      var response = await http.get(Uri.http(_baseUrl, '/api/v1/comments/top-level', {'videoId': videoId}));
       if (response.statusCode != 200) return Comment.fromJson(jsonDecode(response.body));
       return Comment.fromJson(jsonDecode(response.body));
     } catch (e) {
@@ -160,21 +112,34 @@ class ApiImpl implements Api {
   }
 
   @override
-  Future<bool> rateVideo({required String videoId, required String userId, required String rating}) async {
+  Future<User?> signIn({required String email, required String password}) async {
     try {
       var response = await http.post(
-        Uri.http(_baseUrl, '/api/videos/rate'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: {
-          'videoId': videoId,
-          'userId': userId,
-          'rating': rating.toUpperCase(),
-          'ratedAt': DateTime.now(),
-        },
-      );
-      return (response.statusCode == 204);
+          Uri.http(_baseUrl, '/api/v1/auth/login', {
+            'email': email,
+            'password': password,
+          }),
+          headers: {'Content-Type': 'application/json'});
+      if (response.statusCode != 200) return null;
+      return User.fromJson(jsonDecode(response.body));
     } catch (e) {
-      return false;
+      return null;
+    }
+  }
+
+  @override
+  Future<User?> signUp({required String email, required String password}) async {
+    try {
+      var response = await http.post(
+          Uri.http(_baseUrl, '/api/v1/auth/register', {
+            'email': email,
+            'password': password,
+          }),
+          headers: {'Content-Type': 'application/json'});
+      if (response.statusCode != 201) return null;
+      return User.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      return null;
     }
   }
 }

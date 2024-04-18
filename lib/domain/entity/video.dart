@@ -1,93 +1,115 @@
-import 'package:video_sharing_app/domain/entity/channel.dart';
+import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 
 class Video {
-  const Video({
+  Video({
     required this.id,
+    required this.publishedAt,
+    required this.userId,
+    required this.channelTitle,
+    required this.channelImageUrl,
     required this.title,
     required this.description,
-    required this.thumbnailUrl,
     required this.videoUrl,
-    required this.durationSec,
-    required this.uploadDate,
-    required this.isMadeForKids,
-    required this.isAgeRestricted,
-    required this.isCommentAllowed,
-    required this.location,
+    required this.thumbnails,
     required this.hashtags,
-    required this.visibility,
+    required this.duration,
+    required this.location,
+    required this.privacy,
+    required this.madeForKids,
+    required this.ageRestricted,
+    required this.commentAllowed,
     required this.viewCount,
     required this.likeCount,
     required this.dislikeCount,
     required this.commentCount,
     required this.downloadCount,
-    required this.userId,
-    required this.channel,
   });
 
-  final String id;
-  final String title;
-  final String? description;
-  final String thumbnailUrl;
-  final String videoUrl;
-  final int durationSec;
-  final DateTime uploadDate;
-  final bool isMadeForKids;
-  final bool isAgeRestricted;
-  final bool isCommentAllowed;
-  final String? location;
-  final Set<String> hashtags;
-  final String visibility;
-  final BigInt viewCount;
-  final BigInt likeCount;
-  final BigInt dislikeCount;
-  final BigInt commentCount;
-  final BigInt downloadCount;
-  final String userId;
-  final Channel channel;
+  Video.upload({
+    required this.publishedAt,
+    required this.title,
+    required this.description,
+    required this.hashtags,
+    required this.location,
+    required this.privacy,
+    required this.madeForKids,
+    required this.ageRestricted,
+    required this.commentAllowed,
+  });
+
+  String? id;
+  DateTime? publishedAt;
+  String? userId;
+  String? channelTitle;
+  String? channelImageUrl;
+  String? title;
+  String? description;
+  String? videoUrl;
+  Map<String, Thumbnail>? thumbnails;
+  List<String>? hashtags;
+  String? duration;
+  String? location;
+  String? privacy;
+  bool? madeForKids;
+  bool? ageRestricted;
+  bool? commentAllowed;
+  BigInt? viewCount;
+  BigInt? likeCount;
+  BigInt? dislikeCount;
+  BigInt? commentCount;
+  BigInt? downloadCount;
 
   factory Video.fromJson(Map<String, dynamic> json) => Video(
         id: json['id'],
-        title: json['title'],
-        description: json['description'],
-        thumbnailUrl: json['thumbnailUrl'],
-        videoUrl: json['videoUrl'],
-        durationSec: json['durationSec'],
-        uploadDate: DateTime.parse(json['uploadDate']),
-        isMadeForKids: json['isMadeForKids'],
-        isAgeRestricted: json['isAgeRestricted'],
-        isCommentAllowed: json['isCommentAllowed'],
-        location: json['location'],
-        hashtags: json['hashtags'].map<String>((e) => e.toString()).toSet(),
-        visibility: json['visibility'],
-        viewCount: BigInt.from(json['spec']['viewCount']),
-        likeCount: BigInt.from(json['spec']['likeCount']),
-        dislikeCount: BigInt.from(json['spec']['dislikeCount']),
-        commentCount: BigInt.from(json['spec']['commentCount']),
-        downloadCount: BigInt.from(json['spec']['downloadCount']),
-        userId: json['userId'],
-        channel: Channel.fromJson(json['channel']),
+        publishedAt: DateTime.parse(json['snippet']['publishedAt']),
+        userId: json['snippet']['userId'],
+        channelTitle: json['snippet']['channelTitle'],
+        channelImageUrl: json['snippet']['channelImageUrl'],
+        title: json['snippet']['title'],
+        description: json['snippet']['description'],
+        videoUrl: json['snippet']['videoUrl'],
+        thumbnails: (json['snippet']['thumbnails'] as Map<String, dynamic>).map((key, value) => MapEntry(key, Thumbnail.fromJson(value))),
+        hashtags: (json['snippet']['hashtags'] as List<dynamic>).map<String>((e) => e.toString()).toList(),
+        duration: json['snippet']['duration'],
+        location: json['snippet']['location'],
+        privacy: json['status']['privacy'],
+        madeForKids: json['status']['madeForKids'],
+        ageRestricted: json['status']['ageRestricted'],
+        commentAllowed: json['status']['commentAllowed'],
+        viewCount: BigInt.from(json['statistic']['viewCount']),
+        likeCount: BigInt.from(json['statistic']['likeCount']),
+        dislikeCount: BigInt.from(json['statistic']['dislikeCount']),
+        commentCount: BigInt.from(json['statistic']['commentCount']),
+        downloadCount: BigInt.from(json['statistic']['downloadCount']),
       );
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'title': title,
-        'description': description,
-        'thumbnailUrl': thumbnailUrl,
-        'videoUrl': videoUrl,
-        'durationSec': durationSec,
-        'uploadDate': uploadDate.toIso8601String(),
-        'isMadeForKids': isMadeForKids,
-        'isAgeRestricted': isAgeRestricted,
-        'isCommentAllowed': isCommentAllowed,
-        'location': location,
-        'hashtags': hashtags,
-        'visibility': visibility,
-        'viewCount': viewCount,
-        'likeCount': likeCount,
-        'dislikeCount': dislikeCount,
-        'commentCount': commentCount,
-        'downloadCount': downloadCount,
-        'userId': userId,
-        'channel': channel.toJson(),
+        'snippet': {
+          'publishedAt': publishedAt?.toIso8601String(),
+          'userId': userId,
+          'channelTitle': channelTitle,
+          'channelImageUrl': channelImageUrl,
+          'title': title,
+          'description': description,
+          'videoUrl': videoUrl,
+          'thumbnails': thumbnails?.map((key, value) => MapEntry(key, value.toJson())),
+          'hashtags': hashtags,
+          'duration': duration,
+          'location': location,
+        },
+        'status': {
+          'privacy': privacy,
+          'madeForKids': madeForKids,
+          'ageRestricted': ageRestricted,
+          'commentAllowed': commentAllowed,
+        },
+        'statistic': {
+          'viewCount': viewCount,
+          'likeCount': likeCount,
+          'dislikeCount': dislikeCount,
+          'commentCount': commentCount,
+          'downloadCount': downloadCount,
+        }
       };
 }

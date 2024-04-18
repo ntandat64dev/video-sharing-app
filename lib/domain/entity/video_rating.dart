@@ -3,27 +3,27 @@ enum Rating { like, dislike, none }
 class VideoRating {
   const VideoRating({
     required this.videoId,
+    required this.userId,
     required this.rating,
-    required this.ratedBy,
-    required this.ratedAt,
+    required this.publishedAt,
   });
 
   final String videoId;
+  final String userId;
   final Rating rating;
-  final String ratedBy;
-  final DateTime? ratedAt;
+  final DateTime? publishedAt;
 
   factory VideoRating.fromJson(Map<String, dynamic> json) => VideoRating(
         videoId: json['videoId'],
+        userId: json['userId'],
         rating: Rating.values.firstWhere((e) => e.name.toLowerCase() == (json['rating'] as String).toLowerCase()),
-        ratedBy: json['ratedBy'],
-        ratedAt: json['ratedAt'] != null ? DateTime.parse(json['ratedAt']) : null,
+        publishedAt: json['publishedAt'] != null ? DateTime.parse(json['publishedAt']) : null,
       );
 
   Map<String, dynamic> toJson() => {
         'videoId': videoId,
+        'userId': userId,
         'rating': rating,
-        'ratedBy': ratedBy,
-        'ratedAt': ratedAt,
+        'publishedAt': publishedAt,
       };
 }

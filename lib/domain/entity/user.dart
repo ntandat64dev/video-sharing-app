@@ -21,21 +21,23 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json['id'],
-        email: json['email'],
-        dateOfBirth: json['dateOfBirth'] != null ? DateTime.parse(json['dateOfBirth']) : null,
-        phoneNumber: json['phoneNumber'],
-        gender: json['gender'],
-        country: json['country'],
-        channel: Channel.fromJson(json['channel']),
+        email: json['snippet']['email'],
+        dateOfBirth: json['snippet']['dateOfBirth'] != null ? DateTime.parse(json['snippet']['dateOfBirth']) : null,
+        phoneNumber: json['snippet']['phoneNumber'],
+        gender: json['snippet']['gender'],
+        country: json['snippet']['country'],
+        channel: Channel.fromJson(json['snippet']['channel']),
       );
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'email': email,
-        'dateOfBirth': dateOfBirth?.toIso8601String(),
-        'phoneNumber': phoneNumber,
-        'gender': gender,
-        'country': country,
-        'channel': channel.toJson(),
+        'snippet': {
+          'email': email,
+          'dateOfBirth': dateOfBirth?.toIso8601String(),
+          'phoneNumber': phoneNumber,
+          'gender': gender,
+          'country': country,
+          'channel': channel.toJson(),
+        }
       };
 }
