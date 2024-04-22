@@ -4,6 +4,8 @@ import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
 
 abstract class Api {
+  Future<Video?> getVideoById({required String videoId});
+
   Future<Video> postVideo({required String videoLocalPath, required Video video});
 
   Future<List<Video>> getVideosByAllCategories({required String userId});
@@ -15,6 +17,10 @@ abstract class Api {
   Future<List<Video>> getRelatedVideos({required String videoId, required String userId});
 
   Future<List<String>> getVideoCategories({required String userId});
+
+  Future<List<Comment>> getCommentsByVideoId({required String videoId});
+
+  Future<Comment> postComment({required Comment comment});
 
   Future<Comment?> getTopLevelComment({required String videoId});
 

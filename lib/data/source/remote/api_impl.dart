@@ -16,6 +16,17 @@ class ApiImpl implements Api {
   var _baseUrl = '10.0.2.2:8080';
 
   @override
+  Future<Video?> getVideoById({required String videoId}) async {
+    try {
+      var response = await http.get(Uri.http(_baseUrl, '/api/v1/videos', {'videoId': videoId}));
+      if (response.statusCode != 200) return null;
+      return Video.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
   Future<Video> postVideo({required String videoLocalPath, required Video video}) async {
     try {
       final request = http.MultipartRequest('POST', Uri.http(_baseUrl, '/api/v1/videos'));
@@ -101,10 +112,38 @@ class ApiImpl implements Api {
   }
 
   @override
+  Future<List<Comment>> getCommentsByVideoId({required String videoId}) async {
+    try {
+      final response = await http.get(Uri.http(_baseUrl, '/api/v1/comments', {'videoId': videoId}));
+      if (response.statusCode != 200) return [];
+      return List<Comment>.from((jsonDecode(response.body) as List).map((model) => Comment.fromJson(model)));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @override
+  Future<Comment> postComment({required Comment comment}) async {
+    try {
+      var response = await http.post(
+        Uri.http(_baseUrl, '/api/v1/comments'),
+        body: jsonEncode(comment.toJson()),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 201) return Comment.fromJson(jsonDecode(response.body));
+      return Comment.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<Comment?> getTopLevelComment({required String videoId}) async {
     try {
       var response = await http.get(Uri.http(_baseUrl, '/api/v1/comments/top-level', {'videoId': videoId}));
-      if (response.statusCode != 200) return Comment.fromJson(jsonDecode(response.body));
+      if (response.statusCode != 200) return null;
       return Comment.fromJson(jsonDecode(response.body));
     } catch (e) {
       return null;

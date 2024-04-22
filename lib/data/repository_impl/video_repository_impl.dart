@@ -12,6 +12,9 @@ class VideoRepositoryImpl implements VideoRepository {
   final Api _api = ApiImpl();
 
   @override
+  Future<Video?> getVideoById({required String videoId}) => _api.getVideoById(videoId: videoId);
+
+  @override
   Future<Video> uploadVideo({required String videoPath, required Video video}) => _api.postVideo(videoLocalPath: videoPath, video: video);
 
   @override

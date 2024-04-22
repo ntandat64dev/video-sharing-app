@@ -1,5 +1,5 @@
 class Comment {
-  const Comment({
+  Comment({
     required this.id,
     required this.videoId,
     required this.authorId,
@@ -14,18 +14,24 @@ class Comment {
     required this.replyCount,
   });
 
-  final String id;
-  final String videoId;
-  final String authorId;
-  final String authorDisplayName;
-  final String authorProfileImageUrl;
-  final String text;
-  final String? parentId;
-  final DateTime publishedAt;
-  final DateTime? updatedAt;
-  final BigInt likeCount;
-  final BigInt dislikeCount;
-  final BigInt replyCount;
+  Comment.post({
+    required this.videoId,
+    required this.authorId,
+    required this.text,
+  });
+
+  String? id;
+  String? videoId;
+  String? authorId;
+  String? authorDisplayName;
+  String? authorProfileImageUrl;
+  String? text;
+  String? parentId;
+  DateTime? publishedAt;
+  DateTime? updatedAt;
+  BigInt? likeCount;
+  BigInt? dislikeCount;
+  BigInt? replyCount;
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
         id: json['id'],

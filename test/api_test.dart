@@ -1,12 +1,13 @@
 import 'package:test/test.dart';
 import 'package:video_sharing_app/data/source/remote/api.dart';
 import 'package:video_sharing_app/data/source/remote/api_impl.dart';
+import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
 
 void main() {
-  const userId = '3303a85f-0628-4416-a1ab-04ed4ef6bb55';
-  const videoId = '03bacc94-aaa3-46c2-bfaf-195d6ca79b43';
+  const userId = '2fd56dd0-8098-4b7a-9327-a01a21ee7c9d';
+  const videoId = '03fc7379-ee27-4a6d-8dad-891c7644a746';
 
   test('Post video', () async {
     final Api api = ApiImpl.forTest();
@@ -31,7 +32,7 @@ void main() {
   test('Get videos by all categories', () async {
     final Api api = ApiImpl.forTest();
     final recommendedVideos = await api.getVideosByAllCategories(userId: userId);
-    expect(recommendedVideos.length, 4);
+    expect(recommendedVideos.length, 3);
   });
 
   test('Get video rating', () async {
@@ -52,20 +53,38 @@ void main() {
   test('Get related videos', () async {
     final Api api = ApiImpl.forTest();
     final relatedVideo = await api.getRelatedVideos(videoId: videoId, userId: userId);
-    expect(relatedVideo.length, 4);
+    expect(relatedVideo.length, 3);
   });
 
   test('Get video categories', () async {
     final Api api = ApiImpl.forTest();
     final categories = await api.getVideoCategories(userId: userId);
-    expect(categories.length, 6);
+    expect(categories.length, 2);
+  });
+
+  test('Get comments by video ID', () async {
+    final Api api = ApiImpl.forTest();
+    final List<Comment> comments = await api.getCommentsByVideoId(videoId: videoId);
+    expect(comments.length, 7);
   });
 
   test('Get top level comment', () async {
     final Api api = ApiImpl.forTest();
     final comment = await api.getTopLevelComment(videoId: videoId);
     expect(comment != null, true);
-    expect(comment!.text, 'Good video');
+    expect(comment!.text, 'Great video!');
+  });
+
+  test('Post comment', () async {
+    final Api api = ApiImpl.forTest();
+    final comment = await api.postComment(
+      comment: Comment.post(
+        videoId: videoId,
+        authorId: userId,
+        text: 'Great video!',
+      ),
+    );
+    expect(comment.text, 'Great video!');
   });
 
   test('Sign in', () async {
