@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_player/video_player.dart';
 import 'package:video_sharing_app/data/repository_impl/comment_repository_impl.dart';
@@ -47,6 +48,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     // When user do action rating, comment, etc. the call setState reloading future.
     videoDetailFuture = videoRepository.getVideoById(videoId: widget._video.id!);
     videoRatingFuture = videoRepository.getVideoRating(videoId: widget._video.id!);
+
     return Scaffold(
       // Change status bar color to black.
       appBar: AppBar(
@@ -78,11 +80,22 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                           children: [
                             // Title, views, tags
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                // Show video details
+                                showModalBottomSheet<void>(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  constraints: const BoxConstraints(maxWidth: double.infinity),
+                                  builder: (context) => VideoDetail(
+                                    video: widget._video,
+                                    globalKey: globalKey,
+                                  ),
+                                );
+                              },
                               child: SizedBox(
                                 width: double.infinity,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -110,7 +123,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                             ),
                             // Actions
                             SingleChildScrollView(
-                              padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: [
@@ -246,143 +259,16 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                             InkWell(
                               onTap: () async {
                                 // Show comments
-                                var comments = await commentRepository.getCommentsByVideoId(videoId: video.id!);
                                 if (!context.mounted) return;
                                 showModalBottomSheet<void>(
                                   isScrollControlled: true,
                                   context: context,
                                   constraints: const BoxConstraints(maxWidth: double.infinity),
-                                  builder: (BuildContext context) {
-                                    // Calculate modal height
-                                    RenderBox box = globalKey.currentContext?.findRenderObject() as RenderBox;
-                                    Offset position = box.localToGlobal(Offset.zero);
-                                    final modelHeight = MediaQuery.of(context).size.height - position.dy;
-                                    return GestureDetector(
-                                      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-                                      child: Container(
-                                        height: modelHeight,
-                                        width: double.infinity,
-                                        color: Theme.of(context).colorScheme.surface,
-                                        child: Column(
-                                          children: [
-                                            const SizedBox(height: 6.0),
-                                            Container(
-                                              width: 50.0,
-                                              height: 6.0,
-                                              decoration: BoxDecoration(
-                                                color: Theme.of(context).colorScheme.outlineVariant,
-                                                borderRadius: BorderRadius.circular(8.0),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 24.0),
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text('Comments',
-                                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
-                                                  Text('23K',
-                                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 16.0),
-                                            SizedBox(
-                                              width: double.infinity,
-                                              child: SingleChildScrollView(
-                                                scrollDirection: Axis.horizontal,
-                                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    ElevatedButton(onPressed: () {}, child: const Text('Top')),
-                                                    const SizedBox(width: 8.0),
-                                                    ElevatedButton(onPressed: () {}, child: const Text('Newest')),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 16.0),
-                                            ListTile(
-                                              leading: CircleAvatar(
-                                                backgroundImage: NetworkImage(video.channelImageUrl!),
-                                                radius: 24.0,
-                                              ),
-                                              title: Focus(
-                                                onFocusChange: (value) {
-                                                  setState(() {
-                                                    isCommentFocus = value;
-                                                  });
-                                                },
-                                                child: TextField(
-                                                  controller: commentController,
-                                                  cursorColor: Theme.of(context).colorScheme.primary,
-                                                  decoration: InputDecoration(
-                                                    contentPadding:
-                                                        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                                                    labelText: 'Add a comment...',
-                                                    fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                                                    filled: true,
-                                                    suffixIcon: isCommentFocus
-                                                        ? IconButton(
-                                                            onPressed: () async {
-                                                              // Sent comment
-                                                              final comment = Comment.post(
-                                                                videoId: video.id!,
-                                                                authorId: null,
-                                                                text: commentController.text,
-                                                              );
-                                                              await commentRepository.postComment(comment: comment);
-                                                              setState(() {
-                                                                FocusScope.of(context).requestFocus(FocusNode());
-                                                                commentController.text = '';
-                                                              });
-                                                            },
-                                                            icon: const Icon(Icons.send),
-                                                            color: Theme.of(context).colorScheme.primary)
-                                                        : const Icon(null),
-                                                    focusedBorder: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(48.0),
-                                                      borderSide: BorderSide(
-                                                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
-                                                      ),
-                                                    ),
-                                                    enabledBorder: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(48.0),
-                                                      borderSide: BorderSide(
-                                                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 16.0),
-                                            Divider(
-                                              height: 1.0,
-                                              thickness: 0.3,
-                                              color: Theme.of(context).colorScheme.outlineVariant,
-                                            ),
-                                            Expanded(
-                                              child: DraggableScrollableSheet(
-                                                initialChildSize: 1,
-                                                builder: (context, scrollController) {
-                                                  return ListView.builder(
-                                                    itemCount: comments.length,
-                                                    itemBuilder: (context, index) {
-                                                      return CommentItem(comment: comments[index]);
-                                                    },
-                                                  );
-                                                },
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                  builder: (context) => CommentDetail(
+                                    video: video,
+                                    globalKey: globalKey,
+                                    onSentComment: () => setState(() => {}),
+                                  ),
                                 );
                               },
                               child: Padding(
@@ -480,6 +366,374 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                     }
                   },
                 ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class VideoDetail extends StatefulWidget {
+  const VideoDetail({super.key, required this.video, required this.globalKey});
+
+  final Video video;
+  final GlobalKey globalKey;
+
+  @override
+  State<VideoDetail> createState() => _VideoDetailState();
+}
+
+class _VideoDetailState extends State<VideoDetail> {
+  @override
+  Widget build(BuildContext context) {
+    RenderBox box = widget.globalKey.currentContext?.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset.zero);
+    final modelHeight = MediaQuery.of(context).size.height - position.dy;
+    return Container(
+      height: modelHeight,
+      width: double.infinity,
+      color: Theme.of(context).colorScheme.surface,
+      child: Column(children: [
+        const SizedBox(height: 6.0),
+        Container(
+          width: 50.0,
+          height: 6.0,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.outlineVariant,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+        const SizedBox(height: 16.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Descriptions',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16.0),
+        Divider(
+          height: 1.0,
+          thickness: 0.3,
+          color: Theme.of(context).colorScheme.outlineVariant,
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    widget.video.title!,
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            widget.video.likeCount.toString(),
+                            style: const TextStyle(
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Text('Likes'),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            widget.video.dislikeCount.toString(),
+                            style: const TextStyle(
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Text('Dislikes'),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            widget.video.viewCount.toString(),
+                            style: const TextStyle(
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Text('Views'),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            DateFormat.MMMd().format(widget.video.publishedAt!),
+                            style: const TextStyle(
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(widget.video.publishedAt!.year.toString()),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: widget.video.hashtags!.isNotEmpty ? 48 : 0,
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => const SizedBox(width: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.video.hashtags!.length,
+                    itemBuilder: (context, index) {
+                      final tag = widget.video.hashtags![index];
+                      return Text(
+                        '#${tag.replaceAll(' ', '').toLowerCase()}',
+                        style: TextStyle(color: Colors.blue.shade800),
+                      );
+                    },
+                  ),
+                ),
+                widget.video.description != null
+                    ? Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(widget.video.description!),
+                      )
+                    : const SizedBox.shrink(),
+                InkWell(
+                  onTap: () {},
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(widget.video.channelImageUrl!),
+                                radius: 28.0,
+                              ),
+                              const SizedBox(width: 12.0),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.video.channelTitle!,
+                                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 4.0),
+                                  Text(
+                                    '86K subscribers',
+                                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                            child: const Text('Subscribe'),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+class CommentDetail extends StatefulWidget {
+  const CommentDetail({super.key, required this.video, required this.globalKey, required this.onSentComment});
+
+  final Video video;
+  final GlobalKey globalKey;
+  final VoidCallback onSentComment;
+
+  @override
+  State<CommentDetail> createState() => _CommentDetailState();
+}
+
+class _CommentDetailState extends State<CommentDetail> {
+  final commentRepository = CommentRepositoryImpl();
+  final commentController = TextEditingController();
+  var isCommentFocus = false;
+
+  late Future<List<Comment>> commentsFuture;
+
+  @override
+  Widget build(BuildContext context) {
+    commentsFuture = commentRepository.getCommentsByVideoId(videoId: widget.video.id!);
+
+    // Calculate modal height
+    RenderBox box = widget.globalKey.currentContext?.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset.zero);
+    final modelHeight = MediaQuery.of(context).size.height - position.dy;
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Container(
+        height: modelHeight,
+        width: double.infinity,
+        color: Theme.of(context).colorScheme.surface,
+        child: Column(
+          children: [
+            const SizedBox(height: 6.0),
+            Container(
+              width: 50.0,
+              height: 6.0,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.outlineVariant,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Comments',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            SizedBox(
+              width: double.infinity,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ElevatedButton(onPressed: () {}, child: const Text('Top')),
+                    const SizedBox(width: 8.0),
+                    ElevatedButton(onPressed: () {}, child: const Text('Newest')),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(widget.video.channelImageUrl!),
+                radius: 24.0,
+              ),
+              title: Focus(
+                onFocusChange: (value) {
+                  setState(() {
+                    isCommentFocus = value;
+                  });
+                },
+                child: TextField(
+                  controller: commentController,
+                  cursorColor: Theme.of(context).colorScheme.primary,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    labelText: 'Add a comment...',
+                    fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                    filled: true,
+                    suffixIcon: isCommentFocus
+                        ? IconButton(
+                            onPressed: () async {
+                              // Sent comment
+                              final comment = Comment.post(
+                                videoId: widget.video.id!,
+                                authorId: null,
+                                text: commentController.text,
+                              );
+                              await commentRepository.postComment(comment: comment);
+                              setState(() {
+                                FocusScope.of(context).requestFocus(FocusNode());
+                                commentController.text = '';
+                              });
+                              widget.onSentComment.call();
+                            },
+                            icon: const Icon(Icons.send),
+                            color: Theme.of(context).colorScheme.primary)
+                        : const Icon(null),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(48.0),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(48.0),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Divider(
+              height: 1.0,
+              thickness: 0.3,
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+            Expanded(
+              child: FutureBuilder(
+                future: commentsFuture,
+                builder: (context, snapshot) {
+                  return !(snapshot.hasData && snapshot.data!.isNotEmpty)
+                      ? const Center(child: CircularProgressIndicator())
+                      : DraggableScrollableSheet(
+                          initialChildSize: 1,
+                          builder: (context, scrollController) {
+                            final comments = snapshot.data!;
+                            // Temporary sort by newest.
+                            comments.sort((a, b) => a.publishedAt!.isBefore(b.publishedAt!) ? 1 : -1);
+                            return ListView.builder(
+                              itemCount: comments.length,
+                              itemBuilder: (context, index) {
+                                return CommentItem(comment: comments[index]);
+                              },
+                            );
+                          },
+                        );
+                },
               ),
             )
           ],

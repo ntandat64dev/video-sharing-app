@@ -20,7 +20,17 @@ class _VideoCardState extends State<VideoCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerPage(video: widget.video))),
+      onTap: () {
+        final route = MaterialPageRoute(
+          builder: (context) => VideoPlayerPage(video: widget.video),
+          settings: const RouteSettings(name: 'video_player_route'),
+        );
+        if (ModalRoute.of(context)?.settings.name == 'video_player_route') {
+          Navigator.pushReplacement(context, route);
+        } else {
+          Navigator.push(context, route);
+        }
+      },
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
