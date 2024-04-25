@@ -5,8 +5,8 @@ class Video {
     required this.id,
     required this.publishedAt,
     required this.userId,
-    required this.channelTitle,
-    required this.channelImageUrl,
+    required this.username,
+    required this.userImageUrl,
     required this.title,
     required this.description,
     required this.videoUrl,
@@ -40,8 +40,8 @@ class Video {
   String? id;
   DateTime? publishedAt;
   String? userId;
-  String? channelTitle;
-  String? channelImageUrl;
+  String? username;
+  String? userImageUrl;
   String? title;
   String? description;
   String? videoUrl;
@@ -63,12 +63,13 @@ class Video {
         id: json['id'],
         publishedAt: DateTime.parse(json['snippet']['publishedAt']),
         userId: json['snippet']['userId'],
-        channelTitle: json['snippet']['channelTitle'],
-        channelImageUrl: json['snippet']['channelImageUrl'],
+        username: json['snippet']['username'],
+        userImageUrl: json['snippet']['userImageUrl'],
         title: json['snippet']['title'],
         description: json['snippet']['description'],
         videoUrl: json['snippet']['videoUrl'],
-        thumbnails: (json['snippet']['thumbnails'] as Map<String, dynamic>).map((key, value) => MapEntry(key, Thumbnail.fromJson(value))),
+        thumbnails: (json['snippet']['thumbnails'] as Map<String, dynamic>)
+            .map((key, value) => MapEntry(key, Thumbnail.fromJson(value))),
         hashtags: (json['snippet']['hashtags'] as List<dynamic>).map<String>((e) => e.toString()).toList(),
         duration: json['snippet']['duration'],
         location: json['snippet']['location'],
@@ -88,8 +89,8 @@ class Video {
         'snippet': {
           'publishedAt': publishedAt?.toIso8601String(),
           'userId': userId,
-          'channelTitle': channelTitle,
-          'channelImageUrl': channelImageUrl,
+          'username': username,
+          'userImageUrl': userImageUrl,
           'title': title,
           'description': description,
           'videoUrl': videoUrl,

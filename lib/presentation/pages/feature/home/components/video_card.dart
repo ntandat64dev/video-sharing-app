@@ -58,7 +58,7 @@ class _VideoCardState extends State<VideoCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CircleAvatar(
-                            backgroundImage: NetworkImage(widget.video.channelImageUrl!),
+                            backgroundImage: NetworkImage(widget.video.username!),
                             radius: 22.0,
                           ),
                           const SizedBox(width: 12.0),

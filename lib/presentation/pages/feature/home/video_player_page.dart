@@ -4,11 +4,15 @@ import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_player/video_player.dart';
 import 'package:video_sharing_app/data/repository_impl/comment_repository_impl.dart';
+import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
+import 'package:video_sharing_app/domain/entity/follow.dart';
+import 'package:video_sharing_app/domain/entity/user.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
 import 'package:video_sharing_app/domain/repository/comment_repository.dart';
+import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/components/comment_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/components/video_card.dart';
@@ -26,16 +30,19 @@ class VideoPlayerPage extends StatefulWidget {
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
+  final UserRepository userRepository = UserRepositoryImpl();
   final VideoRepository videoRepository = VideoRepositoryImpl();
   final CommentRepository commentRepository = CommentRepositoryImpl();
 
   late Future<Video?> videoDetailFuture;
   late Future<VideoRating> videoRatingFuture;
   late Future<List<Video>> relatedVideosFuture;
+  late Future<Follow?> followFuture;
+  late Future<User?> userFuture;
 
+  final GlobalKey globalKey = GlobalKey();
   final commentController = TextEditingController();
   var isCommentFocus = false;
-  final GlobalKey globalKey = GlobalKey();
 
   @override
   void initState() {
@@ -45,9 +52,10 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    // When user do action rating, comment, etc. the call setState reloading future.
     videoDetailFuture = videoRepository.getVideoById(videoId: widget._video.id!);
     videoRatingFuture = videoRepository.getVideoRating(videoId: widget._video.id!);
+    followFuture = userRepository.getFollowFor(userId: widget._video.userId!);
+    userFuture = userRepository.getUserInfo(userId: widget._video.userId);
 
     return Scaffold(
       // Change status bar color to black.
@@ -69,11 +77,13 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
               child: GestureDetector(
                 onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
                 child: FutureBuilder(
-                  future: Future.wait([videoDetailFuture, videoRatingFuture]),
+                  future: Future.wait([videoDetailFuture, videoRatingFuture, followFuture, userFuture]),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data != null && snapshot.data!.length == 2) {
+                    if (snapshot.hasData && snapshot.data!.length == 4) {
                       final video = snapshot.data![0] as Video;
                       final videoRating = snapshot.data![1] as VideoRating;
+                      final follow = snapshot.data![2] as Follow?;
+                      final user = snapshot.data![3] as User?;
                       return SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +98,14 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                   constraints: const BoxConstraints(maxWidth: double.infinity),
                                   builder: (context) => VideoDetail(
                                     video: widget._video,
+                                    user: user!,
+                                    follow: follow,
                                     globalKey: globalKey,
+                                    onFollow: () async {
+                                      final follow = Follow.post(userId: video.userId, followerId: null);
+                                      await userRepository.follow(follow: follow);
+                                      setState(() {});
+                                    },
                                   ),
                                 );
                               },
@@ -201,7 +218,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                               endIndent: 16.0,
                               color: Theme.of(context).colorScheme.outlineVariant,
                             ),
-                            // Channel, Subscribe button
+                            // Channel, Follow button
                             InkWell(
                               onTap: () {},
                               child: SizedBox(
@@ -215,7 +232,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           CircleAvatar(
-                                            backgroundImage: NetworkImage(video.channelImageUrl!),
+                                            backgroundImage: NetworkImage(video.userImageUrl!),
                                             radius: 28.0,
                                           ),
                                           const SizedBox(width: 12.0),
@@ -223,12 +240,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                video.channelTitle!,
+                                                video.username!,
                                                 style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                                               ),
                                               const SizedBox(height: 4.0),
                                               Text(
-                                                '86K subscribers',
+                                                '${user!.followerCount} followers',
                                                 style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                                               ),
                                             ],
@@ -236,12 +253,16 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                         ],
                                       ),
                                       ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          final follow = Follow.post(userId: video.userId, followerId: null);
+                                          await userRepository.follow(follow: follow);
+                                          setState(() {});
+                                        },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Theme.of(context).colorScheme.primary,
                                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                                         ),
-                                        child: const Text('Subscribe'),
+                                        child: Text(follow != null ? 'Followed' : 'Follow'),
                                       )
                                     ],
                                   ),
@@ -285,9 +306,10 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                 ),
                               ),
                             ),
+                            // Add comment
                             ListTile(
                               leading: CircleAvatar(
-                                backgroundImage: NetworkImage(video.channelImageUrl!),
+                                backgroundImage: NetworkImage(video.userImageUrl!),
                                 radius: 24.0,
                               ),
                               title: Focus(
@@ -376,10 +398,20 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 }
 
 class VideoDetail extends StatefulWidget {
-  const VideoDetail({super.key, required this.video, required this.globalKey});
+  const VideoDetail({
+    super.key,
+    required this.video,
+    required this.globalKey,
+    required this.user,
+    required this.follow,
+    required this.onFollow,
+  });
 
   final Video video;
+  final User user;
+  final Follow? follow;
   final GlobalKey globalKey;
+  final VoidCallback onFollow;
 
   @override
   State<VideoDetail> createState() => _VideoDetailState();
@@ -434,6 +466,7 @@ class _VideoDetailState extends State<VideoDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Title
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
@@ -441,6 +474,7 @@ class _VideoDetailState extends State<VideoDetail> {
                     style: const TextStyle(fontSize: 16.0),
                   ),
                 ),
+                // Statistic
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
@@ -497,6 +531,7 @@ class _VideoDetailState extends State<VideoDetail> {
                     ],
                   ),
                 ),
+                // Hashtags
                 SizedBox(
                   height: widget.video.hashtags!.isNotEmpty ? 48 : 0,
                   child: ListView.separated(
@@ -513,12 +548,14 @@ class _VideoDetailState extends State<VideoDetail> {
                     },
                   ),
                 ),
+                // Description (if any)
                 widget.video.description != null
                     ? Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(widget.video.description!),
                       )
                     : const SizedBox.shrink(),
+                // Channel info
                 InkWell(
                   onTap: () {},
                   child: SizedBox(
@@ -532,7 +569,7 @@ class _VideoDetailState extends State<VideoDetail> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               CircleAvatar(
-                                backgroundImage: NetworkImage(widget.video.channelImageUrl!),
+                                backgroundImage: NetworkImage(widget.video.userImageUrl!),
                                 radius: 28.0,
                               ),
                               const SizedBox(width: 12.0),
@@ -540,12 +577,12 @@ class _VideoDetailState extends State<VideoDetail> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.video.channelTitle!,
+                                    widget.video.username!,
                                     style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 4.0),
                                   Text(
-                                    '86K subscribers',
+                                    '${widget.user.followerCount} followers',
                                     style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   ),
                                 ],
@@ -553,12 +590,12 @@ class _VideoDetailState extends State<VideoDetail> {
                             ],
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: widget.onFollow,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Theme.of(context).colorScheme.primary,
                               foregroundColor: Theme.of(context).colorScheme.onPrimary,
                             ),
-                            child: const Text('Subscribe'),
+                            child: Text(widget.follow != null ? 'Followed' : 'Follow'),
                           )
                         ],
                       ),
@@ -654,7 +691,7 @@ class _CommentDetailState extends State<CommentDetail> {
             const SizedBox(height: 16.0),
             ListTile(
               leading: CircleAvatar(
-                backgroundImage: NetworkImage(widget.video.channelImageUrl!),
+                backgroundImage: NetworkImage(widget.video.userImageUrl!),
                 radius: 24.0,
               ),
               title: Focus(

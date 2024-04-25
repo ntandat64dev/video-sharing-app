@@ -1,4 +1,4 @@
-import 'package:video_sharing_app/domain/entity/channel.dart';
+import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 
 class User {
   const User({
@@ -8,7 +8,14 @@ class User {
     required this.phoneNumber,
     required this.gender,
     required this.country,
-    required this.channel,
+    required this.username,
+    required this.bio,
+    required this.publishedAt,
+    required this.thumbnails,
+    required this.viewCount,
+    required this.followerCount,
+    required this.followingCount,
+    required this.videoCount,
   });
 
   final String id;
@@ -17,17 +24,31 @@ class User {
   final String? phoneNumber;
   final int? gender;
   final String? country;
-  final Channel channel;
+  final String username;
+  final String? bio;
+  final DateTime publishedAt;
+  final Map<String, Thumbnail> thumbnails;
+  final BigInt? viewCount;
+  final BigInt? followerCount;
+  final BigInt? followingCount;
+  final BigInt? videoCount;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json['id'],
-        email: json['snippet']['email'],
-        dateOfBirth: json['snippet']['dateOfBirth'] != null ? DateTime.parse(json['snippet']['dateOfBirth']) : null,
-        phoneNumber: json['snippet']['phoneNumber'],
-        gender: json['snippet']['gender'],
-        country: json['snippet']['country'],
-        channel: Channel.fromJson(json['snippet']['channel']),
-      );
+      id: json['id'],
+      email: json['snippet']['email'],
+      dateOfBirth: json['snippet']['dateOfBirth'] != null ? DateTime.parse(json['snippet']['dateOfBirth']) : null,
+      phoneNumber: json['snippet']['phoneNumber'],
+      gender: json['snippet']['gender'],
+      country: json['snippet']['country'],
+      username: json['snippet']['username'],
+      bio: json['snippet']['bio'],
+      publishedAt: DateTime.parse(json['snippet']['publishedAt']),
+      thumbnails: (json['snippet']['thumbnails'] as Map<String, dynamic>)
+          .map((key, value) => MapEntry(key, Thumbnail.fromJson(value))),
+      viewCount: BigInt.from(json['statistic']['viewCount']),
+      followerCount: BigInt.from(json['statistic']['followerCount']),
+      followingCount: BigInt.from(json['statistic']['followingCount']),
+      videoCount: BigInt.from(json['statistic']['videoCount']));
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -37,7 +58,16 @@ class User {
           'phoneNumber': phoneNumber,
           'gender': gender,
           'country': country,
-          'channel': channel.toJson(),
+          'username': username,
+          'bio': bio,
+          'publishedAt': publishedAt.toIso8601String(),
+          'thumbnails': thumbnails.map((key, value) => MapEntry(key, value.toJson())),
+        },
+        'statistic': {
+          'viewCount': viewCount?.toInt(),
+          'followerCount': followerCount?.toInt(),
+          'followingCount': followingCount?.toInt(),
+          'videoCount': videoCount?.toInt(),
         }
       };
 }

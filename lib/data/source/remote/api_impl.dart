@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:video_sharing_app/data/source/remote/api.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
+import 'package:video_sharing_app/domain/entity/follow.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
@@ -101,9 +102,51 @@ class ApiImpl implements Api {
   }
 
   @override
+  Future<User?> getUserInfo({required String userId}) async {
+    try {
+      final response = await http.get(Uri.http(_baseUrl, '/api/v1/users', {'userId': userId}));
+      if (response.statusCode != 200) return null;
+      return User.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<List<Follow>> getFollows({required String userId, String? forUserId}) async {
+    try {
+      final response = await http.get(Uri.http(_baseUrl, '/api/v1/users/follows', {
+        'userId': userId,
+        'forUserId': forUserId,
+      }));
+      if (response.statusCode != 200) return [];
+      return (jsonDecode(response.body) as List).map((model) => Follow.fromJson(model)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @override
+  Future<Follow> postFollow({required Follow follow}) async {
+    try {
+      final response = await http.post(
+        Uri.http(_baseUrl, '/api/v1/users/follows'),
+        body: jsonEncode(follow.toJson()),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode != 201) throw Exception('Something went wrong!');
+      return Follow.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<String>> getVideoCategories({required String userId}) async {
     try {
-      var response = await http.get(Uri.http(_baseUrl, '/api/v1/user/video-categories', {'userId': userId}));
+      var response = await http.get(Uri.http(_baseUrl, '/api/v1/users/video-categories', {'userId': userId}));
       if (response.statusCode != 200) return [];
       return List<String>.from(jsonDecode(response.body));
     } catch (e) {
@@ -132,7 +175,7 @@ class ApiImpl implements Api {
           'Content-Type': 'application/json',
         },
       );
-      if (response.statusCode == 201) return Comment.fromJson(jsonDecode(response.body));
+      if (response.statusCode != 201) throw Exception('Something went wrong!');
       return Comment.fromJson(jsonDecode(response.body));
     } catch (e) {
       rethrow;
