@@ -142,9 +142,9 @@ class _VideoDetailState extends State<VideoDetail> {
                       context: context,
                       constraints: const BoxConstraints(maxWidth: double.infinity),
                       builder: (context) => VideoDescription(
+                        videoDetailProvider: value,
                         video: video,
                         globalKey: widget._globalKey,
-                        onFollow: value.onFollowUpdated,
                       ),
                     );
                   },
@@ -402,14 +402,14 @@ class VideoDescription extends StatefulWidget {
     super.key,
     required Video video,
     required GlobalKey globalKey,
-    required Function onFollow,
-  })  : _onFollow = onFollow,
+    required VideoDetailProvider videoDetailProvider,
+  })  : _videoDetailProvider = videoDetailProvider,
         _globalKey = globalKey,
         _video = video;
 
+  final VideoDetailProvider _videoDetailProvider;
   final Video _video;
   final GlobalKey _globalKey;
-  final Function _onFollow;
 
   @override
   State<VideoDescription> createState() => _VideoDescriptionState();
@@ -437,195 +437,198 @@ class _VideoDescriptionState extends State<VideoDescription> {
         if (snapshot.hasData && snapshot.data!.length == 2) {
           final follow = snapshot.data![0] as Follow?;
           final user = snapshot.data![1] as User;
-          return Container(
-            height: modelHeight,
-            width: double.infinity,
-            color: Theme.of(context).colorScheme.surface,
-            child: Column(children: [
-              const SizedBox(height: 6.0),
-              Container(
-                width: 50.0,
-                height: 6.0,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Descriptions',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              Divider(
-                height: 1.0,
-                thickness: 0.3,
-                color: Theme.of(context).colorScheme.outlineVariant,
-              ),
-              SizedBox(
+          return ListenableProvider.value(
+            value: widget._videoDetailProvider,
+            builder: (context, child) {
+              return Container(
+                height: modelHeight,
                 width: double.infinity,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Title
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          video.title!,
-                          style: const TextStyle(fontSize: 16.0),
+                color: Theme.of(context).colorScheme.surface,
+                child: Column(children: [
+                  const SizedBox(height: 6.0),
+                  Container(
+                    width: 50.0,
+                    height: 6.0,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Descriptions',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                         ),
-                      ),
-                      // Statistic
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  video.likeCount.toString(),
-                                  style: const TextStyle(
-                                    fontSize: 28.0,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const Text('Likes'),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  video.dislikeCount.toString(),
-                                  style: const TextStyle(
-                                    fontSize: 28.0,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const Text('Dislikes'),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  video.viewCount.toString(),
-                                  style: const TextStyle(
-                                    fontSize: 28.0,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const Text('Views'),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  DateFormat.MMMd().format(video.publishedAt!),
-                                  style: const TextStyle(
-                                    fontSize: 28.0,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(video.publishedAt!.year.toString()),
-                              ],
-                            ),
-                          ],
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.close),
                         ),
-                      ),
-                      // Hashtags
-                      SizedBox(
-                        height: video.hashtags!.isNotEmpty ? 48 : 0,
-                        child: ListView.separated(
-                          separatorBuilder: (context, index) => const SizedBox(width: 8.0),
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: video.hashtags!.length,
-                          itemBuilder: (context, index) {
-                            final tag = video.hashtags![index];
-                            return Text(
-                              '#${tag.replaceAll(' ', '').toLowerCase()}',
-                              style: TextStyle(color: Colors.blue.shade800),
-                            );
-                          },
-                        ),
-                      ),
-                      // Description (if any)
-                      video.description != null
-                          ? Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(video.description!),
-                            )
-                          : const SizedBox.shrink(),
-                      // Channel info
-                      InkWell(
-                        onTap: () {},
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Divider(
+                    height: 1.0,
+                    thickness: 0.3,
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              video.title!,
+                              style: const TextStyle(fontSize: 16.0),
+                            ),
+                          ),
+                          // Statistic
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                Column(
                                   children: [
-                                    CircleAvatar(
-                                      backgroundImage: NetworkImage(video.userImageUrl!),
-                                      radius: 28.0,
+                                    Text(
+                                      video.likeCount.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 28.0,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                    const SizedBox(width: 12.0),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          video.username!,
-                                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 4.0),
-                                        Text(
-                                          '${user.followerCount} followers',
-                                          style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                                        ),
-                                      ],
-                                    ),
+                                    const Text('Likes'),
                                   ],
                                 ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    await userRepository.follow(
-                                        follow: Follow.post(userId: video.userId, followerId: null));
-                                    widget._onFollow();
-                                    setState(() {});
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Theme.of(context).colorScheme.primary,
-                                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                                  ),
-                                  child: Text(follow != null ? 'Followed' : 'Follow'),
-                                )
+                                Column(
+                                  children: [
+                                    Text(
+                                      video.dislikeCount.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 28.0,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const Text('Dislikes'),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      video.viewCount.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 28.0,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const Text('Views'),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      DateFormat.MMMd().format(video.publishedAt!),
+                                      style: const TextStyle(
+                                        fontSize: 28.0,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(video.publishedAt!.year.toString()),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
-                        ),
+                          // Hashtags
+                          SizedBox(
+                            height: video.hashtags!.isNotEmpty ? 48 : 0,
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) => const SizedBox(width: 8.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: video.hashtags!.length,
+                              itemBuilder: (context, index) {
+                                final tag = video.hashtags![index];
+                                return Text(
+                                  '#${tag.replaceAll(' ', '').toLowerCase()}',
+                                  style: TextStyle(color: Colors.blue.shade800),
+                                );
+                              },
+                            ),
+                          ),
+                          // Description (if any)
+                          video.description != null
+                              ? Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(video.description!),
+                                )
+                              : const SizedBox.shrink(),
+                          // Channel info
+                          InkWell(
+                            onTap: () {},
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: NetworkImage(video.userImageUrl!),
+                                          radius: 28.0,
+                                        ),
+                                        const SizedBox(width: 12.0),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              video.username!,
+                                              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                                            ),
+                                            const SizedBox(height: 4.0),
+                                            Text(
+                                              '${user.followerCount} followers',
+                                              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        await widget._videoDetailProvider.followUser();
+                                        setState(() {});
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Theme.of(context).colorScheme.primary,
+                                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                                      ),
+                                      child: Text(follow != null ? 'Followed' : 'Follow'),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ]),
+                ]),
+              );
+            },
           );
         } else {
           return const SizedBox.shrink();
@@ -783,20 +786,36 @@ class _CommentDetailState extends State<CommentDetail> {
               child: FutureBuilder(
                 future: commentRepository.getCommentsByVideoId(videoId: widget._video.id!),
                 builder: (context, snapshot) {
-                  return !(snapshot.hasData && snapshot.data!.isNotEmpty)
-                      ? const Center(child: CircularProgressIndicator())
-                      : DraggableScrollableSheet(
-                          initialChildSize: 1,
-                          builder: (context, scrollController) {
-                            final comments = snapshot.data!;
-                            // Temporary sort by newest.
-                            comments.sort((a, b) => a.publishedAt!.isBefore(b.publishedAt!) ? 1 : -1);
-                            return ListView.builder(
-                              itemCount: comments.length,
-                              itemBuilder: (context, index) => CommentItem(comment: comments[index]),
-                            );
-                          },
-                        );
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.isNotEmpty) {
+                      return DraggableScrollableSheet(
+                        initialChildSize: 1,
+                        builder: (context, scrollController) {
+                          final comments = snapshot.data!;
+                          // Temporary sort by newest.
+                          comments.sort((a, b) => a.publishedAt!.isBefore(b.publishedAt!) ? 1 : -1);
+                          return ListView.builder(
+                            itemCount: comments.length,
+                            itemBuilder: (context, index) => CommentItem(comment: comments[index]),
+                          );
+                        },
+                      );
+                    } else {
+                      return const Column(
+                        children: [
+                          SizedBox(height: 64.0),
+                          Text(
+                            'No comments yet',
+                            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text('Say something to start the conversation'),
+                        ],
+                      );
+                    }
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                 },
               ),
             )
@@ -891,10 +910,14 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
                 imageUrl: widget._video.thumbnails![Thumbnail.kDefault]!.url,
                 fadeInDuration: const Duration(milliseconds: 300),
                 fadeOutDuration: const Duration(milliseconds: 1),
-                height: videoThumbnailHeight,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Image.asset(Asset.placeholder),
+                placeholder: (context, url) => Image.asset(
+                  Asset.placeholder,
+                  height: videoThumbnailHeight,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
     );

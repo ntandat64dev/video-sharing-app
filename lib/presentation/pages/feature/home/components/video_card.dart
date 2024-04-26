@@ -46,7 +46,12 @@ class _VideoCardState extends State<VideoCard> {
                 height: videoThumbnailHeight,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Image.asset(Asset.placeholder),
+                placeholder: (context, url) => Image.asset(
+                  Asset.placeholder,
+                  height: videoThumbnailHeight,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Row(

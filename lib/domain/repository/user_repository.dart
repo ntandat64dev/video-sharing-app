@@ -16,6 +16,8 @@ abstract class UserRepository {
 
   Future<Follow> follow({required Follow follow});
 
+  Future<bool> unFollow({required String followId});
+
   void signOut();
 
   User? getLoggedUser();

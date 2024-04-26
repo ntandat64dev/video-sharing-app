@@ -23,6 +23,8 @@ abstract class Api {
 
   Future<Follow> postFollow({required Follow follow});
 
+  Future<bool> deleteFollow({required String followId});
+
   Future<List<String>> getVideoCategories({required String userId});
 
   Future<List<Comment>> getCommentsByVideoId({required String videoId});

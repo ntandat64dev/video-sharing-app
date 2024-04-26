@@ -50,8 +50,16 @@ class VideoDetailProvider extends ChangeNotifier {
   }
 
   Future<void> followUser() async {
-    final follow = Follow.post(userId: video.userId, followerId: null);
-    await userRepository.follow(follow: follow);
+    if (follow != null) {
+      // Delete follow.
+      final result = await userRepository.unFollow(followId: follow!.id!);
+      if (result) _follow = null;
+    } else {
+      // Post follow.
+      final follow = Follow.post(userId: video.userId, followerId: null);
+      await userRepository.follow(follow: follow);
+    }
+
     await onFollowUpdated();
   }
 

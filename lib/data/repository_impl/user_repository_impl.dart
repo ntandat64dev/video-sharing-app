@@ -46,6 +46,9 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<bool> unFollow({required String followId}) => _api.deleteFollow(followId: followId);
+
+  @override
   void signOut() => _prefs.removeUser();
 
   @override

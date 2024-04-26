@@ -144,6 +144,16 @@ class ApiImpl implements Api {
   }
 
   @override
+  Future<bool> deleteFollow({required String followId}) async {
+    try {
+      final response = await http.delete(Uri.http(_baseUrl, '/api/v1/users/follows', {'id': followId}));
+      return response.statusCode == 204;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
   Future<List<String>> getVideoCategories({required String userId}) async {
     try {
       var response = await http.get(Uri.http(_baseUrl, '/api/v1/users/video-categories', {'userId': userId}));
