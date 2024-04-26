@@ -72,7 +72,7 @@ class ApiImpl implements Api {
   }
 
   @override
-  Future<bool> postVideoRating({required String videoId, required String userId, required String rating}) async {
+  Future<VideoRating> postVideoRating({required String videoId, required String userId, required String rating}) async {
     try {
       var response = await http.post(
           Uri.http(_baseUrl, '/api/v1/videos/rate', {
@@ -81,9 +81,9 @@ class ApiImpl implements Api {
             'rating': rating.toLowerCase(),
           }),
           headers: {'Content-Type': 'application/json'});
-      return (response.statusCode == 204);
+      return VideoRating.fromJson(jsonDecode(response.body));
     } catch (e) {
-      return false;
+      rethrow;
     }
   }
 
@@ -179,17 +179,6 @@ class ApiImpl implements Api {
       return Comment.fromJson(jsonDecode(response.body));
     } catch (e) {
       rethrow;
-    }
-  }
-
-  @override
-  Future<Comment?> getTopLevelComment({required String videoId}) async {
-    try {
-      var response = await http.get(Uri.http(_baseUrl, '/api/v1/comments/top-level', {'videoId': videoId}));
-      if (response.statusCode != 200) return null;
-      return Comment.fromJson(jsonDecode(response.body));
-    } catch (e) {
-      return null;
     }
   }
 

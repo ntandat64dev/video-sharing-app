@@ -1,7 +1,7 @@
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 
 class User {
-  const User({
+  User({
     required this.id,
     required this.email,
     required this.dateOfBirth,
@@ -18,20 +18,20 @@ class User {
     required this.videoCount,
   });
 
-  final String id;
-  final String email;
-  final DateTime? dateOfBirth;
-  final String? phoneNumber;
-  final int? gender;
-  final String? country;
-  final String username;
-  final String? bio;
-  final DateTime publishedAt;
-  final Map<String, Thumbnail> thumbnails;
-  final BigInt? viewCount;
-  final BigInt? followerCount;
-  final BigInt? followingCount;
-  final BigInt? videoCount;
+  String id;
+  String email;
+  DateTime? dateOfBirth;
+  String? phoneNumber;
+  int? gender;
+  String? country;
+  String username;
+  String? bio;
+  DateTime publishedAt;
+  Map<String, Thumbnail> thumbnails;
+  BigInt? viewCount;
+  BigInt? followerCount;
+  BigInt? followingCount;
+  BigInt? videoCount;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
       id: json['id'],

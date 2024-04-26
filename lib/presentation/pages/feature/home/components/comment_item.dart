@@ -3,17 +3,15 @@ import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CommentItem extends StatefulWidget {
-  const CommentItem({super.key, required this.comment});
+  const CommentItem({super.key, required Comment comment}) : _comment = comment;
 
-  final Comment comment;
+  final Comment _comment;
 
   @override
   State<CommentItem> createState() => _CommentItemState();
 }
 
 class _CommentItemState extends State<CommentItem> {
-  get label => null;
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -36,16 +34,16 @@ class _CommentItemState extends State<CommentItem> {
                         child: Row(
                           children: [
                             CircleAvatar(
-                              backgroundImage: NetworkImage(widget.comment.authorProfileImageUrl!),
+                              backgroundImage: NetworkImage(widget._comment.authorProfileImageUrl!),
                               radius: 16.0,
                             ),
                             const SizedBox(width: 8.0),
                             Text(
-                              widget.comment.authorDisplayName!,
+                              widget._comment.authorDisplayName!,
                               style: const TextStyle(fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(width: 8.0),
-                            Text(timeago.format(widget.comment.publishedAt!)),
+                            Text(timeago.format(widget._comment.publishedAt!)),
                           ],
                         ),
                       ),
@@ -63,7 +61,7 @@ class _CommentItemState extends State<CommentItem> {
                   const SizedBox(height: 8.0),
                   // Content
                   Text(
-                    widget.comment.text!,
+                    widget._comment.text!,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -77,19 +75,19 @@ class _CommentItemState extends State<CommentItem> {
                         TextButton.icon(
                           onPressed: () {},
                           icon: const Icon(Icons.thumb_up_alt_outlined, size: 16.0),
-                          label: Text(widget.comment.likeCount.toString()),
+                          label: Text(widget._comment.likeCount.toString()),
                           style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant),
                         ),
                         TextButton.icon(
                           onPressed: () {},
                           icon: const Icon(Icons.thumb_down_alt_outlined, size: 16.0),
-                          label: Text(widget.comment.likeCount.toString()),
+                          label: Text(widget._comment.likeCount.toString()),
                           style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant),
                         ),
                         TextButton.icon(
                           onPressed: () {},
                           icon: const Icon(Icons.comment_outlined, size: 16.0),
-                          label: Text(widget.comment.likeCount.toString()),
+                          label: Text(widget._comment.likeCount.toString()),
                           style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant),
                         ),
                       ],
@@ -100,17 +98,20 @@ class _CommentItemState extends State<CommentItem> {
             ),
           ),
           // Replies (if any)
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(2.0),
-              onTap: () {},
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('148 replies', style: TextStyle(color: Colors.blue.shade800, fontWeight: FontWeight.w500)),
-              ),
-            ),
-          )
+          widget._comment.replyCount!.toInt() > 0
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(2.0),
+                    onTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('${widget._comment.replyCount} replies',
+                          style: TextStyle(color: Colors.blue.shade800, fontWeight: FontWeight.w500)),
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink()
         ],
       ),
     );

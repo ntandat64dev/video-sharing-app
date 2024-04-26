@@ -75,13 +75,6 @@ void main() {
     expect(comments.length, 3);
   });
 
-  test('Get top level comment', () async {
-    final Api api = ApiImpl.forTest();
-    final comment = await api.getTopLevelComment(videoId: videoId);
-    expect(comment != null, true);
-    expect(comment!.text, 'Good video');
-  });
-
   // test('Post comment', () async {
   //   final Api api = ApiImpl.forTest();
   //   final comment = await api.postComment(

@@ -13,7 +13,7 @@ abstract class Api {
 
   Future<VideoRating> getVideoRating({required String videoId, required String userId});
 
-  Future<bool> postVideoRating({required String videoId, required String userId, required String rating});
+  Future<VideoRating> postVideoRating({required String videoId, required String userId, required String rating});
 
   Future<List<Video>> getRelatedVideos({required String videoId, required String userId});
 
@@ -28,8 +28,6 @@ abstract class Api {
   Future<List<Comment>> getCommentsByVideoId({required String videoId});
 
   Future<Comment> postComment({required Comment comment});
-
-  Future<Comment?> getTopLevelComment({required String videoId});
 
   Future<User?> signUp({required String email, required String password});
 

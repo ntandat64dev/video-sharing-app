@@ -4,6 +4,9 @@ import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+const videoThumbnailHeight = 220.0;
 
 class VideoCard extends StatefulWidget {
   const VideoCard({super.key, required this.video});
@@ -15,8 +18,6 @@ class VideoCard extends StatefulWidget {
 }
 
 class _VideoCardState extends State<VideoCard> {
-  static const videoThumbnailHeight = 220.0;
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -38,14 +39,15 @@ class _VideoCardState extends State<VideoCard> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
-              child: FadeInImage.assetNetwork(
-                  fadeInDuration: const Duration(milliseconds: 300),
-                  fadeOutDuration: const Duration(milliseconds: 1),
-                  height: videoThumbnailHeight,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: Asset.placeholder,
-                  image: widget.video.thumbnails![Thumbnail.kDefault]!.url),
+              child: CachedNetworkImage(
+                imageUrl: widget.video.thumbnails![Thumbnail.kDefault]!.url,
+                fadeInDuration: const Duration(milliseconds: 300),
+                fadeOutDuration: const Duration(milliseconds: 1),
+                height: videoThumbnailHeight,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Image.asset(Asset.placeholder),
+              ),
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +60,7 @@ class _VideoCardState extends State<VideoCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CircleAvatar(
-                            backgroundImage: NetworkImage(widget.video.username!),
+                            backgroundImage: NetworkImage(widget.video.userImageUrl!),
                             radius: 22.0,
                           ),
                           const SizedBox(width: 12.0),

@@ -1,17 +1,17 @@
 enum Rating { like, dislike, none }
 
 class VideoRating {
-  const VideoRating({
+  VideoRating({
     required this.videoId,
     required this.userId,
     required this.rating,
     required this.publishedAt,
   });
 
-  final String videoId;
-  final String userId;
-  final Rating rating;
-  final DateTime? publishedAt;
+  String videoId;
+  String userId;
+  Rating rating;
+  DateTime? publishedAt;
 
   factory VideoRating.fromJson(Map<String, dynamic> json) => VideoRating(
         videoId: json['videoId'],
