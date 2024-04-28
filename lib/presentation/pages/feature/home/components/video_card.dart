@@ -6,8 +6,6 @@ import 'package:video_sharing_app/presentation/pages/feature/home/video_player_p
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-const videoThumbnailHeight = 220.0;
-
 class VideoCard extends StatefulWidget {
   const VideoCard({super.key, required this.video});
 
@@ -43,12 +41,12 @@ class _VideoCardState extends State<VideoCard> {
                 imageUrl: widget.video.thumbnails![Thumbnail.kDefault]!.url,
                 fadeInDuration: const Duration(milliseconds: 300),
                 fadeOutDuration: const Duration(milliseconds: 1),
-                height: videoThumbnailHeight,
+                height: videoPlayerRatio,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Image.asset(
                   Asset.placeholder,
-                  height: videoThumbnailHeight,
+                  height: videoPlayerRatio,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),

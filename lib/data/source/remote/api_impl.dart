@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:video_sharing_app/data/source/remote/api.dart';
+import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
@@ -41,6 +42,7 @@ class ApiImpl implements Api {
       request.files.add(metadata);
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
+      if (response.statusCode != 201) throw Exception(response.body);
       return Video.fromJson(jsonDecode(response.body));
     } catch (e) {
       rethrow;
@@ -189,6 +191,17 @@ class ApiImpl implements Api {
       return Comment.fromJson(jsonDecode(response.body));
     } catch (e) {
       rethrow;
+    }
+  }
+
+  @override
+  Future<List<Category>> getAllCategories() async {
+    try {
+      final response = await http.get(Uri.http(_baseUrl, '/api/v1/categories'));
+      if (response.statusCode != 200) return [];
+      return List<Category>.from((jsonDecode(response.body) as List).map((e) => Category.fromJson(e)));
+    } catch (e) {
+      return [];
     }
   }
 

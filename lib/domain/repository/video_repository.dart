@@ -1,3 +1,4 @@
+import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
 
@@ -15,4 +16,6 @@ abstract class VideoRepository {
   Future<List<Video>> getRelatedVideos({required String videoId});
 
   Future<List<String>> getVideoCategories();
+
+  Future<List<Category>> getAllCategories();
 }

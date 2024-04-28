@@ -1,3 +1,4 @@
+import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 
 class Video {
@@ -14,6 +15,7 @@ class Video {
     required this.hashtags,
     required this.duration,
     required this.location,
+    required this.category,
     required this.privacy,
     required this.madeForKids,
     required this.ageRestricted,
@@ -25,12 +27,13 @@ class Video {
     required this.downloadCount,
   });
 
-  Video.upload({
-    required this.publishedAt,
+  Video.post({
+    required this.userId,
     required this.title,
     required this.description,
     required this.hashtags,
     required this.location,
+    required this.category,
     required this.privacy,
     required this.madeForKids,
     required this.ageRestricted,
@@ -49,6 +52,7 @@ class Video {
   List<String>? hashtags;
   String? duration;
   String? location;
+  Category? category;
   String? privacy;
   bool? madeForKids;
   bool? ageRestricted;
@@ -73,6 +77,7 @@ class Video {
         hashtags: (json['snippet']['hashtags'] as List<dynamic>).map<String>((e) => e.toString()).toList(),
         duration: json['snippet']['duration'],
         location: json['snippet']['location'],
+        category: Category.fromJson(json['snippet']['category']),
         privacy: json['status']['privacy'],
         madeForKids: json['status']['madeForKids'],
         ageRestricted: json['status']['ageRestricted'],
@@ -98,6 +103,7 @@ class Video {
           'hashtags': hashtags,
           'duration': duration,
           'location': location,
+          'category': category?.toJson(),
         },
         'status': {
           'privacy': privacy,

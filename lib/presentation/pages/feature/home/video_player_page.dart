@@ -314,7 +314,7 @@ class _VideoDetailState extends State<VideoDetail> {
                       builder: (context) => CommentDetail(
                         video: video,
                         globalKey: widget._globalKey,
-                        onSentComment: value.onSentComment,
+                        sendComment: value.sendComment,
                       ),
                     );
                   },
@@ -357,17 +357,11 @@ class _VideoDetailState extends State<VideoDetail> {
                             ? IconButton(
                                 onPressed: () async {
                                   // Sent comment
-                                  final comment = Comment.post(
-                                    videoId: video.id!,
-                                    authorId: null,
-                                    text: commentController.text,
-                                  );
-                                  await commentRepository.postComment(comment: comment);
+                                  await value.sendComment(commentController.text);
                                   setState(() {
                                     FocusScope.of(context).requestFocus(FocusNode());
                                     commentController.text = '';
                                   });
-                                  value.onSentComment();
                                 },
                                 icon: const Icon(Icons.send),
                                 color: Theme.of(context).colorScheme.primary)
@@ -643,14 +637,14 @@ class CommentDetail extends StatefulWidget {
     super.key,
     required Video video,
     required GlobalKey globalKey,
-    required VoidCallback onSentComment,
-  })  : _onSentComment = onSentComment,
+    required Future<void> Function(String) sendComment,
+  })  : _sendComment = sendComment,
         _globalKey = globalKey,
         _video = video;
 
   final Video _video;
   final GlobalKey _globalKey;
-  final VoidCallback _onSentComment;
+  final Future<void> Function(String) _sendComment;
 
   @override
   State<CommentDetail> createState() => _CommentDetailState();
@@ -745,17 +739,11 @@ class _CommentDetailState extends State<CommentDetail> {
                         ? IconButton(
                             onPressed: () async {
                               // Sent comment
-                              final comment = Comment.post(
-                                videoId: widget._video.id!,
-                                authorId: null,
-                                text: commentController.text,
-                              );
-                              await commentRepository.postComment(comment: comment);
+                              await widget._sendComment(commentController.text);
                               setState(() {
                                 FocusScope.of(context).requestFocus(FocusNode());
                                 commentController.text = '';
                               });
-                              widget._onSentComment.call();
                             },
                             icon: const Icon(Icons.send),
                             color: Theme.of(context).colorScheme.primary)
@@ -838,9 +826,9 @@ class MyVideoPlayer extends StatefulWidget {
   State<MyVideoPlayer> createState() => _MyVideoPlayerState();
 }
 
-class _MyVideoPlayerState extends State<MyVideoPlayer> {
-  static const videoPlayerRatio = 230.0;
+const videoPlayerRatio = 230.0;
 
+class _MyVideoPlayerState extends State<MyVideoPlayer> {
   final VideoRepository videoRepository = VideoRepositoryImpl();
 
   late VideoPlayerController _videoController;
@@ -914,7 +902,7 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Image.asset(
                   Asset.placeholder,
-                  height: videoThumbnailHeight,
+                  height: videoPlayerRatio,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),

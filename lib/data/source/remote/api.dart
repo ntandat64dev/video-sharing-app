@@ -1,3 +1,4 @@
+import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
@@ -30,6 +31,8 @@ abstract class Api {
   Future<List<Comment>> getCommentsByVideoId({required String videoId});
 
   Future<Comment> postComment({required Comment comment});
+
+  Future<List<Category>> getAllCategories();
 
   Future<User?> signUp({required String email, required String password});
 
