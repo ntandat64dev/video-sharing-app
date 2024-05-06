@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
-import 'package:video_sharing_app/domain/repository/user_repository.dart';
+import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
+import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/presentation/pages/auth/auth_methods_page.dart';
 import 'package:video_sharing_app/presentation/route_provider.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
@@ -14,7 +14,7 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin {
-  final UserRepository _userRepository = UserRepositoryImpl();
+  final AuthRepository _authRepository = AuthRepositoryImpl();
   late PageController _pageViewController;
   late TabController _tabController;
   var _currentPageIndex = 0;
@@ -124,7 +124,8 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
               child: ElevatedButton(
                 onPressed: next,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-                child: Text(_currentPageIndex == 2 ? 'Get Started' : 'Next', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                child: Text(_currentPageIndex == 2 ? 'Get Started' : 'Next',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
               ),
             ),
           ),
@@ -136,13 +137,14 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
 
   void next() async {
     if (_currentPageIndex == 2) {
-      _userRepository.markFirstLaunch();
+      _authRepository.markFirstLaunch();
       if (context.mounted) {
         Provider.of<RouteProvider>(context, listen: false).route = const AuthMethodsPage();
       }
     } else {
       _currentPageIndex++;
-      _pageViewController.animateToPage(_currentPageIndex, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _pageViewController.animateToPage(_currentPageIndex,
+          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
       _tabController.animateTo(_currentPageIndex);
       setState(() {});
     }

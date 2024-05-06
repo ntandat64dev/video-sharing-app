@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
-import 'package:video_sharing_app/domain/repository/user_repository.dart';
+import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
+import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/presentation/pages/auth/sign_up_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/main_page.dart';
 import 'package:video_sharing_app/presentation/route_provider.dart';
@@ -15,8 +15,9 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final UserRepository _userRepository = UserRepositoryImpl();
-  final _emailController = TextEditingController();
+  final AuthRepository _authRepository = AuthRepositoryImpl();
+  
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
 
@@ -49,14 +50,14 @@ class _SignInPageState extends State<SignInPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
-                  controller: _emailController,
+                  controller: _usernameController,
                   cursorColor: Theme.of(context).colorScheme.primary,
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelText: 'Email',
+                    labelText: 'Username',
                     fillColor: Theme.of(context).colorScheme.onInverseSurface,
                     filled: true,
-                    prefixIcon: const Icon(Icons.email),
+                    prefixIcon: const Icon(Icons.person),
                     prefixIconColor: Theme.of(context).colorScheme.onSurface.withAlpha(120),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16.0),
@@ -211,7 +212,7 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void signIn(context) async {
-    bool result = await _userRepository.signIn(email: _emailController.text, password: _passwordController.text);
+    bool result = await _authRepository.signIn(username: _usernameController.text, password: _passwordController.text);
     if (result == true && context.mounted) {
       Navigator.popUntil(context, (route) => route.isFirst);
       Provider.of<RouteProvider>(context, listen: false).route = const MainPage();

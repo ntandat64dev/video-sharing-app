@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
-import 'package:video_sharing_app/domain/repository/user_repository.dart';
+import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
+import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/presentation/pages/auth/sign_in_page.dart';
-import 'package:video_sharing_app/presentation/pages/feature/main_page.dart';
-import 'package:video_sharing_app/presentation/route_provider.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -15,15 +12,16 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final UserRepository _userRepository = UserRepositoryImpl();
-  final _emailController = TextEditingController();
+  final AuthRepository _authRepository = AuthRepositoryImpl();
+
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isRememberMe = false;
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -46,20 +44,21 @@ class _SignUpPageState extends State<SignUpPage> {
               Image.asset(Asset.youtubeLogo, width: 128),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text('Create Your Account', style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold)),
+                child: Text('Create Your Account',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 16.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
-                  controller: _emailController,
+                  controller: _usernameController,
                   cursorColor: Colors.white54,
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelText: 'Email',
+                    labelText: 'Username',
                     fillColor: Colors.white10,
                     filled: true,
-                    prefixIcon: const Icon(Icons.email),
+                    prefixIcon: const Icon(Icons.person),
                     prefixIconColor: Colors.white54,
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16.0),
@@ -152,15 +151,22 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text('Forgot the password?', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 15.0)),
+                child: Text('Forgot the password?',
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 15.0)),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                 child: Row(
                   children: [
-                    Expanded(child: Divider(thickness: 1.5, endIndent: 12.0, color: Theme.of(context).colorScheme.outline.withAlpha(30))),
+                    Expanded(
+                        child: Divider(
+                            thickness: 1.5,
+                            endIndent: 12.0,
+                            color: Theme.of(context).colorScheme.outline.withAlpha(30))),
                     const Text('or continue with'),
-                    Expanded(child: Divider(thickness: 1.5, indent: 12.0, color: Theme.of(context).colorScheme.outline.withAlpha(30))),
+                    Expanded(
+                        child: Divider(
+                            thickness: 1.5, indent: 12.0, color: Theme.of(context).colorScheme.outline.withAlpha(30))),
                   ],
                 ),
               ),
@@ -239,10 +245,13 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void onSignUp(context) async {
     if (_passwordController.text != _confirmPasswordController.text) return;
-    bool result = await _userRepository.signUp(email: _emailController.text, password: _passwordController.text);
+    bool result = await _authRepository.signUp(username: _usernameController.text, password: _passwordController.text);
     if (result == true && context.mounted) {
-      Navigator.popUntil(context, (route) => route.isFirst);
-      Provider.of<RouteProvider>(context, listen: false).route = const MainPage();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const SignInPage()),
+        (route) => route.isFirst,
+      );
     }
   }
 }

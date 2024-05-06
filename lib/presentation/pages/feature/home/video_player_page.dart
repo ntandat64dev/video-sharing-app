@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_player/video_player.dart';
 import 'package:video_sharing_app/data/repository_impl/comment_repository_impl.dart';
+import 'package:video_sharing_app/data/repository_impl/follow_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
@@ -15,6 +16,7 @@ import 'package:video_sharing_app/domain/entity/user.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
 import 'package:video_sharing_app/domain/repository/comment_repository.dart';
+import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/components/comment_item.dart';
@@ -67,7 +69,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                       ),
                       // Related videos
                       FutureBuilder(
-                        future: videoRepository.getRelatedVideos(videoId: widget._video.id!),
+                        future: videoRepository.getRelatedVideos(widget._video.id!),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) return const SizedBox.shrink();
                           final relatedVideos = snapshot.data!;
@@ -123,13 +125,13 @@ class _VideoDetailState extends State<VideoDetail> {
       create: (context) => VideoDetailProvider(widget._video),
       builder: (context, child) {
         return Consumer<VideoDetailProvider>(
-          builder: (context, value, child) {
-            if (!value.isDetailLoaded) return const SizedBox.shrink();
+          builder: (context, provider, child) {
+            if (!provider.isDetailLoaded) return const SizedBox.shrink();
 
-            final video = value.video;
-            final videoRating = value.videoRating;
-            final follow = value.follow;
-            final user = value.user;
+            final video = provider.video;
+            final videoRating = provider.videoRating;
+            final follow = provider.follow;
+            final user = provider.user;
 
             return Column(
               children: [
@@ -142,7 +144,7 @@ class _VideoDetailState extends State<VideoDetail> {
                       context: context,
                       constraints: const BoxConstraints(maxWidth: double.infinity),
                       builder: (context) => VideoDescription(
-                        videoDetailProvider: value,
+                        videoDetailProvider: provider,
                         video: video,
                         globalKey: widget._globalKey,
                       ),
@@ -184,9 +186,7 @@ class _VideoDetailState extends State<VideoDetail> {
                   child: Row(
                     children: [
                       ElevatedButton.icon(
-                        onPressed: () {
-                          Provider.of<VideoDetailProvider>(context, listen: false).rateVideo(Rating.like);
-                        },
+                        onPressed: () => provider.rateVideo(Rating.like),
                         icon: Icon(
                           Icons.thumb_up,
                           color: videoRating.rating == Rating.like ? Colors.red : Theme.of(context).colorScheme.primary,
@@ -201,9 +201,7 @@ class _VideoDetailState extends State<VideoDetail> {
                       ),
                       const SizedBox(width: 8.0),
                       ElevatedButton.icon(
-                        onPressed: () {
-                          Provider.of<VideoDetailProvider>(context, listen: false).rateVideo(Rating.dislike);
-                        },
+                        onPressed: () => provider.rateVideo(Rating.dislike),
                         icon: Icon(
                           Icons.thumb_down,
                           color:
@@ -281,9 +279,7 @@ class _VideoDetailState extends State<VideoDetail> {
                             ],
                           ),
                           ElevatedButton(
-                            onPressed: () {
-                              Provider.of<VideoDetailProvider>(context, listen: false).followUser();
-                            },
+                            onPressed: () => provider.followUser(),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Theme.of(context).colorScheme.primary,
                               foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -314,7 +310,7 @@ class _VideoDetailState extends State<VideoDetail> {
                       builder: (context) => CommentDetail(
                         video: video,
                         globalKey: widget._globalKey,
-                        sendComment: value.sendComment,
+                        sendComment: provider.sendComment,
                       ),
                     );
                   },
@@ -357,7 +353,7 @@ class _VideoDetailState extends State<VideoDetail> {
                             ? IconButton(
                                 onPressed: () async {
                                   // Sent comment
-                                  await value.sendComment(commentController.text);
+                                  await provider.sendComment(commentController.text);
                                   setState(() {
                                     FocusScope.of(context).requestFocus(FocusNode());
                                     commentController.text = '';
@@ -412,6 +408,7 @@ class VideoDescription extends StatefulWidget {
 class _VideoDescriptionState extends State<VideoDescription> {
   final VideoRepository videoRepository = VideoRepositoryImpl();
   final UserRepository userRepository = UserRepositoryImpl();
+  final FollowRepository followRepository = FollowRepositoryImpl();
 
   @override
   Widget build(BuildContext context) {
@@ -424,7 +421,7 @@ class _VideoDescriptionState extends State<VideoDescription> {
 
     return FutureBuilder(
       future: Future.wait([
-        userRepository.getFollowFor(userId: video.userId!),
+        followRepository.getFollowFor(video.userId!),
         userRepository.getUserInfo(userId: video.userId!),
       ]),
       builder: (context, snapshot) {
@@ -772,7 +769,7 @@ class _CommentDetailState extends State<CommentDetail> {
             ),
             Expanded(
               child: FutureBuilder(
-                future: commentRepository.getCommentsByVideoId(videoId: widget._video.id!),
+                future: commentRepository.getCommentsByVideoId(widget._video.id!),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     if (snapshot.data!.isNotEmpty) {

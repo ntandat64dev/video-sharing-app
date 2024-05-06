@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/home_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/notifications/notifications_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/profile/profile_page.dart';
-import 'package:video_sharing_app/presentation/pages/feature/shorts/shorts_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/following/shorts_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -23,14 +23,14 @@ class _MainPageState extends State<MainPage> {
         surfaceTintColor: Theme.of(context).colorScheme.surface,
         destinations: const [
           NavigationDestination(label: 'Home', icon: Icon(Icons.home)),
-          NavigationDestination(label: 'Shorts', icon: Icon(Icons.videocam)),
+          NavigationDestination(label: 'Following', icon: Icon(Icons.group)),
           NavigationDestination(label: 'Notifications', icon: Icon(Icons.notifications)),
           NavigationDestination(label: 'Profile', icon: Icon(Icons.person)),
         ],
       ),
       body: const <Widget>[
         HomePage(),
-        ShortsPage(),
+        FollowingPage(),
         NotificationsPage(),
         ProfilePage(),
       ][_currentNavIndex],

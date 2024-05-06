@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
-import 'package:video_sharing_app/domain/repository/user_repository.dart';
+import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
+import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/presentation/pages/auth/auth_methods_page.dart';
 import 'package:video_sharing_app/presentation/route_provider.dart';
 
@@ -13,7 +13,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final UserRepository userRepository = UserRepositoryImpl();
+  final AuthRepository _authRepository = AuthRepositoryImpl();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Center(
         child: ElevatedButton(
           onPressed: () {
-            userRepository.signOut();
+            _authRepository.signOut();
             if (context.mounted) {
               Provider.of<RouteProvider>(context, listen: false).route = const AuthMethodsPage();
             }

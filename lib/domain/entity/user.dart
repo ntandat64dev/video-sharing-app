@@ -12,6 +12,7 @@ class User {
     required this.bio,
     required this.publishedAt,
     required this.thumbnails,
+    required this.roles,
     required this.viewCount,
     required this.followerCount,
     required this.followingCount,
@@ -19,15 +20,16 @@ class User {
   });
 
   String id;
-  String email;
+  String username;
+  DateTime publishedAt;
+  String? email;
   DateTime? dateOfBirth;
   String? phoneNumber;
   int? gender;
   String? country;
-  String username;
   String? bio;
-  DateTime publishedAt;
   Map<String, Thumbnail> thumbnails;
+  List<String> roles;
   BigInt? viewCount;
   BigInt? followerCount;
   BigInt? followingCount;
@@ -45,6 +47,7 @@ class User {
       publishedAt: DateTime.parse(json['snippet']['publishedAt']),
       thumbnails: (json['snippet']['thumbnails'] as Map<String, dynamic>)
           .map((key, value) => MapEntry(key, Thumbnail.fromJson(value))),
+      roles: (json['snippet']['roles'] as List<dynamic>).map<String>((e) => e.toString()).toList(),
       viewCount: BigInt.from(json['statistic']['viewCount']),
       followerCount: BigInt.from(json['statistic']['followerCount']),
       followingCount: BigInt.from(json['statistic']['followingCount']),
@@ -62,6 +65,7 @@ class User {
           'bio': bio,
           'publishedAt': publishedAt.toIso8601String(),
           'thumbnails': thumbnails.map((key, value) => MapEntry(key, value.toJson())),
+          'roles': roles,
         },
         'statistic': {
           'viewCount': viewCount?.toInt(),

@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: FutureBuilder<List<Video>>(
-        future: videoRepository.getVideosByAllCategories(),
+        future: videoRepository.getVideosByCategoryAll(),
         builder: (conatext, snapshot) {
           if (snapshot.hasData) {
             final videos = snapshot.data!;
