@@ -25,7 +25,8 @@ class UploadProvider extends ChangeNotifier {
 
   Future<void> uploadVideo() async {
     _validateVideo();
-    await _videoRepository.uploadVideo(videoPath: _videoPath, video: _video);
+    final result = await _videoRepository.uploadVideo(videoPath: _videoPath, video: _video);
+    if (result == null) throw Exception('Cannot upload video!');
   }
 
   void updateVideoDetails(Function(Video video) onUpdate) {

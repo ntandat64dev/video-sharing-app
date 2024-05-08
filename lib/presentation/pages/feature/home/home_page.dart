@@ -4,7 +4,7 @@ import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dar
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/components/video_card.dart';
-import 'package:video_sharing_app/presentation/pages/feature/upload/upload_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/upload/video_editor.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -90,10 +90,10 @@ class _HomePageState extends State<HomePage> {
       allowMultiple: false,
     );
     if (results != null && results.count > 0) {
-      var videoPath = results.paths.first;
+      var videoPath = results.paths.single;
       if (videoPath == null) return;
       if (context.mounted) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => UploadPage(videoPath: videoPath)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => VideoEditor(videoPath: videoPath)));
       }
     }
   }

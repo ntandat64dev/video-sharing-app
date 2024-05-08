@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
@@ -26,6 +27,7 @@ class UploadPage extends StatefulWidget {
 
 class _UploadPageState extends State<UploadPage> {
   late VideoPlayerController videoPlayerController;
+  final audioPlayer = AudioPlayer();
 
   bool initVideoPlayer = false;
   bool processingVideo = false;
@@ -35,6 +37,18 @@ class _UploadPageState extends State<UploadPage> {
     super.initState();
     videoPlayerController = VideoPlayerController.file(File(widget._videoPath))
       ..initialize().then((value) => setState(() => initVideoPlayer = true));
+
+    // Play background music.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await audioPlayer.setAsset('assets/media/motivate.mp3');
+      await audioPlayer.play();
+    });
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
   }
 
   @override
@@ -303,7 +317,7 @@ class _UploadPageState extends State<UploadPage> {
                                           try {
                                             setState(() => processingVideo = true);
                                             await provider.uploadVideo();
-                                            setState(() => Navigator.pop(context));
+                                            if (context.mounted) Navigator.popUntil(context, (route) => route.isFirst);
                                           } on Exception catch (e) {
                                             if (context.mounted) {
                                               ScaffoldMessenger.of(context)
