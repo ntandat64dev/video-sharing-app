@@ -42,8 +42,8 @@ class AuthRepositoryImpl implements AuthRepository {
   void signOut() => _prefs.clearUser();
 
   @override
-  bool isFirstLaunch() => _prefs.isFirstLaunched;
+  bool isFirstLaunched() => _prefs.isFirstLaunched;
 
   @override
-  void markFirstLaunch() => _prefs.isFirstLaunched = true;
+  void markFirstLaunched() => _prefs.isFirstLaunched = true;
 }

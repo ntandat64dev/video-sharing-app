@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/auth/sign_up_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/main_page.dart';
 import 'package:video_sharing_app/presentation/route_provider.dart';
@@ -16,7 +17,7 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final AuthRepository _authRepository = AuthRepositoryImpl();
-  
+
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
@@ -28,13 +29,7 @@ class _SignInPageState extends State<SignInPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              AppBar(
-                surfaceTintColor: Colors.transparent,
-                leading: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back),
-                ),
-              ),
+              AppBar(leading: appBarBackButton(context)),
               Image.asset(Asset.youtubeLogo, width: 128),
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -126,15 +121,22 @@ class _SignInPageState extends State<SignInPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text('Forgot the password?', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 15.0)),
+                child: Text('Forgot the password?',
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 15.0)),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                 child: Row(
                   children: [
-                    Expanded(child: Divider(thickness: 1.5, endIndent: 12.0, color: Theme.of(context).colorScheme.outline.withAlpha(30))),
+                    Expanded(
+                        child: Divider(
+                            thickness: 1.5,
+                            endIndent: 12.0,
+                            color: Theme.of(context).colorScheme.outline.withAlpha(30))),
                     const Text('or continue with'),
-                    Expanded(child: Divider(thickness: 1.5, indent: 12.0, color: Theme.of(context).colorScheme.outline.withAlpha(30))),
+                    Expanded(
+                        child: Divider(
+                            thickness: 1.5, indent: 12.0, color: Theme.of(context).colorScheme.outline.withAlpha(30))),
                   ],
                 ),
               ),

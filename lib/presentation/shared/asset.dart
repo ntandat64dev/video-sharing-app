@@ -1,7 +1,6 @@
 class Asset {
   // Gifs
   static const String _gif = 'assets/gifs';
-
   static const String placeholder = '$_gif/placeholder.gif';
 
   // Images
@@ -14,4 +13,8 @@ class Asset {
   static const String illustration2 = '$_img/illustration_2.png';
   static const String illustration3 = '$_img/illustration_3.png';
   static const String illustration4 = '$_img/illustration_4.png';
+
+  // Audios
+  static const String _audio = 'assets/audios';
+  static const String motivate = '$_audio/motivate.mp3';
 }

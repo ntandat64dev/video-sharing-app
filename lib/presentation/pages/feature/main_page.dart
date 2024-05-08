@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/home_page.dart';
-import 'package:video_sharing_app/presentation/pages/feature/notifications/notifications_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/library/library_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/profile/profile_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/following/shorts_page.dart';
 
@@ -24,14 +24,14 @@ class _MainPageState extends State<MainPage> {
         destinations: const [
           NavigationDestination(label: 'Home', icon: Icon(Icons.home)),
           NavigationDestination(label: 'Following', icon: Icon(Icons.group)),
-          NavigationDestination(label: 'Notifications', icon: Icon(Icons.notifications)),
+          NavigationDestination(label: 'Library', icon: Icon(Icons.my_library_books)),
           NavigationDestination(label: 'Profile', icon: Icon(Icons.person)),
         ],
       ),
       body: const <Widget>[
         HomePage(),
         FollowingPage(),
-        NotificationsPage(),
+        LibraryPage(),
         ProfilePage(),
       ][_currentNavIndex],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/auth/sign_in_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
@@ -35,11 +36,7 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             children: [
               AppBar(
-                surfaceTintColor: Colors.transparent,
-                leading: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back),
-                ),
+                leading: appBarBackButton(context),
               ),
               Image.asset(Asset.youtubeLogo, width: 128),
               Padding(

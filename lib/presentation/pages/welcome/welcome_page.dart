@@ -14,22 +14,22 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin {
-  final AuthRepository _authRepository = AuthRepositoryImpl();
-  late PageController _pageViewController;
-  late TabController _tabController;
-  var _currentPageIndex = 0;
+  final AuthRepository authRepository = AuthRepositoryImpl();
+  late PageController pageViewController;
+  late TabController tabController;
+  var currentPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageViewController = PageController(initialPage: _currentPageIndex);
-    _tabController = TabController(length: 3, vsync: this);
+    pageViewController = PageController(initialPage: currentPageIndex);
+    tabController = TabController(length: 3, vsync: this);
   }
 
   @override
   void dispose() {
-    _pageViewController.dispose();
-    _tabController.dispose();
+    pageViewController.dispose();
+    tabController.dispose();
     super.dispose();
   }
 
@@ -44,7 +44,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
           Expanded(
             child: PageView(
               physics: const NeverScrollableScrollPhysics(),
-              controller: _pageViewController,
+              controller: pageViewController,
               children: <Widget>[
                 Container(
                   color: backgroundColor,
@@ -110,7 +110,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
             ),
           ),
           TabPageSelector(
-            controller: _tabController,
+            controller: tabController,
             color: Theme.of(context).colorScheme.onBackground.withAlpha(75),
             borderStyle: BorderStyle.none,
             selectedColor: Colors.red,
@@ -124,7 +124,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
               child: ElevatedButton(
                 onPressed: next,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-                child: Text(_currentPageIndex == 2 ? 'Get Started' : 'Next',
+                child: Text(currentPageIndex == 2 ? 'Get Started' : 'Next',
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
               ),
             ),
@@ -136,16 +136,16 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
   }
 
   void next() async {
-    if (_currentPageIndex == 2) {
-      _authRepository.markFirstLaunch();
+    if (currentPageIndex == 2) {
+      authRepository.markFirstLaunched();
       if (context.mounted) {
         Provider.of<RouteProvider>(context, listen: false).route = const AuthMethodsPage();
       }
     } else {
-      _currentPageIndex++;
-      _pageViewController.animateToPage(_currentPageIndex,
+      currentPageIndex++;
+      pageViewController.animateToPage(currentPageIndex,
           duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-      _tabController.animateTo(_currentPageIndex);
+      tabController.animateTo(currentPageIndex);
       setState(() {});
     }
   }

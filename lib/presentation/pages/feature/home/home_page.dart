@@ -27,9 +27,8 @@ class _HomePageState extends State<HomePage> {
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  leading: const Icon(Icons.videocam),
-                  title: const Text('MeTube', style: TextStyle(fontWeight: FontWeight.w500)),
-                  titleSpacing: 0.0,
+                  leading: Icon(Icons.videocam, color: Theme.of(context).colorScheme.primary),
+                  title: const Text('MeTube'),
                   actions: [
                     IconButton(onPressed: () => onUploadClicked(context), icon: const Icon(Icons.add)),
                     IconButton(onPressed: () {}, icon: const Icon(Icons.search)),

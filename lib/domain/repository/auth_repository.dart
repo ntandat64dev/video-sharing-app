@@ -7,7 +7,7 @@ abstract class AuthRepository {
 
   void signOut();
 
-  bool isFirstLaunch();
+  bool isFirstLaunched();
 
-  void markFirstLaunch();
+  void markFirstLaunched();
 }

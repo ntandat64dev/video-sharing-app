@@ -9,6 +9,8 @@ abstract class VideoRepository {
 
   Future<List<Video>> getVideosByCategoryAll();
 
+  Future<List<Video>> getMyVideos();
+
   Future<VideoRating?> getVideoRating(String videoId);
 
   Future<VideoRating?> rateVideo({required String videoId, required Rating rating});

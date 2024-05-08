@@ -25,6 +25,7 @@ class AppRoot extends StatelessWidget {
         themeMode: Provider.of<ThemeProvider>(context).themeMode,
         home: Builder(
           builder: (context) {
+            // Adjust status bar color.
             SystemChrome.setSystemUIOverlayStyle(
               SystemUiOverlayStyle(
                 statusBarColor: Theme.of(context).colorScheme.surface,

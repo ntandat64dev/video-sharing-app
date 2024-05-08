@@ -12,7 +12,7 @@ class RouteProvider extends ChangeNotifier {
   RouteProvider() {
     _route = _authRepository.wasUserLoggedIn()
         ? const MainPage()
-        : _authRepository.isFirstLaunch()
+        : _authRepository.isFirstLaunched()
             ? const AuthMethodsPage()
             : const WelcomePage();
   }

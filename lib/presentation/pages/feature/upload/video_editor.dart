@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/upload_page.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
@@ -31,15 +32,8 @@ class _VideoEditorState extends State<VideoEditor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: const Text(
-          'Edit Video',
-          style: TextStyle(fontWeight: FontWeight.w500),
-        ),
+        leading: appBarBackButton(context),
+        title: const Text('Edit Video'),
         actions: [
           IconButton(
             onPressed: () async {

@@ -6,6 +6,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/add_description_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/add_location_page.dart';
@@ -14,6 +15,7 @@ import 'package:video_sharing_app/presentation/pages/feature/upload/provider/upl
 import 'package:video_sharing_app/presentation/pages/feature/upload/select_audience_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/select_category_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/set_privacy_page.dart';
+import 'package:video_sharing_app/presentation/shared/asset.dart';
 import 'package:video_sharing_app/presentation/shared/ext.dart';
 
 class UploadPage extends StatefulWidget {
@@ -40,7 +42,7 @@ class _UploadPageState extends State<UploadPage> {
 
     // Play background music.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await audioPlayer.setAsset('assets/media/motivate.mp3');
+      await audioPlayer.setAsset(Asset.motivate);
       await audioPlayer.play();
     });
   }
@@ -60,15 +62,8 @@ class _UploadPageState extends State<UploadPage> {
           builder: (context, provider, child) {
             return Scaffold(
               appBar: AppBar(
-                surfaceTintColor: Colors.transparent,
-                title: const Text(
-                  'Add Details',
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                leading: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back),
-                ),
+                title: const Text('Add Details'),
+                leading: appBarBackButton(context),
               ),
               body: LayoutBuilder(
                 builder: (context, constraints) {

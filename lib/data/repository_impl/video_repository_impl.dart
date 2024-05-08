@@ -45,6 +45,15 @@ class VideoRepositoryImpl implements VideoRepository {
   }
 
   @override
+  Future<List<Video>> getMyVideos() async {
+    try {
+      return await _videoApi.getMyVideos();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @override
   Future<VideoRating?> getVideoRating(String videoId) async {
     try {
       return await _videoApi.getVideoRating(videoId);

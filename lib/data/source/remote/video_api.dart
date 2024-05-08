@@ -12,6 +12,17 @@ class VideoApi {
 
   final String token;
 
+  Future<List<Video>> getMyVideos() async {
+    var response = await http.get(
+      Uri.http(baseURL, '/api/v1/videos/mine'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode != 200) {
+      throw Exception('getMyVideos() [${response.statusCode}] ${response.body}');
+    }
+    return jsonDecode(response.body).map<Video>((e) => Video.fromJson(e)).toList();
+  }
+
   Future<Video> getVideoById(String videoId) async {
     var response = await http.get(
       Uri.http(baseURL, '/api/v1/videos/$videoId'),
