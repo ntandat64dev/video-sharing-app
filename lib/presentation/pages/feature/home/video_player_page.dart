@@ -20,7 +20,7 @@ import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/components/comment_item.dart';
-import 'package:video_sharing_app/presentation/pages/feature/home/components/video_card.dart';
+import 'package:video_sharing_app/presentation/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/provider/video_detail_provider.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 

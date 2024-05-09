@@ -6,22 +6,17 @@ import 'package:video_sharing_app/presentation/pages/feature/home/video_player_p
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class VideoCard extends StatefulWidget {
+class VideoCard extends StatelessWidget {
   const VideoCard({super.key, required this.video});
 
   final Video video;
 
   @override
-  State<VideoCard> createState() => _VideoCardState();
-}
-
-class _VideoCardState extends State<VideoCard> {
-  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         final route = MaterialPageRoute(
-          builder: (context) => VideoPlayerPage(video: widget.video),
+          builder: (context) => VideoPlayerPage(video: video),
           settings: const RouteSettings(name: 'video_player_route'),
         );
         if (ModalRoute.of(context)?.settings.name == 'video_player_route') {
@@ -38,7 +33,7 @@ class _VideoCardState extends State<VideoCard> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
               child: CachedNetworkImage(
-                imageUrl: widget.video.thumbnails![Thumbnail.kDefault]!.url,
+                imageUrl: video.thumbnails![Thumbnail.kDefault]!.url,
                 fadeInDuration: const Duration(milliseconds: 300),
                 fadeOutDuration: const Duration(milliseconds: 1),
                 height: videoPlayerRatio,
@@ -63,7 +58,7 @@ class _VideoCardState extends State<VideoCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CircleAvatar(
-                            backgroundImage: NetworkImage(widget.video.userImageUrl!),
+                            backgroundImage: NetworkImage(video.userImageUrl!),
                             radius: 22.0,
                           ),
                           const SizedBox(width: 12.0),
@@ -76,7 +71,7 @@ class _VideoCardState extends State<VideoCard> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        widget.video.title!,
+                                        video.title!,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
@@ -87,7 +82,7 @@ class _VideoCardState extends State<VideoCard> {
                                       ),
                                       const SizedBox(height: 4.0),
                                       Text(
-                                        'BBC Learning  ∙  ${widget.video.viewCount} views  ∙  ${timeago.format(widget.video.publishedAt!)}',
+                                        'BBC Learning  ∙  ${video.viewCount} views  ∙  ${timeago.format(video.publishedAt!)}',
                                         style: TextStyle(
                                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           height: 1.25,

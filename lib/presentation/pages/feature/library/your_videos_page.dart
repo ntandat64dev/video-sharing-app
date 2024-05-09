@@ -5,6 +5,7 @@ import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
+import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/set_privacy_page.dart';
 
 class YourVideosPage extends StatefulWidget {
@@ -50,47 +51,11 @@ class _YourVideosPageState extends State<YourVideosPage> {
                         ),
                       ),
                       const SizedBox(width: 10.0),
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.circular(6.0),
-                        child: Ink(
-                          height: 36.0,
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                          child: const Center(child: Text('Videos')),
-                        ),
-                      ),
+                      FilterItem(onSelected: (value) {}, text: 'Videos', isActive: true),
                       const SizedBox(width: 10.0),
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.circular(6.0),
-                        child: Ink(
-                          height: 36.0,
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                          child: const Center(child: Text('Shorts')),
-                        ),
-                      ),
+                      FilterItem(onSelected: (value) {}, text: 'Shorts'),
                       const SizedBox(width: 10.0),
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.circular(6.0),
-                        child: Ink(
-                          height: 36.0,
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                          child: const Center(child: Text('Live')),
-                        ),
-                      ),
+                      FilterItem(onSelected: (value) {}, text: 'Live'),
                     ],
                   ),
                 ),

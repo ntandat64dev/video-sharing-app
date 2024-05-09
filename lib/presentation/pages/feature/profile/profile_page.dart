@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
@@ -23,7 +25,21 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Profile')),
+        appBar: AppBar(
+          title: const Text('Profile'),
+          leading: Icon(Icons.videocam, size: 32.0, color: Theme.of(context).colorScheme.primary),
+          titleSpacing: 0.0,
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Badge(
+                label: Text('2'),
+                child: Icon(Icons.notifications_rounded),
+              ),
+            ),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          ],
+        ),
         body: SizedBox(
           width: double.infinity,
           child: SingleChildScrollView(
@@ -33,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 24.0),
                 // Avatar
                 SizedBox(
-                  height: 180.0,
+                  height: 160.0,
                   child: FutureBuilder(
                     future: userRepository.getUserInfo(),
                     builder: (context, snapshot) {
@@ -76,6 +92,60 @@ class _ProfilePageState extends State<ProfilePage> {
                     },
                   ),
                 ),
+                // Premium
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: BorderRadius.circular(34.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2.0),
+                        borderRadius: BorderRadius.circular(34.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.workspace_premium,
+                            size: 64.0,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 10.0),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Join Premium!',
+                                  style: TextStyle(
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                const SizedBox(height: 6.0),
+                                const Text('Enjoy watching Full-HD videos without restrictions and ads'),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.primary)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Edit profile
+                profileListTile(onTap: () {}, title: 'Edit Profile', leading: const Icon(Icons.edit)),
+                // Dark mode
+                profileListTile(
+                  onTap: () {},
+                  title: 'Dark Mode',
+                  leading: const Icon(Icons.dark_mode),
+                  trailing: Switch(value: true, onChanged: (value) {}),
+                ),
+                // Settings
+                profileListTile(onTap: () {}, title: 'Settings', leading: const Icon(Icons.settings)),
                 // Logout
                 InkWell(
                   onTap: () {
@@ -85,7 +155,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     }
                   },
                   child: const ListTile(
-                    contentPadding: EdgeInsetsDirectional.symmetric(horizontal: 16.0),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                     leading: Icon(Icons.logout, color: Colors.red),
                     title: Text('Logout', style: TextStyle(color: Colors.red)),
                   ),
@@ -98,3 +168,19 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+Widget profileListTile({
+  required void Function() onTap,
+  required String title,
+  required Widget leading,
+  Widget? trailing,
+}) =>
+    InkWell(
+      onTap: onTap,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+        leading: leading,
+        trailing: trailing ?? const Icon(Icons.chevron_right),
+        title: Text(title),
+      ),
+    );

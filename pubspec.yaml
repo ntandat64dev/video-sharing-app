@@ -47,6 +47,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   just_audio: ^0.9.37
   video_trimmer: ^3.0.0
+  badges: ^3.1.2
 
 dev_dependencies:
   flutter_test:

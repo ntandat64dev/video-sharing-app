@@ -1,18 +1,18 @@
 import 'package:video_sharing_app/data/source/local/preferences_service.dart';
-import 'package:video_sharing_app/data/source/remote/follow_api.dart';
+import 'package:video_sharing_app/data/source/remote/fake/fake_follow_api.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
 import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 
 class FollowRepositoryImpl implements FollowRepository {
   final _prefs = PreferencesService.getInstance();
 
-  late final FollowApi _followApi;
+  late final FakeFollowApi _followApi;
 
   FollowRepositoryImpl() {
     final token = _prefs.getToken();
     if (token == null) throw Exception('Cannot instantiate FollowRepositoryImpl because token is null');
 
-    _followApi = FollowApi(token: token);
+    _followApi = FakeFollowApi();
   }
 
   @override

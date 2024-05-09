@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 ThemeData darkTheme = ThemeData(
+  scaffoldBackgroundColor: const Color(0xFF141218),
   appBarTheme: const AppBarTheme(
     surfaceTintColor: Colors.transparent,
-    titleTextStyle: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w500),
+    titleTextStyle: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w500, color: Color(0xFFE6E0E9)),
   ),
-  scaffoldBackgroundColor: const Color(0xFF141218),
   colorScheme: const ColorScheme.dark(
     primary: Color(0xFFD0BCFF),
     onPrimary: Color(0xFF381E72),
@@ -37,3 +37,5 @@ ThemeData darkTheme = ThemeData(
     onErrorContainer: Color(0xFFF9DEDC),
   ),
 );
+
+mixin labelStyle {}

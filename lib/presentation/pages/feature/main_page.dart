@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/home_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/library_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/profile/profile_page.dart';
-import 'package:video_sharing_app/presentation/pages/feature/following/shorts_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/following/following_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
