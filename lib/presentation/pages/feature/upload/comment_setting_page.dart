@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentSettingPage extends StatefulWidget {
   const CommentSettingPage({super.key, required bool commentAllowed}) : _commentAllowed = commentAllowed;
@@ -29,9 +30,9 @@ class _CommentSettingPageState extends State<CommentSettingPage> {
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text(
-          'Comment',
-          style: TextStyle(fontWeight: FontWeight.w500),
+        title:  Text(
+          AppLocalizations.of(context)!.comment,
+          style: const TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
       body: LayoutBuilder(
@@ -45,11 +46,11 @@ class _CommentSettingPageState extends State<CommentSettingPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
+                       Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'Choose whether viewer can comment on your video',
-                          style: TextStyle(
+                          AppLocalizations.of(context)!.chooseCommentType,
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.w500,
                           ),
@@ -59,13 +60,13 @@ class _CommentSettingPageState extends State<CommentSettingPage> {
                         value: CommentAllowed.yes,
                         groupValue: commentAllowed,
                         onChanged: (CommentAllowed? value) => setState(() => commentAllowed = value),
-                        title: const Text('Allow all comments'),
+                        title:  Text(AppLocalizations.of(context)!.commentAllow),
                       ),
                       RadioListTile<CommentAllowed>(
                         value: CommentAllowed.no,
                         groupValue: commentAllowed,
                         onChanged: (CommentAllowed? value) => setState(() => commentAllowed = value),
-                        title: const Text('Disable comments'),
+                        title:  Text(AppLocalizations.of(context)!.commentDisallow),
                       ),
                     ],
                   ),
@@ -83,7 +84,7 @@ class _CommentSettingPageState extends State<CommentSettingPage> {
                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child: const Text('Apply'),
+                        child:  Text(AppLocalizations.of(context)!.apply),
                       ),
                     ),
                   )

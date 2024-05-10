@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:video_sharing_app/data/repository_impl/follow_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
+import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
-import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class FollowingPage extends StatefulWidget {
   const FollowingPage({super.key});
@@ -38,7 +39,7 @@ class _FollowingPageState extends State<FollowingPage> {
           return CustomScrollView(
             slivers: [
               SliverAppBar(
-                title: const Text('Following'),
+                title: Text(AppLocalizations.of(context)!.following),
                 floating: true,
                 leading: Icon(Icons.videocam, size: 32.0, color: Theme.of(context).colorScheme.primary),
                 titleSpacing: 0.0,
@@ -53,20 +54,31 @@ class _FollowingPageState extends State<FollowingPage> {
                   IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
                 ],
                 bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(232),
+                  preferredSize: const Size.fromHeight(240),
                   child: Column(
                     children: [
                       // Followings
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.only(left: 16.0, top: 16.0, bottom: 16.0, right: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Text(
-                              'Followings',
-                              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                            Text(
+                              AppLocalizations.of(context)!.followings,
+                              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                             ),
-                            Text('View All', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                            InkWell(
+                              onTap: () {},
+                              customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                                child: Text(
+                                  AppLocalizations.of(context)!.viewAll,
+                                  style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -78,16 +90,17 @@ class _FollowingPageState extends State<FollowingPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
+                            final follow = follows[index];
                             return SinkAnimated(
                                 onTap: () {},
-                                child: const Column(
+                                child: Column(
                                   children: [
                                     CircleAvatar(
-                                      backgroundImage: AssetImage(Asset.placeholder),
+                                      backgroundImage: NetworkImage(follow.userThumbnails![Thumbnail.kDefault]!.url),
                                       radius: 36.0,
                                     ),
-                                    SizedBox(height: 8.0),
-                                    Text('Join Hilai')
+                                    const SizedBox(height: 8.0),
+                                    Text(follow.username!)
                                   ],
                                 ));
                           },
@@ -102,21 +115,46 @@ class _FollowingPageState extends State<FollowingPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                             child: Row(
                               children: [
-                                FilterItem(onSelected: (value) {}, text: 'All', isActive: true),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterAll,
+                                  isActive: true,
+                                ),
                                 const SizedBox(width: 10.0),
-                                FilterItem(onSelected: (value) {}, text: 'Today'),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterToday,
+                                ),
                                 const SizedBox(width: 10.0),
-                                FilterItem(onSelected: (value) {}, text: 'Videos'),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterVideos,
+                                ),
                                 const SizedBox(width: 10.0),
-                                FilterItem(onSelected: (value) {}, text: 'Shorts'),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterShorts,
+                                ),
                                 const SizedBox(width: 10.0),
-                                FilterItem(onSelected: (value) {}, text: 'Live'),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterLive,
+                                ),
                                 const SizedBox(width: 10.0),
-                                FilterItem(onSelected: (value) {}, text: 'Posts'),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterPosts,
+                                ),
                                 const SizedBox(width: 10.0),
-                                FilterItem(onSelected: (value) {}, text: 'Continue watching'),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterContinueWatching,
+                                ),
                                 const SizedBox(width: 10.0),
-                                FilterItem(onSelected: (value) {}, text: 'Unwatched'),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterUnwatched,
+                                ),
                               ],
                             ),
                           ),

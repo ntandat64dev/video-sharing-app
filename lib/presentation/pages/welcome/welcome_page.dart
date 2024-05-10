@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
@@ -55,7 +56,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          'Watch interesting videos from around the world',
+                          AppLocalizations.of(context)!.wellcomePage1,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                                 fontSize: 26,
@@ -75,7 +76,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          'Watch interesting videos easily from your smartphone',
+                          AppLocalizations.of(context)!.wellcomePage2,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                                 fontSize: 26,
@@ -95,7 +96,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          'Let\'s explore videos around the world with MeTube now!',
+                          AppLocalizations.of(context)!.wellcomePage3,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                                 fontSize: 26,
@@ -124,7 +125,10 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
               child: ElevatedButton(
                 onPressed: next,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-                child: Text(currentPageIndex == 2 ? 'Get Started' : 'Next',
+                child: Text(
+                    currentPageIndex == 2
+                        ? AppLocalizations.of(context)!.getStartedButton
+                        : AppLocalizations.of(context)!.nextButton,
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
               ),
             ),

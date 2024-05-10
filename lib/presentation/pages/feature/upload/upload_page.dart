@@ -17,6 +17,7 @@ import 'package:video_sharing_app/presentation/pages/feature/upload/select_categ
 import 'package:video_sharing_app/presentation/pages/feature/upload/set_privacy_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 import 'package:video_sharing_app/presentation/shared/ext.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UploadPage extends StatefulWidget {
   const UploadPage({super.key, required String videoPath}) : _videoPath = videoPath;
@@ -62,7 +63,7 @@ class _UploadPageState extends State<UploadPage> {
           builder: (context, provider, child) {
             return Scaffold(
               appBar: AppBar(
-                title: const Text('Add Details'),
+                title: Text(AppLocalizations.of(context)!.addDetails),
                 leading: appBarBackButton(context),
               ),
               body: LayoutBuilder(
@@ -90,11 +91,11 @@ class _UploadPageState extends State<UploadPage> {
                                     ),
                                   ),
                                 ),
-                                const Padding(
-                                  padding: EdgeInsets.all(16.0),
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
                                   child: Text(
-                                    'Add a Title',
-                                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                                    AppLocalizations.of(context)!.addTitle,
+                                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
                                   ),
                                 ),
                                 Padding(
@@ -140,10 +141,10 @@ class _UploadPageState extends State<UploadPage> {
                                       });
                                     }
                                   },
-                                  child: const ListTile(
-                                    leading: Icon(Icons.edit),
-                                    title: Text('Add Description'),
-                                    trailing: Icon(Icons.chevron_right),
+                                  child: ListTile(
+                                    leading: const Icon(Icons.edit),
+                                    title: Text(AppLocalizations.of(context)!.addDescription),
+                                    trailing: const Icon(Icons.chevron_right),
                                   ),
                                 ),
                                 InkWell(
@@ -161,7 +162,7 @@ class _UploadPageState extends State<UploadPage> {
                                   },
                                   child: ListTile(
                                     leading: const Icon(Icons.category),
-                                    title: const Text('Category'),
+                                    title: Text(AppLocalizations.of(context)!.category),
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -193,7 +194,7 @@ class _UploadPageState extends State<UploadPage> {
                                   },
                                   child: ListTile(
                                     leading: const Icon(Icons.remove_red_eye_sharp),
-                                    title: const Text('Privacy'),
+                                    title: Text(AppLocalizations.of(context)!.privacy),
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -229,10 +230,10 @@ class _UploadPageState extends State<UploadPage> {
                                       });
                                     }
                                   },
-                                  child: const ListTile(
-                                    leading: Icon(Icons.group),
-                                    title: Text('Select Audience'),
-                                    trailing: Row(
+                                  child: ListTile(
+                                    leading: const Icon(Icons.group),
+                                    title: Text(AppLocalizations.of(context)!.selectAudience),
+                                    trailing: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(Icons.chevron_right),
@@ -257,12 +258,14 @@ class _UploadPageState extends State<UploadPage> {
                                   },
                                   child: ListTile(
                                     leading: const Icon(Icons.comment),
-                                    title: const Text('Comment'),
+                                    title: Text(AppLocalizations.of(context)!.comment),
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          provider.commentAllowed ? 'Allow all comments' : 'Disable comments',
+                                          provider.commentAllowed
+                                              ? AppLocalizations.of(context)!.commentAllow
+                                              : AppLocalizations.of(context)!.commentDisallow,
                                           style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
                                         ),
                                         const SizedBox(width: 8.0),
@@ -284,7 +287,7 @@ class _UploadPageState extends State<UploadPage> {
                                   },
                                   child: ListTile(
                                     leading: const Icon(Icons.location_pin),
-                                    title: const Text('Location'),
+                                    title: Text(AppLocalizations.of(context)!.location),
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -326,7 +329,7 @@ class _UploadPageState extends State<UploadPage> {
                                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                                           padding: const EdgeInsets.all(16.0),
                                         ),
-                                        child: const Text('Upload video'),
+                                        child: Text(AppLocalizations.of(context)!.uploadVideo),
                                       ),
                               ),
                             )

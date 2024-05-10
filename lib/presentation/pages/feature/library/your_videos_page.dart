@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
@@ -7,6 +8,8 @@ import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/set_privacy_page.dart';
+
+// TODO: Fix bug load image
 
 class YourVideosPage extends StatefulWidget {
   const YourVideosPage({super.key});
@@ -24,7 +27,7 @@ class _YourVideosPageState extends State<YourVideosPage> {
       child: Scaffold(
         appBar: AppBar(
           leading: appBarBackButton(context),
-          title: const Text('Your videos'),
+          title: Text(AppLocalizations.of(context)!.yourVideosAppBarTitle),
         ),
         body: Column(
           children: [
@@ -34,7 +37,7 @@ class _YourVideosPageState extends State<YourVideosPage> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Row(
                     children: [
                       InkWell(
@@ -51,11 +54,21 @@ class _YourVideosPageState extends State<YourVideosPage> {
                         ),
                       ),
                       const SizedBox(width: 10.0),
-                      FilterItem(onSelected: (value) {}, text: 'Videos', isActive: true),
+                      FilterItem(
+                        onSelected: (value) {},
+                        text: AppLocalizations.of(context)!.filterVideos,
+                        isActive: true,
+                      ),
                       const SizedBox(width: 10.0),
-                      FilterItem(onSelected: (value) {}, text: 'Shorts'),
+                      FilterItem(
+                        onSelected: (value) {},
+                        text: AppLocalizations.of(context)!.filterShorts,
+                      ),
                       const SizedBox(width: 10.0),
-                      FilterItem(onSelected: (value) {}, text: 'Live'),
+                      FilterItem(
+                        onSelected: (value) {},
+                        text: AppLocalizations.of(context)!.filterLive,
+                      ),
                     ],
                   ),
                 ),
@@ -71,7 +84,7 @@ class _YourVideosPageState extends State<YourVideosPage> {
                   return ListView.builder(
                     itemCount: videos.length,
                     itemBuilder: (context, index) {
-                      return VideoItem(video: videos[index]);
+                      return YourVideoItem(video: videos[index]);
                     },
                   );
                 },
@@ -84,8 +97,8 @@ class _YourVideosPageState extends State<YourVideosPage> {
   }
 }
 
-class VideoItem extends StatelessWidget {
-  const VideoItem({super.key, required this.video});
+class YourVideoItem extends StatelessWidget {
+  const YourVideoItem({super.key, required this.video});
 
   final Video video;
 
@@ -112,19 +125,33 @@ class VideoItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        video.title!,
-                        style: const TextStyle(
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          video.title!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 17.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 8.0),
-                      Text('${video.viewCount} views  ∙  ${timeago.format(video.publishedAt!)}'),
+                      InkWell(
+                        customBorder: const CircleBorder(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Icon(Icons.more_vert, size: 22.0),
+                        ),
+                        onTap: () {},
+                      ),
                     ],
+                  ),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    '${AppLocalizations.of(context)!.nViews(video.viewCount!.toInt())}  ∙  ${timeago.format(video.publishedAt!)}',
                   ),
                   const SizedBox(height: 8.0),
                   Icon(
@@ -134,7 +161,6 @@ class VideoItem extends StatelessWidget {
                 ],
               ),
             ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
           ],
         ),
       ),

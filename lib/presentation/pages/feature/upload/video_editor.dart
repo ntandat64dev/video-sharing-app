@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/upload_page.dart';
 import 'package:video_trimmer/video_trimmer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class VideoEditor extends StatefulWidget {
   const VideoEditor({super.key, required this.videoPath});
@@ -33,7 +34,7 @@ class _VideoEditorState extends State<VideoEditor> {
     return Scaffold(
       appBar: AppBar(
         leading: appBarBackButton(context),
-        title: const Text('Edit Video'),
+        title: Text(AppLocalizations.of(context)!.editVideoAppBarTitle),
         actions: [
           IconButton(
             onPressed: () async {

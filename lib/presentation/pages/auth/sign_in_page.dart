@@ -7,6 +7,7 @@ import 'package:video_sharing_app/presentation/pages/auth/sign_up_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/main_page.dart';
 import 'package:video_sharing_app/presentation/route_provider.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -34,7 +35,7 @@ class _SignInPageState extends State<SignInPage> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'Login to Your Account',
+                  AppLocalizations.of(context)!.logInToYourAccount,
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.onSurface,
@@ -49,7 +50,7 @@ class _SignInPageState extends State<SignInPage> {
                   cursorColor: Theme.of(context).colorScheme.primary,
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelText: 'Username',
+                    labelText: AppLocalizations.of(context)!.username,
                     fillColor: Theme.of(context).colorScheme.onInverseSurface,
                     filled: true,
                     prefixIcon: const Icon(Icons.person),
@@ -73,7 +74,7 @@ class _SignInPageState extends State<SignInPage> {
                   cursorColor: Theme.of(context).colorScheme.primary,
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelText: 'Password',
+                    labelText: AppLocalizations.of(context)!.password,
                     fillColor: Theme.of(context).colorScheme.onInverseSurface,
                     filled: true,
                     prefixIcon: const Icon(Icons.lock),
@@ -98,7 +99,7 @@ class _SignInPageState extends State<SignInPage> {
                     activeColor: Theme.of(context).colorScheme.primary,
                     controlAffinity: ListTileControlAffinity.leading,
                     contentPadding: EdgeInsets.zero,
-                    title: const Text('Remember me'),
+                    title: Text(AppLocalizations.of(context)!.rememberMe),
                     onChanged: (value) => setState(() => _rememberMe = !_rememberMe),
                     value: _rememberMe,
                   ),
@@ -115,28 +116,36 @@ class _SignInPageState extends State<SignInPage> {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
-                    child: const Text('Sign in', style: TextStyle(fontSize: 16)),
+                    child: Text(AppLocalizations.of(context)!.signin, style: const TextStyle(fontSize: 16)),
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text('Forgot the password?',
-                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 15.0)),
+                child: Text(
+                  AppLocalizations.of(context)!.forgotThePassword,
+                  style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 15.0),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                 child: Row(
                   children: [
                     Expanded(
-                        child: Divider(
-                            thickness: 1.5,
-                            endIndent: 12.0,
-                            color: Theme.of(context).colorScheme.outline.withAlpha(30))),
-                    const Text('or continue with'),
+                      child: Divider(
+                        thickness: 1.5,
+                        endIndent: 12.0,
+                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      ),
+                    ),
+                    Text(AppLocalizations.of(context)!.orContinueWith),
                     Expanded(
-                        child: Divider(
-                            thickness: 1.5, indent: 12.0, color: Theme.of(context).colorScheme.outline.withAlpha(30))),
+                      child: Divider(
+                        thickness: 1.5,
+                        indent: 12.0,
+                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -192,7 +201,7 @@ class _SignInPageState extends State<SignInPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Don\'t have any account?'),
+                    Text(AppLocalizations.of(context)!.dontHaveAccount),
                     const SizedBox(width: 8.0),
                     GestureDetector(
                       onTap: () => Navigator.pushAndRemoveUntil(
@@ -200,7 +209,10 @@ class _SignInPageState extends State<SignInPage> {
                         MaterialPageRoute(builder: (context) => const SignUpPage()),
                         (route) => route.isFirst,
                       ),
-                      child: Text('Sign up', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                      child: Text(
+                        AppLocalizations.of(context)!.signup,
+                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      ),
                     ),
                   ],
                 ),

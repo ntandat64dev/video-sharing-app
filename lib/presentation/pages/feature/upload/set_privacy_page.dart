@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SetPrivacyPage extends StatefulWidget {
   const SetPrivacyPage({super.key, required String privacy}) : _privacy = privacy;
@@ -29,9 +30,9 @@ class _SetPrivacyPageState extends State<SetPrivacyPage> {
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text(
-          'Set Privacy',
-          style: TextStyle(fontWeight: FontWeight.w500),
+        title: Text(
+          AppLocalizations.of(context)!.setPrivacy,
+          style: const TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
       body: LayoutBuilder(
@@ -48,15 +49,15 @@ class _SetPrivacyPageState extends State<SetPrivacyPage> {
                         value: Privacy.public,
                         groupValue: privacy,
                         onChanged: (Privacy? value) => setState(() => privacy = value),
-                        title: const Text('Public'),
-                        subtitle: const Text('Anyone can search for and view'),
+                        title: Text(AppLocalizations.of(context)!.public),
+                        subtitle: Text(AppLocalizations.of(context)!.privacyPublicSubtext),
                       ),
                       RadioListTile<Privacy>(
                         value: Privacy.private,
                         groupValue: privacy,
                         onChanged: (Privacy? value) => setState(() => privacy = value),
-                        title: const Text('Private'),
-                        subtitle: const Text('Only you can view'),
+                        title: Text(AppLocalizations.of(context)!.privacy),
+                        subtitle: Text(AppLocalizations.of(context)!.privacyPrivateSubtext),
                       ),
                     ],
                   ),
@@ -73,7 +74,7 @@ class _SetPrivacyPageState extends State<SetPrivacyPage> {
                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child: const Text('Apply'),
+                        child: Text(AppLocalizations.of(context)!.apply),
                       ),
                     ),
                   )

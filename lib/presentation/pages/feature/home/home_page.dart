@@ -6,6 +6,7 @@ import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/video_editor.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                 itemBuilder: (context, index) => FilterItem(
                                   onSelected: (value) {},
-                                  text: index == 0 ? 'All' : hashtags[index - 1],
+                                  text: index == 0 ? AppLocalizations.of(conatext)!.filterAll : hashtags[index - 1],
                                   isActive: index == 0,
                                 ),
                               );

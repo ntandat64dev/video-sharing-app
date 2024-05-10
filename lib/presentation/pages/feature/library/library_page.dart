@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
@@ -19,7 +20,7 @@ class _LibraryPageState extends State<LibraryPage> {
           SliverAppBar(
             leading: Icon(Icons.videocam, size: 32.0, color: Theme.of(context).colorScheme.primary),
             titleSpacing: 0.0,
-            title: const Text('Library'),
+            title: Text(AppLocalizations.of(context)!.library),
             floating: true,
             actions: [
               IconButton(
@@ -39,17 +40,30 @@ class _LibraryPageState extends State<LibraryPage> {
                 children: [
                   // View history
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.only(left: 16.0, top: 16.0, bottom: 16.0, right: 8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('History', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                        Text('View All', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                        Text(
+                          AppLocalizations.of(context)!.viewHistory,
+                          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.viewAll,
+                              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   SizedBox(
-                    height: 180.0,
+                    height: 190.0,
                     child: ListView.separated(
                       separatorBuilder: (context, index) => const SizedBox(width: 12.0),
                       itemCount: 5,
@@ -58,33 +72,61 @@ class _LibraryPageState extends State<LibraryPage> {
                       itemBuilder: (context, index) {
                         return SinkAnimated(
                           onTap: () {},
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(16.0),
-                                child: Image.asset(
-                                  Asset.placeholder,
-                                  fit: BoxFit.cover,
-                                  height: 110,
-                                  width: 150,
-                                ),
-                              ),
-                              const SizedBox(height: 8.0),
-                              const Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Watch later',
-                                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500)),
-                                      Text('Private')
-                                    ],
+                          child: SizedBox(
+                            width: 150.0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  child: Image.asset(
+                                    Asset.placeholder,
+                                    fit: BoxFit.cover,
+                                    height: 100,
+                                    width: double.infinity,
                                   ),
-                                ],
-                              )
-                            ],
+                                ),
+                                const SizedBox(height: 6.0),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Expanded(
+                                          child: Column(
+                                            children: [
+                                              SizedBox(height: 2.0),
+                                              Text(
+                                                'International Music and Dance',
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        InkWell(
+                                          customBorder: const CircleBorder(),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(4.0),
+                                            child: Icon(Icons.more_vert, size: 18.0),
+                                          ),
+                                          onTap: () {},
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4.0),
+                                    const Text(
+                                      'World of Music',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(fontSize: 13.0),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -112,9 +154,9 @@ class _LibraryPageState extends State<LibraryPage> {
                           ),
                           child: Icon(Icons.play_circle, color: Theme.of(context).colorScheme.primary),
                         ),
-                        title: const Text(
-                          'Your videos',
-                          style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+                        title: Text(
+                          AppLocalizations.of(context)!.yourVideosListTile,
+                          style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -133,9 +175,9 @@ class _LibraryPageState extends State<LibraryPage> {
                           ),
                           child: Icon(Icons.download, color: Theme.of(context).colorScheme.primary),
                         ),
-                        title: const Text(
-                          'Downloads',
-                          style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+                        title: Text(
+                          AppLocalizations.of(context)!.downloads,
+                          style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -149,12 +191,25 @@ class _LibraryPageState extends State<LibraryPage> {
                   ),
                   // Playlists
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.only(left: 16.0, top: 16.0, bottom: 16.0, right: 8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Playlists', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                        Text('View All', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                        Text(
+                          AppLocalizations.of(context)!.playlists,
+                          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.viewAll,
+                              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -172,9 +227,9 @@ class _LibraryPageState extends State<LibraryPage> {
                           ),
                           child: Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
                         ),
-                        title: const Text(
-                          'New Playlist',
-                          style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+                        title: Text(
+                          AppLocalizations.of(context)!.playlistNew,
+                          style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -193,11 +248,11 @@ class _LibraryPageState extends State<LibraryPage> {
                           ),
                           child: Icon(Icons.access_time_filled, color: Theme.of(context).colorScheme.primary),
                         ),
-                        title: const Text(
-                          'Watch Later',
-                          style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+                        title: Text(
+                          AppLocalizations.of(context)!.playlistWatchLater,
+                          style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: const Text('23 videos'),
+                        subtitle: Text(AppLocalizations.of(context)!.nVideos(23)),
                       ),
                     ),
                   ),
@@ -215,11 +270,11 @@ class _LibraryPageState extends State<LibraryPage> {
                           ),
                           child: Icon(Icons.thumb_up, color: Theme.of(context).colorScheme.primary),
                         ),
-                        title: const Text(
-                          'Liked Videos',
-                          style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+                        title: Text(
+                          AppLocalizations.of(context)!.playlistLikedVideos,
+                          style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: const Text('127 videos'),
+                        subtitle: Text(AppLocalizations.of(context)!.nVideos(56)),
                       ),
                     ),
                   ),
@@ -240,7 +295,7 @@ class _LibraryPageState extends State<LibraryPage> {
                           'My Favorite Songs',
                           style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: const Text('56 videos'),
+                        subtitle: Text(AppLocalizations.of(context)!.nVideos(88)),
                       ),
                     ),
                   ),

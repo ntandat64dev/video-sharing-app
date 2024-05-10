@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SelectAudiencePage extends StatefulWidget {
   const SelectAudiencePage({
@@ -46,9 +47,9 @@ class _SelectAudiencePageState extends State<SelectAudiencePage> {
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text(
-          'Select Audience',
-          style: TextStyle(fontWeight: FontWeight.w500),
+        title: Text(
+          AppLocalizations.of(context)!.selectAudience,
+          style: const TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
       body: LayoutBuilder(
@@ -62,11 +63,11 @@ class _SelectAudiencePageState extends State<SelectAudiencePage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'Is this video made for kid?',
-                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                          AppLocalizations.of(context)!.isVideoMadeForKid,
+                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
                         ),
                       ),
                       RadioListTile<MadeForKids>(
@@ -76,13 +77,13 @@ class _SelectAudiencePageState extends State<SelectAudiencePage> {
                           madeForKids = value;
                           ageRestricted = AgeRestricted.no;
                         }),
-                        title: const Text('Yes, it\'s made for kids'),
+                        title: Text(AppLocalizations.of(context)!.madeForKidYes),
                       ),
                       RadioListTile<MadeForKids>(
                         value: MadeForKids.no,
                         groupValue: madeForKids,
                         onChanged: (MadeForKids? value) => setState(() => madeForKids = value),
-                        title: const Text('No, it\'s not made for kids'),
+                        title: Text(AppLocalizations.of(context)!.madeForKidNo),
                       ),
                       Divider(
                         thickness: 0.5,
@@ -90,11 +91,11 @@ class _SelectAudiencePageState extends State<SelectAudiencePage> {
                         endIndent: 16.0,
                         color: Theme.of(context).colorScheme.outlineVariant,
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'Do you want to restrict your video to an adult audience?',
-                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                          AppLocalizations.of(context)!.doYouWantRestrictVideo,
+                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
                         ),
                       ),
                       RadioListTile<AgeRestricted>(
@@ -103,7 +104,7 @@ class _SelectAudiencePageState extends State<SelectAudiencePage> {
                         onChanged: madeForKids == MadeForKids.yes
                             ? null
                             : (AgeRestricted? value) => setState(() => ageRestricted = value),
-                        title: const Text('Yes, restrict my video to viewers over 18'),
+                        title: Text(AppLocalizations.of(context)!.restrictVideoYes),
                       ),
                       RadioListTile<AgeRestricted>(
                         value: AgeRestricted.no,
@@ -111,7 +112,7 @@ class _SelectAudiencePageState extends State<SelectAudiencePage> {
                         onChanged: madeForKids == MadeForKids.yes
                             ? null
                             : (AgeRestricted? value) => setState(() => ageRestricted = value),
-                        title: const Text('No, don\'t restrict my video to viewers over 18'),
+                        title: Text(AppLocalizations.of(context)!.restrictVideoNo),
                       ),
                     ],
                   ),
@@ -132,7 +133,7 @@ class _SelectAudiencePageState extends State<SelectAudiencePage> {
                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child: const Text('Apply'),
+                        child: Text(AppLocalizations.of(context)!.apply),
                       ),
                     ),
                   )

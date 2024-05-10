@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -19,8 +20,9 @@ import 'package:video_sharing_app/domain/repository/comment_repository.dart';
 import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
-import 'package:video_sharing_app/presentation/pages/feature/home/components/comment_item.dart';
+import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
+import 'package:video_sharing_app/presentation/pages/feature/home/components/comment_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/provider/video_detail_provider.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
@@ -220,19 +222,19 @@ class _VideoDetailState extends State<VideoDetail> {
                       ElevatedButton.icon(
                         onPressed: () {},
                         icon: const Icon(Icons.share),
-                        label: const Text('Share'),
+                        label: Text(AppLocalizations.of(context)!.shareButton),
                       ),
                       const SizedBox(width: 8.0),
                       ElevatedButton.icon(
                         onPressed: () {},
                         icon: const Icon(Icons.download),
-                        label: const Text('Download'),
+                        label: Text(AppLocalizations.of(context)!.downloadButton),
                       ),
                       const SizedBox(width: 8.0),
                       ElevatedButton.icon(
                         onPressed: () {},
                         icon: const Icon(Icons.bookmark_outline),
-                        label: const Text('Save'),
+                        label: Text(AppLocalizations.of(context)!.saveButton),
                       ),
                     ],
                   ),
@@ -271,7 +273,7 @@ class _VideoDetailState extends State<VideoDetail> {
                                   ),
                                   const SizedBox(height: 4.0),
                                   Text(
-                                    '${user.followerCount} followers',
+                                    AppLocalizations.of(context)!.nFollowers(user.followerCount!.toInt()),
                                     style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   ),
                                 ],
@@ -284,7 +286,11 @@ class _VideoDetailState extends State<VideoDetail> {
                               backgroundColor: Theme.of(context).colorScheme.primary,
                               foregroundColor: Theme.of(context).colorScheme.onPrimary,
                             ),
-                            child: Text(follow != null ? 'Followed' : 'Follow'),
+                            child: Text(
+                              follow != null
+                                  ? AppLocalizations.of(context)!.followedButton
+                                  : AppLocalizations.of(context)!.followButton,
+                            ),
                           )
                         ],
                       ),
@@ -320,7 +326,7 @@ class _VideoDetailState extends State<VideoDetail> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Comments ${video.commentCount}',
+                          '${AppLocalizations.of(context)!.comments} ${video.commentCount}',
                           style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500),
                         ),
                         const Icon(Icons.arrow_downward),
@@ -346,7 +352,7 @@ class _VideoDetailState extends State<VideoDetail> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
-                        labelText: 'Add a comment...',
+                        labelText: AppLocalizations.of(context)!.hintAddComment,
                         fillColor: Theme.of(context).colorScheme.onInverseSurface,
                         filled: true,
                         suffixIcon: isCommentFocus
@@ -445,15 +451,15 @@ class _VideoDescriptionState extends State<VideoDescription> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 8.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Descriptions',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                        Text(
+                          AppLocalizations.of(context)!.descriptions,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                         ),
                         IconButton(
                           onPressed: () => Navigator.pop(context),
@@ -462,7 +468,7 @@ class _VideoDescriptionState extends State<VideoDescription> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 8.0),
                   Divider(
                     height: 1.0,
                     thickness: 0.3,
@@ -497,7 +503,7 @@ class _VideoDescriptionState extends State<VideoDescription> {
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    const Text('Likes'),
+                                    Text(AppLocalizations.of(context)!.likes),
                                   ],
                                 ),
                                 Column(
@@ -509,7 +515,7 @@ class _VideoDescriptionState extends State<VideoDescription> {
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    const Text('Dislikes'),
+                                    Text(AppLocalizations.of(context)!.dislikes),
                                   ],
                                 ),
                                 Column(
@@ -521,7 +527,7 @@ class _VideoDescriptionState extends State<VideoDescription> {
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    const Text('Views'),
+                                    Text(AppLocalizations.of(context)!.views),
                                   ],
                                 ),
                                 Column(
@@ -590,7 +596,7 @@ class _VideoDescriptionState extends State<VideoDescription> {
                                             ),
                                             const SizedBox(height: 4.0),
                                             Text(
-                                              '${user.followerCount} followers',
+                                              AppLocalizations.of(context)!.nFollowers(user.followerCount!.toInt()),
                                               style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                                             ),
                                           ],
@@ -606,7 +612,11 @@ class _VideoDescriptionState extends State<VideoDescription> {
                                         backgroundColor: Theme.of(context).colorScheme.primary,
                                         foregroundColor: Theme.of(context).colorScheme.onPrimary,
                                       ),
-                                      child: Text(follow != null ? 'Followed' : 'Follow'),
+                                      child: Text(
+                                        follow != null
+                                            ? AppLocalizations.of(context)!.followedButton
+                                            : AppLocalizations.of(context)!.followButton,
+                                      ),
                                     )
                                   ],
                                 ),
@@ -678,15 +688,15 @@ class _CommentDetailState extends State<CommentDetail> {
                 borderRadius: BorderRadius.circular(8.0),
               ),
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 8.0),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Comments',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  Text(
+                    AppLocalizations.of(context)!.comments,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
@@ -695,114 +705,130 @@ class _CommentDetailState extends State<CommentDetail> {
                 ],
               ),
             ),
-            const SizedBox(height: 16.0),
-            SizedBox(
-              width: double.infinity,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ElevatedButton(onPressed: () {}, child: const Text('Top')),
-                    const SizedBox(width: 8.0),
-                    ElevatedButton(onPressed: () {}, child: const Text('Newest')),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(widget._video.userImageUrl!),
-                radius: 24.0,
-              ),
-              title: Focus(
-                onFocusChange: (value) {
-                  setState(() {
-                    isCommentFocus = value;
-                  });
-                },
-                child: TextField(
-                  controller: commentController,
-                  cursorColor: Theme.of(context).colorScheme.primary,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelText: 'Add a comment...',
-                    fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                    filled: true,
-                    suffixIcon: isCommentFocus
-                        ? IconButton(
-                            onPressed: () async {
-                              // Sent comment
-                              await widget._sendComment(commentController.text);
-                              setState(() {
-                                FocusScope.of(context).requestFocus(FocusNode());
-                                commentController.text = '';
-                              });
-                            },
-                            icon: const Icon(Icons.send),
-                            color: Theme.of(context).colorScheme.primary)
-                        : const Icon(null),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(48.0),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(48.0),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            Divider(
-              height: 1.0,
-              thickness: 0.3,
-              color: Theme.of(context).colorScheme.outlineVariant,
-            ),
+            const SizedBox(height: 8.0),
             Expanded(
               child: FutureBuilder(
-                future: commentRepository.getCommentsByVideoId(widget._video.id!),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data!.isNotEmpty) {
-                      return DraggableScrollableSheet(
-                        initialChildSize: 1,
-                        builder: (context, scrollController) {
-                          final comments = snapshot.data!;
-                          // Temporary sort by newest.
-                          comments.sort((a, b) => a.publishedAt!.isBefore(b.publishedAt!) ? 1 : -1);
-                          return ListView.builder(
-                            itemCount: comments.length,
-                            itemBuilder: (context, index) => CommentItem(comment: comments[index]),
-                          );
-                        },
-                      );
-                    } else {
-                      return const Column(
-                        children: [
-                          SizedBox(height: 64.0),
-                          Text(
-                            'No comments yet',
-                            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                  future: commentRepository.getCommentsByVideoId(widget._video.id!),
+                  builder: (context, snapshot) {
+                    return CustomScrollView(
+                      slivers: [
+                        SliverAppBar(
+                          automaticallyImplyLeading: false,
+                          titleSpacing: 0.0,
+                          floating: true,
+                          title: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterTop,
+                                  isActive: true,
+                                ),
+                                const SizedBox(width: 8.0),
+                                FilterItem(onSelected: (value) {}, text: AppLocalizations.of(context)!.filterNewest),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 8.0),
-                          Text('Say something to start the conversation'),
-                        ],
-                      );
-                    }
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
+                          bottom: PreferredSize(
+                            preferredSize: const Size.fromHeight(78.0),
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundImage: NetworkImage(widget._video.userImageUrl!),
+                                    radius: 24.0,
+                                  ),
+                                  title: Focus(
+                                    onFocusChange: (value) => setState(() => isCommentFocus = value),
+                                    child: TextField(
+                                      controller: commentController,
+                                      cursorColor: Theme.of(context).colorScheme.primary,
+                                      decoration: InputDecoration(
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                        labelText: AppLocalizations.of(context)!.hintAddComment,
+                                        fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                                        filled: true,
+                                        suffixIcon: isCommentFocus
+                                            ? IconButton(
+                                                onPressed: () async {
+                                                  // Sent comment
+                                                  await widget._sendComment(commentController.text);
+                                                  setState(() {
+                                                    FocusScope.of(context).requestFocus(FocusNode());
+                                                    commentController.text = '';
+                                                  });
+                                                },
+                                                icon: const Icon(Icons.send),
+                                                color: Theme.of(context).colorScheme.primary)
+                                            : const Icon(null),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(48.0),
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(48.0),
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8.0),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SliverAppBar(
+                          toolbarHeight: 1.0,
+                          automaticallyImplyLeading: false,
+                          titleSpacing: 0.0,
+                          pinned: true,
+                          title: Divider(
+                            height: 0.0,
+                            thickness: 1.0,
+                            color: Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                        ),
+                        !snapshot.hasData
+                            ? const SliverFillRemaining(
+                                hasScrollBody: false,
+                                child: Center(child: CircularProgressIndicator()),
+                              )
+                            : snapshot.data!.isEmpty
+                                ? SliverFillRemaining(
+                                    hasScrollBody: false,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.noComments,
+                                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                                        ),
+                                        const SizedBox(height: 8.0),
+                                        Text(AppLocalizations.of(context)!.saySomething),
+                                      ],
+                                    ),
+                                  )
+                                : SliverList.builder(
+                                    itemCount: snapshot.data!.length,
+                                    itemBuilder: (context, index) {
+                                      final comments = snapshot.data!;
+                                      // Temporary sort by newest.
+                                      comments.sort((a, b) => a.publishedAt!.isBefore(b.publishedAt!) ? 1 : -1);
+                                      return CommentItem(comment: comments[index]);
+                                    },
+                                  )
+                      ],
+                    );
+                  }),
             )
           ],
         ),

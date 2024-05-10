@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddDescriptionPage extends StatefulWidget {
   const AddDescriptionPage({
@@ -40,9 +41,9 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text(
-          'Add Description',
-          style: TextStyle(fontWeight: FontWeight.w500),
+        title: Text(
+          AppLocalizations.of(context)!.addDescription,
+          style: const TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
       body: LayoutBuilder(
@@ -56,11 +57,11 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'Description',
-                          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
+                          AppLocalizations.of(context)!.description,
+                          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
                         ),
                       ),
                       Padding(
@@ -72,7 +73,7 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                           maxLength: 1000,
                           cursorColor: Theme.of(context).colorScheme.primary,
                           decoration: InputDecoration(
-                            hintText: 'Your description here',
+                            hintText: AppLocalizations.of(context)!.yourDescription,
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             fillColor: Theme.of(context).colorScheme.onInverseSurface,
                             filled: true,
@@ -87,11 +88,11 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'Hashtag',
-                          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
+                          AppLocalizations.of(context)!.hashtag,
+                          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
                         ),
                       ),
                       Padding(
@@ -110,7 +111,7 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                           maxLines: 1,
                           cursorColor: Theme.of(context).colorScheme.primary,
                           decoration: InputDecoration(
-                            hintText: 'Type and enter',
+                            hintText: AppLocalizations.of(context)!.typeAndEnter,
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             fillColor: Theme.of(context).colorScheme.onInverseSurface,
                             filled: true,
@@ -158,7 +159,7 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child: const Text('Apply'),
+                        child: Text(AppLocalizations.of(context)!.apply),
                       ),
                     ),
                   )

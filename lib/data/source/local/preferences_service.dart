@@ -22,12 +22,12 @@ class PreferencesService {
     return _instance!;
   }
 
-  dynamic _getData(String key) {
+  dynamic getData(String key, {String? defaultVal}) {
     var value = _prefs.get(key);
-    return value;
+    return value ?? defaultVal;
   }
 
-  void _setData(String key, dynamic value) {
+  void setData(String key, dynamic value) {
     if (value is String) {
       _prefs.setString(key, value);
     } else if (value is int) {
@@ -43,14 +43,14 @@ class PreferencesService {
 
   void _removeData(String key) => _prefs.remove(key);
 
-  bool get isFirstLaunched => _getData(_kFirstLaunch) ?? false;
-  set isFirstLaunched(bool value) => _setData(_kFirstLaunch, value);
+  bool get isFirstLaunched => getData(_kFirstLaunch) ?? false;
+  set isFirstLaunched(bool value) => setData(_kFirstLaunch, value);
 
-  void setToken(String token) => _setData(_kToken, token);
-  String? getToken() => _getData(_kToken);
+  void setToken(String token) => setData(_kToken, token);
+  String? getToken() => getData(_kToken);
 
-  void setUserId(String userId) => _setData(_kUserId, userId);
-  String? getUserId() => _getData(_kUserId);
+  void setUserId(String userId) => setData(_kUserId, userId);
+  String? getUserId() => getData(_kUserId);
 
   void clearUser() {
     _removeData(_kToken);

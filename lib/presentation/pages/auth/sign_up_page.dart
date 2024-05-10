@@ -4,6 +4,7 @@ import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/auth/sign_in_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -41,8 +42,10 @@ class _SignUpPageState extends State<SignUpPage> {
               Image.asset(Asset.youtubeLogo, width: 128),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text('Create Your Account',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold)),
+                child: Text(
+                  AppLocalizations.of(context)!.createYourAccount,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+                ),
               ),
               const SizedBox(height: 16.0),
               Padding(
@@ -52,7 +55,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   cursorColor: Colors.white54,
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelText: 'Username',
+                    labelText: AppLocalizations.of(context)!.username,
                     fillColor: Colors.white10,
                     filled: true,
                     prefixIcon: const Icon(Icons.person),
@@ -76,7 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   cursorColor: Colors.white54,
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelText: 'Password',
+                    labelText: AppLocalizations.of(context)!.password,
                     fillColor: Colors.white10,
                     filled: true,
                     prefixIcon: const Icon(Icons.lock),
@@ -100,7 +103,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   cursorColor: Colors.white54,
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelText: 'Confirm Password',
+                    labelText: AppLocalizations.of(context)!.confirmPassword,
                     fillColor: Colors.white10,
                     filled: true,
                     prefixIcon: const Icon(Icons.lock),
@@ -125,7 +128,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     activeColor: Theme.of(context).colorScheme.primary,
                     controlAffinity: ListTileControlAffinity.leading,
                     contentPadding: EdgeInsets.zero,
-                    title: const Text('Remember me'),
+                    title: Text(AppLocalizations.of(context)!.rememberMe),
                     onChanged: (value) => setState(() => _isRememberMe = !_isRememberMe),
                     value: _isRememberMe,
                   ),
@@ -142,28 +145,36 @@ class _SignUpPageState extends State<SignUpPage> {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
-                    child: const Text('Sign up', style: TextStyle(fontSize: 16)),
+                    child: Text(AppLocalizations.of(context)!.signup, style: const TextStyle(fontSize: 16)),
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text('Forgot the password?',
-                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 15.0)),
+                child: Text(
+                  AppLocalizations.of(context)!.forgotThePassword,
+                  style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 15.0),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                 child: Row(
                   children: [
                     Expanded(
-                        child: Divider(
-                            thickness: 1.5,
-                            endIndent: 12.0,
-                            color: Theme.of(context).colorScheme.outline.withAlpha(30))),
-                    const Text('or continue with'),
+                      child: Divider(
+                        thickness: 1.5,
+                        endIndent: 12.0,
+                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      ),
+                    ),
+                    Text(AppLocalizations.of(context)!.orContinueWith),
                     Expanded(
-                        child: Divider(
-                            thickness: 1.5, indent: 12.0, color: Theme.of(context).colorScheme.outline.withAlpha(30))),
+                      child: Divider(
+                        thickness: 1.5,
+                        indent: 12.0,
+                        color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -219,7 +230,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Already have an account?'),
+                    Text(AppLocalizations.of(context)!.alreadyHaveAccount),
                     const SizedBox(width: 8.0),
                     GestureDetector(
                       onTap: () => Navigator.pushAndRemoveUntil(
@@ -227,7 +238,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         MaterialPageRoute(builder: (context) => const SignInPage()),
                         (route) => route.isFirst,
                       ),
-                      child: Text('Sign in', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                      child: Text(
+                        AppLocalizations.of(context)!.signin,
+                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      ),
                     ),
                   ],
                 ),
