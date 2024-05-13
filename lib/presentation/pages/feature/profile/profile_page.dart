@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
@@ -7,6 +6,7 @@ import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
+import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
 import 'package:video_sharing_app/presentation/components/radio_dialog.dart';
 import 'package:video_sharing_app/presentation/pages/auth/auth_methods_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/profile/settings_page.dart';
@@ -196,91 +196,26 @@ class _ProfilePageState extends State<ProfilePage> {
                 // Logout
                 InkWell(
                   onTap: () {
-                    showModalBottomSheet(
+                    showConsistentBottomSheet(
                       context: context,
-                      builder: (context) => Container(
-                        height: 220,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(32.0),
-                            topRight: Radius.circular(32.0),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 8.0),
-                            Container(
-                              width: 36.0,
-                              height: 3.0,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.outlineVariant,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(
-                                AppLocalizations.of(context)!.logout,
-                                style: const TextStyle(color: Colors.red, fontSize: 20.0, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Divider(
-                              height: 0.0,
-                              thickness: 0.2,
-                              indent: 16.0,
-                              endIndent: 16.0,
-                              color: Theme.of(context).colorScheme.outlineVariant,
-                            ),
-                            const SizedBox(height: 16.0),
-                            Text(
-                              AppLocalizations.of(context)!.youSureLogout,
-                              style: const TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Expanded(
-                                    child: TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(50),
-                                        foregroundColor: Theme.of(context).colorScheme.primary,
-                                        padding: const EdgeInsets.all(16.0),
-                                      ),
-                                      child: Text(AppLocalizations.of(context)!.cancel),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  Expanded(
-                                    child: TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        authRepository.signOut();
-                                        if (context.mounted) {
-                                          Provider.of<RouteProvider>(context, listen: false).route =
-                                              const AuthMethodsPage();
-                                        }
-                                      },
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Theme.of(context).colorScheme.primary,
-                                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                                        padding: const EdgeInsets.all(16.0),
-                                      ),
-                                      child: Text(AppLocalizations.of(context)!.logoutYes),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                      height: 220,
+                      title: Text(
+                        AppLocalizations.of(context)!.logout,
+                        style: const TextStyle(color: Colors.red, fontSize: 20.0, fontWeight: FontWeight.bold),
+                      ),
+                      negativeButton: bottomSheetNegativeButton(context: context),
+                      confirmButton: bottomSheetConfirmButton(
+                          context: context,
+                          onPressed: () {
+                            Navigator.pop(context);
+                            authRepository.signOut();
+                            Provider.of<RouteProvider>(context, listen: false).route = const AuthMethodsPage();
+                          }),
+                      content: Text(
+                        AppLocalizations.of(context)!.youSureLogout,
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     );

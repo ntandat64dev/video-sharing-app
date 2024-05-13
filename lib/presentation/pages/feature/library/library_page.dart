@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
-import 'package:video_sharing_app/presentation/pages/feature/library/your_videos_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/your_videos_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class LibraryPage extends StatefulWidget {

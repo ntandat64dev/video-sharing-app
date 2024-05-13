@@ -7,6 +7,10 @@ abstract class VideoRepository {
 
   Future<Video?> uploadVideo({required String videoPath, required Video video});
 
+  Future<Video?> updateVideo(Video video);
+
+  Future<bool> deleteVideoById(String videoId);
+
   Future<List<Video>> getVideosByCategoryAll();
 
   Future<List<Video>> getMyVideos();

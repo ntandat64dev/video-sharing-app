@@ -5,14 +5,17 @@ import 'package:video_sharing_app/data/source/remote/constants.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
 
 class UserApi {
-  UserApi({required this.token});
+  UserApi({required this.token}) {
+    bearerHeader = {'Authorization': 'Bearer $token'};
+  }
 
   final String token;
+  late final Map<String, String> bearerHeader;
 
   Future<User> getMyInfo() async {
     final response = await http.get(
       Uri.http(baseURL, '/api/v1/users/mine'),
-      headers: {'Authorization': 'Bearer $token'},
+      headers: {...bearerHeader},
     );
     if (response.statusCode != 200) throw Exception('getMyInfo() [${response.statusCode}] ${response.body}');
     return User.fromJson(jsonDecode(response.body));
@@ -21,7 +24,7 @@ class UserApi {
   Future<User> getUserByUserId(String userId) async {
     final response = await http.get(
       Uri.http(baseURL, '/api/v1/users/$userId'),
-      headers: {'Authorization': 'Bearer $token'},
+      headers: {...bearerHeader},
     );
     if (response.statusCode != 200) throw Exception('getUserByUserId() [${response.statusCode}] ${response.body}');
     return User.fromJson(jsonDecode(response.body));

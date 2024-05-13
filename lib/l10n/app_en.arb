@@ -100,7 +100,7 @@
     "dislikes": "Dislikes",
     "views": "Views",
     "editVideoAppBarTitle": "Edit Video",
-    "addDetails": "Add Details",
+    "addDetailsAppBarTitle": "Add Details",
     "addTitle": "Add a Title",
     "addDescription": "Add Description",
     "category": "Category",
@@ -136,5 +136,8 @@
     "filterPosts": "Posts",
     "filterUnwatched": "Unwatched",
     "youSureLogout": "Are you sure you want to logout?",
-    "logoutYes": "Yes. Logout"
+    "logoutYes": "Yes. Logout",
+    "edit": "Edit",
+    "delete": "Delete",
+    "updateVideoAppBarTitle": "Update Video"
 }

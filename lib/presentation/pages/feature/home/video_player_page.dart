@@ -26,6 +26,8 @@ import 'package:video_sharing_app/presentation/pages/feature/home/components/com
 import 'package:video_sharing_app/presentation/pages/feature/home/provider/video_detail_provider.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
+const videoPlayerRoute = 'video_player_route';
+
 class VideoPlayerPage extends StatefulWidget {
   const VideoPlayerPage({super.key, required Video video}) : _video = video;
 
@@ -41,57 +43,56 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // Change status bar color to black.
-      appBar: AppBar(
-        toolbarHeight: 0.0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.black,
-          statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.light,
-        ),
+    // Change status bar color to black for only this page.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.black,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.light,
       ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MyVideoPlayer(video: widget._video),
-            Expanded(
-              key: globalKey,
-              child: GestureDetector(
-                onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Video details
-                      VideoDetail(
-                        globalKey: globalKey,
-                        video: widget._video,
-                      ),
-                      // Related videos
-                      FutureBuilder(
-                        future: videoRepository.getRelatedVideos(widget._video.id!),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) return const SizedBox.shrink();
-                          final relatedVideos = snapshot.data!;
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: relatedVideos.length,
-                            itemBuilder: (context, index) {
-                              final relatedVideo = relatedVideos[index];
-                              return VideoCard(video: relatedVideo);
-                            },
-                          );
-                        },
-                      )
-                    ],
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MyVideoPlayer(video: widget._video),
+              Expanded(
+                key: globalKey,
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Video details
+                        VideoDetail(
+                          globalKey: globalKey,
+                          video: widget._video,
+                        ),
+                        // Related videos
+                        FutureBuilder(
+                          future: videoRepository.getRelatedVideos(widget._video.id!),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) return const SizedBox.shrink();
+                            final relatedVideos = snapshot.data!;
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: relatedVideos.length,
+                              itemBuilder: (context, index) {
+                                final relatedVideo = relatedVideos[index];
+                                return VideoCard(video: relatedVideo);
+                              },
+                            );
+                          },
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

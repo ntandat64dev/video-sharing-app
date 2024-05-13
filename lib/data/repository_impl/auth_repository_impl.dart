@@ -1,15 +1,15 @@
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:video_sharing_app/data/source/local/preferences_service.dart';
-import 'package:video_sharing_app/data/source/remote/fake/fake_auth_api.dart';
+import 'package:video_sharing_app/data/source/remote/auth_api.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final _prefs = PreferencesService.getInstance();
 
-  late final FakeAuthApi _authApi;
+  late final AuthApi _authApi;
 
   AuthRepositoryImpl() {
-    _authApi = FakeAuthApi();
+    _authApi = AuthApi();
   }
 
   @override

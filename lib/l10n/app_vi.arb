@@ -100,7 +100,7 @@
     "dislikes": "Không thích",
     "views": "Lượt xem",
     "editVideoAppBarTitle": "Chỉnh Sửa Video",
-    "addDetails": "Thêm chi tiết",
+    "addDetailsAppBarTitle": "Thêm chi tiết",
     "addTitle": "Thêm tiêu đề",
     "addDescription": "Thêm mô tả",
     "category": "Thể loại",
@@ -136,5 +136,8 @@
     "filterPosts": "Bài viết",
     "filterUnwatched": "Chưa xem",
     "youSureLogout": "Bạn có muốn đăng xuất không?",
-    "logoutYes": "Có. Đăng xuất"
+    "logoutYes": "Có. Đăng xuất",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "updateVideoAppBarTitle": "Cập Nhật Video"
 }

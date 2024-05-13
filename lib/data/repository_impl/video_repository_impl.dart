@@ -1,5 +1,5 @@
 import 'package:video_sharing_app/data/source/local/preferences_service.dart';
-import 'package:video_sharing_app/data/source/remote/fake/fake_video_api.dart';
+import 'package:video_sharing_app/data/source/remote/video_api.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
@@ -7,13 +7,13 @@ import 'package:video_sharing_app/domain/repository/video_repository.dart';
 
 class VideoRepositoryImpl implements VideoRepository {
   final PreferencesService _prefs = PreferencesService.getInstance();
-  late final FakeVideoApi _videoApi;
+  late final VideoApi _videoApi;
 
   VideoRepositoryImpl() {
     final token = _prefs.getToken();
     if (token == null) throw Exception('Cannot instantiate VideoRepositoryImpl because token is null');
 
-    _videoApi = FakeVideoApi();
+    _videoApi = VideoApi(token: token);
   }
 
   @override
@@ -32,6 +32,25 @@ class VideoRepositoryImpl implements VideoRepository {
       return _videoApi.postVideo(videoLocalPath: videoPath, video: video);
     } catch (e) {
       return null;
+    }
+  }
+
+  @override
+  Future<Video?> updateVideo(Video video) async {
+    try {
+      return await _videoApi.updateVideo(video);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> deleteVideoById(String videoId) async {
+    try {
+      await _videoApi.deleteVideo(videoId);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 

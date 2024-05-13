@@ -17,9 +17,9 @@ class VideoCard extends StatelessWidget {
       onTap: () {
         final route = MaterialPageRoute(
           builder: (context) => VideoPlayerPage(video: video),
-          settings: const RouteSettings(name: 'video_player_route'),
+          settings: const RouteSettings(name: videoPlayerRoute),
         );
-        if (ModalRoute.of(context)?.settings.name == 'video_player_route') {
+        if (ModalRoute.of(context)?.settings.name == videoPlayerRoute) {
           Navigator.pushReplacement(context, route);
         } else {
           Navigator.push(context, route);

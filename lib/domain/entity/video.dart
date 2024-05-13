@@ -112,11 +112,11 @@ class Video {
           'commentAllowed': commentAllowed,
         },
         'statistic': {
-          'viewCount': viewCount,
-          'likeCount': likeCount,
-          'dislikeCount': dislikeCount,
-          'commentCount': commentCount,
-          'downloadCount': downloadCount,
+          'viewCount': viewCount!.toInt(),
+          'likeCount': likeCount!.toInt(),
+          'dislikeCount': dislikeCount!.toInt(),
+          'commentCount': commentCount!.toInt(),
+          'downloadCount': downloadCount!.toInt(),
         }
       };
 }

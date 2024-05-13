@@ -1,12 +1,13 @@
 import 'dart:math';
 
+import 'package:video_sharing_app/data/source/remote/follow_api.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 
-class FakeFollowApi {
+class FakeFollowApi extends FollowApi {
   final follows = <Follow>[];
 
-  FakeFollowApi() {
+  FakeFollowApi({required super.token}) {
     for (int i = 0; i < 10; i++) {
       final follow = Follow(
         id: Random().nextInt(16).toRadixString(16),
@@ -35,17 +36,21 @@ class FakeFollowApi {
     }
   }
 
+  @override
   Future<List<Follow>> getMyFollows() async {
     return follows;
   }
 
+  @override
   Future<Follow> getFollowsForUserId(String userId) async {
     return follows[0];
   }
 
+  @override
   Future<Follow> postFollow(Follow follow) async {
     return follows[0];
   }
 
+  @override
   Future<void> deleteFollow(String followId) async {}
 }

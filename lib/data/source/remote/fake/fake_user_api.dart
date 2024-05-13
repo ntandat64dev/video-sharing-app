@@ -1,12 +1,13 @@
 import 'dart:math';
 
+import 'package:video_sharing_app/data/source/remote/user_api.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
 
-class FakeUserApi {
+class FakeUserApi extends UserApi {
   final users = <User>[];
 
-  FakeUserApi() {
+  FakeUserApi({required super.token}) {
     for (int i = 0; i < 10; i++) {
       final user = User(
         id: Random().nextInt(16).toRadixString(16),
@@ -36,10 +37,12 @@ class FakeUserApi {
     }
   }
 
+  @override
   Future<User> getMyInfo() async {
     return users[0];
   }
 
+  @override
   Future<User> getUserByUserId(String userId) async {
     return users[0];
   }

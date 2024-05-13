@@ -1,9 +1,12 @@
 import 'dart:math';
 
+import 'package:video_sharing_app/data/source/remote/comment_api.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
 
-class FakeCommentApi  {
+class FakeCommentApi extends CommentApi {
+  FakeCommentApi({required super.token});
 
+  @override
   Future<List<Comment>> getCommentsByVideoId(String videoId) async {
     final comments = <Comment>[];
     for (int i = 0; i < 10; i++) {
@@ -28,7 +31,8 @@ class FakeCommentApi  {
     return comments;
   }
 
-  Future<Comment?> postComment(Comment comment) async {
+  @override
+  Future<Comment> postComment(Comment comment) async {
     return Comment(
       id: Random().nextInt(16).toRadixString(16),
       videoId: comment.videoId,

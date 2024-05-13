@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
@@ -17,7 +15,7 @@ import 'package:video_sharing_app/presentation/pages/feature/upload/select_categ
 import 'package:video_sharing_app/presentation/pages/feature/upload/set_privacy_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 import 'package:video_sharing_app/presentation/shared/ext.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class UploadPage extends StatefulWidget {
   const UploadPage({super.key, required String videoPath}) : _videoPath = videoPath;
@@ -29,17 +27,23 @@ class UploadPage extends StatefulWidget {
 }
 
 class _UploadPageState extends State<UploadPage> {
-  late VideoPlayerController videoPlayerController;
   final audioPlayer = AudioPlayer();
 
-  bool initVideoPlayer = false;
+  Image? thumbnailImage;
   bool processingVideo = false;
 
   @override
   void initState() {
     super.initState();
-    videoPlayerController = VideoPlayerController.file(File(widget._videoPath))
-      ..initialize().then((value) => setState(() => initVideoPlayer = true));
+
+    VideoThumbnail.thumbnailData(
+      video: widget._videoPath,
+      imageFormat: ImageFormat.JPEG,
+    ).then((bytes) {
+      if (bytes != null) {
+        setState(() => thumbnailImage = Image.memory(bytes));
+      }
+    });
 
     // Play background music.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -63,7 +67,7 @@ class _UploadPageState extends State<UploadPage> {
           builder: (context, provider, child) {
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.addDetails),
+                title: Text(AppLocalizations.of(context)!.addDetailsAppBarTitle),
                 leading: appBarBackButton(context),
               ),
               body: LayoutBuilder(
@@ -85,12 +89,11 @@ class _UploadPageState extends State<UploadPage> {
                                     padding: const EdgeInsets.all(16.0),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(16.0),
-                                      child: !initVideoPlayer
-                                          ? const Center(child: CircularProgressIndicator())
-                                          : VideoPlayer(videoPlayerController),
+                                      child: thumbnailImage ?? const Center(child: CircularProgressIndicator()),
                                     ),
                                   ),
                                 ),
+                                // Title
                                 Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: Text(
@@ -122,7 +125,8 @@ class _UploadPageState extends State<UploadPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 16.0),
-                                InkWell(
+                                // Description
+                                videoDetailListTile(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final data = await Navigator.push(
@@ -141,13 +145,11 @@ class _UploadPageState extends State<UploadPage> {
                                       });
                                     }
                                   },
-                                  child: ListTile(
-                                    leading: const Icon(Icons.edit),
-                                    title: Text(AppLocalizations.of(context)!.addDescription),
-                                    trailing: const Icon(Icons.chevron_right),
-                                  ),
+                                  leading: const Icon(Icons.edit),
+                                  title: AppLocalizations.of(context)!.addDescription,
                                 ),
-                                InkWell(
+                                // Category
+                                videoDetailListTile(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final category = await Navigator.push(
@@ -160,26 +162,12 @@ class _UploadPageState extends State<UploadPage> {
                                       provider.updateVideoDetails((video) => video.category = category);
                                     }
                                   },
-                                  child: ListTile(
-                                    leading: const Icon(Icons.category),
-                                    title: Text(AppLocalizations.of(context)!.category),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          provider.category?.category ?? '',
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Icon(Icons.chevron_right),
-                                      ],
-                                    ),
-                                  ),
+                                  leading: const Icon(Icons.category),
+                                  title: AppLocalizations.of(context)!.category,
+                                  value: provider.category?.category,
                                 ),
-                                InkWell(
+                                // Privacy
+                                videoDetailListTile(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final privacy = await Navigator.push(
@@ -192,26 +180,12 @@ class _UploadPageState extends State<UploadPage> {
                                       provider.updateVideoDetails((video) => video.privacy = privacy);
                                     }
                                   },
-                                  child: ListTile(
-                                    leading: const Icon(Icons.remove_red_eye_sharp),
-                                    title: Text(AppLocalizations.of(context)!.privacy),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          provider.privacy.capitalize(),
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Icon(Icons.chevron_right),
-                                      ],
-                                    ),
-                                  ),
+                                  leading: const Icon(Icons.remove_red_eye_sharp),
+                                  title: AppLocalizations.of(context)!.privacy,
+                                  value: provider.privacy.capitalize(),
                                 ),
-                                InkWell(
+                                // Select Audience
+                                videoDetailListTile(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final data = await Navigator.push(
@@ -230,18 +204,11 @@ class _UploadPageState extends State<UploadPage> {
                                       });
                                     }
                                   },
-                                  child: ListTile(
-                                    leading: const Icon(Icons.group),
-                                    title: Text(AppLocalizations.of(context)!.selectAudience),
-                                    trailing: const Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(Icons.chevron_right),
-                                      ],
-                                    ),
-                                  ),
+                                  leading: const Icon(Icons.group),
+                                  title: AppLocalizations.of(context)!.selectAudience,
                                 ),
-                                InkWell(
+                                // Comment
+                                videoDetailListTile(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final commentAllowed = await Navigator.push(
@@ -256,25 +223,14 @@ class _UploadPageState extends State<UploadPage> {
                                       provider.updateVideoDetails((video) => video.commentAllowed = commentAllowed);
                                     }
                                   },
-                                  child: ListTile(
-                                    leading: const Icon(Icons.comment),
-                                    title: Text(AppLocalizations.of(context)!.comment),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          provider.commentAllowed
-                                              ? AppLocalizations.of(context)!.commentAllow
-                                              : AppLocalizations.of(context)!.commentDisallow,
-                                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Icon(Icons.chevron_right),
-                                      ],
-                                    ),
-                                  ),
+                                  leading: const Icon(Icons.comment),
+                                  title: AppLocalizations.of(context)!.comment,
+                                  value: provider.commentAllowed
+                                      ? AppLocalizations.of(context)!.commentAllow
+                                      : AppLocalizations.of(context)!.commentDisallow,
                                 ),
-                                InkWell(
+                                // Location
+                                videoDetailListTile(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final location = await Navigator.push(
@@ -285,21 +241,9 @@ class _UploadPageState extends State<UploadPage> {
                                       provider.updateVideoDetails((video) => video.location = location);
                                     }
                                   },
-                                  child: ListTile(
-                                    leading: const Icon(Icons.location_pin),
-                                    title: Text(AppLocalizations.of(context)!.location),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          provider.location ?? '',
-                                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Icon(Icons.chevron_right),
-                                      ],
-                                    ),
-                                  ),
+                                  leading: const Icon(Icons.location_pin),
+                                  title: AppLocalizations.of(context)!.location,
+                                  value: provider.location,
                                 ),
                               ],
                             ),
@@ -329,7 +273,10 @@ class _UploadPageState extends State<UploadPage> {
                                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                                           padding: const EdgeInsets.all(16.0),
                                         ),
-                                        child: Text(AppLocalizations.of(context)!.uploadVideo),
+                                        child: Text(
+                                          AppLocalizations.of(context)!.uploadVideo,
+                                          style: const TextStyle(fontSize: 16.0),
+                                        ),
                                       ),
                               ),
                             )
@@ -344,6 +291,36 @@ class _UploadPageState extends State<UploadPage> {
           },
         );
       },
+    );
+  }
+
+  Widget videoDetailListTile({
+    required void Function() onTap,
+    required Widget leading,
+    required String title,
+    String? value,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: ListTile(
+        leading: leading,
+        title: Text(title),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            value != null
+                ? Wrap(
+                    direction: Axis.vertical,
+                    children: [
+                      Text(value, style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal)),
+                      const SizedBox(width: 8.0),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
+      ),
     );
   }
 }
