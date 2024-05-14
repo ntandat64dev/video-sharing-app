@@ -139,5 +139,7 @@
     "logoutYes": "Yes. Logout",
     "edit": "Edit",
     "delete": "Delete",
-    "updateVideoAppBarTitle": "Update Video"
+    "updateVideoAppBarTitle": "Update Video",
+    "selectCategoryAppBarTitle": "Select Category",
+    "findLocation": "Find location"
 }

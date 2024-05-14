@@ -88,6 +88,7 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                           ),
                         ),
                       ),
+                      // Hashtag
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
@@ -134,6 +135,12 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                             ...hashtags.map(
                               (e) => Chip(
                                 label: Text(e),
+                                deleteIcon: const Icon(Icons.close, size: 20.0),
+                                onDeleted: () {
+                                  setState(() {
+                                    hashtags.remove(e);
+                                  });
+                                },
                                 side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                               ),
                             )

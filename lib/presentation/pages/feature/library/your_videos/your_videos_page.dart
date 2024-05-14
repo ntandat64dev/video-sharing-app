@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -37,62 +38,63 @@ class _YourVideosPageState extends State<YourVideosPage> {
           builder: (context, child) {
             return Consumer<YourVideosProvider>(
               builder: (context, provider, child) {
-                return Column(
-                  children: [
+                return CustomScrollView(
+                  slivers: [
                     // Filters
-                    SizedBox(
-                      width: double.infinity,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {},
-                                borderRadius: BorderRadius.circular(6.0),
-                                child: Ink(
-                                  height: 36.0,
-                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.outlineVariant,
-                                    borderRadius: BorderRadius.circular(6.0),
+                    SliverAppBar(
+                      automaticallyImplyLeading: false,
+                      titleSpacing: 0.0,
+                      floating: true,
+                      title: SizedBox(
+                        width: double.infinity,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {},
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  child: Ink(
+                                    height: 36.0,
+                                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.outlineVariant,
+                                      borderRadius: BorderRadius.circular(6.0),
+                                    ),
+                                    child: const Center(child: Icon(Icons.filter_list)),
                                   ),
-                                  child: const Center(child: Icon(Icons.filter_list)),
                                 ),
-                              ),
-                              const SizedBox(width: 10.0),
-                              FilterItem(
-                                onSelected: (value) {},
-                                text: AppLocalizations.of(context)!.filterVideos,
-                                isActive: true,
-                              ),
-                              const SizedBox(width: 10.0),
-                              FilterItem(
-                                onSelected: (value) {},
-                                text: AppLocalizations.of(context)!.filterShorts,
-                              ),
-                              const SizedBox(width: 10.0),
-                              FilterItem(
-                                onSelected: (value) {},
-                                text: AppLocalizations.of(context)!.filterLive,
-                              ),
-                            ],
+                                const SizedBox(width: 10.0),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterVideos,
+                                  isActive: true,
+                                ),
+                                const SizedBox(width: 10.0),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterShorts,
+                                ),
+                                const SizedBox(width: 10.0),
+                                FilterItem(
+                                  onSelected: (value) {},
+                                  text: AppLocalizations.of(context)!.filterLive,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                     // Videos list
-                    Expanded(
-                      child: provider.loading
-                          ? const Center(child: CircularProgressIndicator())
-                          : ListView.builder(
-                              itemCount: provider.videos.length,
-                              itemBuilder: (context, index) {
-                                return YourVideoItem(video: provider.videos[index]);
-                              },
-                            ),
-                    ),
+                    provider.loading
+                        ? const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
+                        : SliverList.builder(
+                            itemCount: provider.videos.length,
+                            itemBuilder: (context, index) => YourVideoItem(video: provider.videos[index]),
+                          ),
                   ],
                 );
               },
@@ -130,11 +132,11 @@ class YourVideoItem extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
-              child: Image.network(
-                video.thumbnails![Thumbnail.kDefault]!.url,
+              child: CachedNetworkImage(
+                imageUrl: video.thumbnails![Thumbnail.kDefault]!.url,
                 fit: BoxFit.cover,
-                height: 100,
-                width: 100,
+                width: 100.0,
+                height: 100.0,
               ),
             ),
             const SizedBox(width: 16.0),
@@ -197,8 +199,8 @@ class YourVideoItem extends StatelessWidget {
                   final isUpdateSuccess = await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => UpdateVideoPage(video: video)),
-                  ) as bool;
-                  if (isUpdateSuccess) {
+                  ) as bool?;
+                  if (isUpdateSuccess != null && isUpdateSuccess) {
                     Provider.of<YourVideosProvider>(context, listen: false).reload();
                   }
                 },
@@ -209,8 +211,8 @@ class YourVideoItem extends StatelessWidget {
               ),
               InkWell(
                 onTap: () async {
-                  final result = await videoRepository.deleteVideoById(video.id!);
-                  if (result) {
+                  final isDeleteSuccess = await videoRepository.deleteVideoById(video.id!);
+                  if (isDeleteSuccess) {
                     Navigator.pop(context);
                     Provider.of<YourVideosProvider>(context, listen: false).reload();
                   }

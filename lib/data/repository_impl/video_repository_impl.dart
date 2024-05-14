@@ -26,19 +26,33 @@ class VideoRepositoryImpl implements VideoRepository {
   }
 
   @override
-  Future<Video?> uploadVideo({required String videoPath, required Video video}) async {
+  Future<Video?> uploadVideo({
+    required String videoPath,
+    required String thumbnailPath,
+    required Video video,
+  }) async {
     try {
       video.userId = _prefs.getUserId();
-      return _videoApi.postVideo(videoLocalPath: videoPath, video: video);
+      return _videoApi.postVideo(
+        videoLocalPath: videoPath,
+        thumbnailLocalPath: thumbnailPath,
+        video: video,
+      );
     } catch (e) {
       return null;
     }
   }
 
   @override
-  Future<Video?> updateVideo(Video video) async {
+  Future<Video?> updateVideo({
+    String? thumbnailPath,
+    required Video video,
+  }) async {
     try {
-      return await _videoApi.updateVideo(video);
+      return await _videoApi.updateVideo(
+        thumbnailLocalPath: thumbnailPath,
+        video: video,
+      );
     } catch (e) {
       return null;
     }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -65,9 +66,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             Stack(
                               alignment: Alignment.bottomRight,
                               children: [
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage(user.thumbnails[Thumbnail.kDefault]!.url),
-                                  radius: 54.0,
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(100.0),
+                                  child: CachedNetworkImage(
+                                    imageUrl: user.thumbnails[Thumbnail.kDefault]!.url,
+                                    fit: BoxFit.cover,
+                                    width: 108.0,
+                                    height: 108.0,
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 3.0, right: 7.0),

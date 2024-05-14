@@ -3,13 +3,33 @@ import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dar
 import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class UploadProvider extends ChangeNotifier {
   final VideoRepository _videoRepository = VideoRepositoryImpl();
 
-  UploadProvider(this._videoPath);
+  UploadProvider({required String videoPath}) {
+    _videoPath = videoPath;
 
-  final String _videoPath;
+    // Generate thumbnail image path from video path.
+    syspaths.getTemporaryDirectory().then((tempDir) => {
+          VideoThumbnail.thumbnailFile(
+            video: videoPath,
+            thumbnailPath: tempDir.path,
+            imageFormat: ImageFormat.JPEG,
+          ).then((filePath) {
+            if (filePath != null) {
+              _thumbnailPath = filePath;
+              notifyListeners();
+            }
+          })
+        });
+  }
+
+  String? _thumbnailPath;
+  String? _videoPath;
+
   final Video _video = Video.post(
     userId: null, // Repository will set userId
     title: null,
@@ -25,12 +45,21 @@ class UploadProvider extends ChangeNotifier {
 
   Future<void> uploadVideo() async {
     _validateVideo();
-    final result = await _videoRepository.uploadVideo(videoPath: _videoPath, video: _video);
+    final result = await _videoRepository.uploadVideo(
+      videoPath: _videoPath!,
+      thumbnailPath: thumbnailPath!,
+      video: _video,
+    );
     if (result == null) throw Exception('Cannot upload video!');
   }
 
   void updateVideoDetails(Function(Video video) onUpdate) {
     onUpdate(_video);
+    notifyListeners();
+  }
+
+  void setThumbnailPath(String path) {
+    _thumbnailPath = path;
     notifyListeners();
   }
 
@@ -59,4 +88,6 @@ class UploadProvider extends ChangeNotifier {
   bool get commentAllowed => _video.commentAllowed!;
   String? get location => _video.location;
   Category? get category => _video.category;
+
+  String? get thumbnailPath => _thumbnailPath;
 }

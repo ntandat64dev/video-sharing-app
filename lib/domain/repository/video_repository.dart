@@ -5,9 +5,16 @@ import 'package:video_sharing_app/domain/entity/video_rating.dart';
 abstract class VideoRepository {
   Future<Video?> getVideoById(String videoId);
 
-  Future<Video?> uploadVideo({required String videoPath, required Video video});
+  Future<Video?> uploadVideo({
+    required String videoPath,
+    required String thumbnailPath,
+    required Video video,
+  });
 
-  Future<Video?> updateVideo(Video video);
+  Future<Video?> updateVideo({
+    String? thumbnailPath,
+    required Video video,
+  });
 
   Future<bool> deleteVideoById(String videoId);
 

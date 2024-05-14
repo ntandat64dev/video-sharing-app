@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SelectCategoryPage extends StatefulWidget {
   const SelectCategoryPage({super.key});
@@ -16,29 +17,14 @@ class _SelectCategoryPageState extends State<SelectCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
         surfaceTintColor: Colors.transparent,
-        shape: Border(bottom: BorderSide(width: 0.5, color: Theme.of(context).colorScheme.outlineVariant)),
-        titleSpacing: 4.0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: TextField(
-          decoration: InputDecoration(
-            fillColor: Theme.of(context).colorScheme.onInverseSurface,
-            filled: true,
-            prefixIcon: const Icon(Icons.search),
-            contentPadding: const EdgeInsets.all(8.0),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.0),
-              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.0),
-              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-            ),
-          ),
+        title: Text(
+          AppLocalizations.of(context)!.selectCategoryAppBarTitle,
+          style: const TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
       body: FutureBuilder(

@@ -1,12 +1,12 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/video_editor.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -90,16 +90,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onUploadClicked(context) async {
-    var results = await FilePicker.platform.pickFiles(
-      type: FileType.video,
-      allowMultiple: false,
-    );
-    if (results != null && results.count > 0) {
-      var videoPath = results.paths.single;
-      if (videoPath == null) return;
-      if (context.mounted) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => VideoEditor(videoPath: videoPath)));
-      }
+    final picker = ImagePicker();
+    final file = await picker.pickVideo(source: ImageSource.gallery);
+    if (file != null && mounted) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => VideoEditor(videoPath: file.path)));
     }
   }
 }

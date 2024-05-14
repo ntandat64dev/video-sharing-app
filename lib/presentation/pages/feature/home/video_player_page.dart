@@ -260,9 +260,14 @@ class _VideoDetailState extends State<VideoDetail> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              CircleAvatar(
-                                backgroundImage: NetworkImage(video.userImageUrl!),
-                                radius: 28.0,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(100.0),
+                                child: CachedNetworkImage(
+                                  imageUrl: video.userImageUrl!,
+                                  fit: BoxFit.cover,
+                                  width: 56.0,
+                                  height: 56.0,
+                                ),
                               ),
                               const SizedBox(width: 12.0),
                               Column(
@@ -337,9 +342,14 @@ class _VideoDetailState extends State<VideoDetail> {
                 ),
                 // Add comment
                 ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(video.userImageUrl!),
-                    radius: 24.0,
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(100.0),
+                    child: CachedNetworkImage(
+                      imageUrl: video.userImageUrl!,
+                      fit: BoxFit.cover,
+                      width: 48.0,
+                      height: 48.0,
+                    ),
                   ),
                   title: Focus(
                     onFocusChange: (value) {
@@ -583,9 +593,14 @@ class _VideoDescriptionState extends State<VideoDescription> {
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        CircleAvatar(
-                                          backgroundImage: NetworkImage(video.userImageUrl!),
-                                          radius: 28.0,
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(100.0),
+                                          child: CachedNetworkImage(
+                                            imageUrl: video.userImageUrl!,
+                                            fit: BoxFit.cover,
+                                            width: 48.0,
+                                            height: 48.0,
+                                          ),
                                         ),
                                         const SizedBox(width: 12.0),
                                         Column(
@@ -738,9 +753,14 @@ class _CommentDetailState extends State<CommentDetail> {
                             child: Column(
                               children: [
                                 ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(widget._video.userImageUrl!),
-                                    radius: 24.0,
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget._video.userImageUrl!,
+                                      fit: BoxFit.cover,
+                                      width: 48.0,
+                                      height: 48.0,
+                                    ),
                                   ),
                                   title: Focus(
                                     onFocusChange: (value) => setState(() => isCommentFocus = value),

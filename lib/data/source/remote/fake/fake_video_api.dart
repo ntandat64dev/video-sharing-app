@@ -58,7 +58,19 @@ class FakeVideoApi extends VideoApi {
   }
 
   @override
-  Future<Video> postVideo({required String videoLocalPath, required Video video}) async {
+  Future<Video> postVideo({
+    required String videoLocalPath,
+    required String thumbnailLocalPath,
+    required Video video,
+  }) async {
+    return videos[0];
+  }
+
+  @override
+  Future<Video> updateVideo({
+    String? thumbnailLocalPath,
+    required Video video,
+  }) async {
     return videos[0];
   }
 

@@ -1,23 +1,50 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
+import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:http/http.dart' as http;
 
 class VideoDetailsProvider extends ChangeNotifier {
   final VideoRepository _videoRepository = VideoRepositoryImpl();
 
-  VideoDetailsProvider(Video video) : _video = video..privacy = video.privacy!.toLowerCase();
+  VideoDetailsProvider(Video video) : _video = video..privacy = video.privacy!.toLowerCase() {
+    // Download thumbnail image then write to temp file.
+    final thumbnailUrl = video.thumbnails![Thumbnail.kDefault]!.url;
+    Future.wait([http.get(Uri.parse(thumbnailUrl)), syspaths.getTemporaryDirectory()]).then((value) {
+      final thumbnailResponse = value[0] as http.Response;
+      final thumbnailBytes = thumbnailResponse.bodyBytes;
+      final tempDir = value[1] as Directory;
+      final thumbnailFile = File('${tempDir.path}/thumbnail');
+      thumbnailFile.createSync();
+      thumbnailFile.writeAsBytesSync(thumbnailBytes);
+      _thumbnailPath = thumbnailFile.path;
+      notifyListeners();
+    });
+  }
 
+  String? _thumbnailPath;
   final Video _video;
 
   Future<Video?> updateVideo() async {
     _validateVideo();
-    return await _videoRepository.updateVideo(_video);
+    return await _videoRepository.updateVideo(
+      thumbnailPath: thumbnailPath,
+      video: _video,
+    );
   }
 
   void updateVideoDetails(Function(Video video) onUpdate) {
     onUpdate(_video);
+    notifyListeners();
+  }
+
+  void setThumbnailPath(String path) {
+    _thumbnailPath = path;
     notifyListeners();
   }
 
@@ -46,4 +73,6 @@ class VideoDetailsProvider extends ChangeNotifier {
   bool get commentAllowed => _video.commentAllowed!;
   String? get location => _video.location;
   Category? get category => _video.category;
+
+  String? get thumbnailPath => _thumbnailPath;
 }

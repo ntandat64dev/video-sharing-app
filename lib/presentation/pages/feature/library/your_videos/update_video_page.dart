@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
-import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
+import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/provider/video_details_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/add_description_page.dart';
@@ -27,11 +30,6 @@ class UpdateVideoPage extends StatefulWidget {
 
 class _UpdateVideoPageState extends State<UpdateVideoPage> {
   bool processingVideo = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +60,41 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                   aspectRatio: MediaQuery.of(context).size.width / videoPlayerRatio,
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      child: Image.network(
-                                        widget._video.thumbnails![Thumbnail.kDefault]!.url,
-                                        fit: BoxFit.cover,
+                                    child: SinkAnimated(
+                                      onTap: () => uploadThumbnail(context),
+                                      child: Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          Positioned.fill(
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(16.0),
+                                                child: provider.thumbnailPath != null
+                                                    ? Image.file(
+                                                        File(provider.thumbnailPath!),
+                                                        width: double.infinity,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : const Center(child: CircularProgressIndicator()),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 4.0, right: 4.0),
+                                            child: IconButton(
+                                              onPressed: () => uploadThumbnail(context),
+                                              style: IconButton.styleFrom(
+                                                backgroundColor: const Color.fromARGB(80, 0, 0, 0),
+                                              ),
+                                              icon: const Icon(
+                                                Icons.add_to_photos_rounded,
+                                                color: Colors.white,
+                                                size: 24.0,
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -106,7 +134,7 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                 ),
                                 const SizedBox(height: 16.0),
                                 // Description
-                                videoDetailListTile(
+                                videoDetailItem(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final data = await Navigator.push(
@@ -125,11 +153,11 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       });
                                     }
                                   },
-                                  leading: const Icon(Icons.edit),
+                                  icon: (Icons.edit),
                                   title: AppLocalizations.of(context)!.addDescription,
                                 ),
                                 // Category
-                                videoDetailListTile(
+                                videoDetailItem(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final category = await Navigator.push(
@@ -142,12 +170,12 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       provider.updateVideoDetails((video) => video.category = category);
                                     }
                                   },
-                                  leading: const Icon(Icons.category),
+                                  icon: (Icons.category),
                                   title: AppLocalizations.of(context)!.category,
                                   value: provider.category?.category,
                                 ),
                                 // Privacy
-                                videoDetailListTile(
+                                videoDetailItem(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final privacy = await Navigator.push(
@@ -160,12 +188,12 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       provider.updateVideoDetails((video) => video.privacy = privacy);
                                     }
                                   },
-                                  leading: const Icon(Icons.remove_red_eye_sharp),
+                                  icon: (Icons.remove_red_eye_sharp),
                                   title: AppLocalizations.of(context)!.privacy,
                                   value: provider.privacy.capitalize(),
                                 ),
                                 // Select Audience
-                                videoDetailListTile(
+                                videoDetailItem(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final data = await Navigator.push(
@@ -184,11 +212,11 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       });
                                     }
                                   },
-                                  leading: const Icon(Icons.group),
+                                  icon: (Icons.group),
                                   title: AppLocalizations.of(context)!.selectAudience,
                                 ),
                                 // Comment
-                                videoDetailListTile(
+                                videoDetailItem(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final commentAllowed = await Navigator.push(
@@ -203,14 +231,14 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       provider.updateVideoDetails((video) => video.commentAllowed = commentAllowed);
                                     }
                                   },
-                                  leading: const Icon(Icons.comment),
+                                  icon: (Icons.comment),
                                   title: AppLocalizations.of(context)!.comment,
                                   value: provider.commentAllowed
                                       ? AppLocalizations.of(context)!.commentAllow
                                       : AppLocalizations.of(context)!.commentDisallow,
                                 ),
                                 // Location
-                                videoDetailListTile(
+                                videoDetailItem(
                                   onTap: () async {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     final location = await Navigator.push(
@@ -221,7 +249,7 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       provider.updateVideoDetails((video) => video.location = location);
                                     }
                                   },
-                                  leading: const Icon(Icons.location_pin),
+                                  icon: Icons.location_pin,
                                   title: AppLocalizations.of(context)!.location,
                                   value: provider.location,
                                 ),
@@ -245,10 +273,10 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                             }
                                           } on Exception catch (e) {
                                             if (context.mounted) {
+                                              setState(() => processingVideo = false);
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(content: Text(e.toString())));
                                             }
-                                            setState(() => processingVideo = false);
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -277,30 +305,63 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
     );
   }
 
-  Widget videoDetailListTile({
+  void uploadThumbnail(context) async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(source: ImageSource.gallery);
+    if (file != null && mounted) {
+      Provider.of<VideoDetailsProvider>(context, listen: false).setThumbnailPath(file.path);
+    }
+  }
+
+  Widget videoDetailItem({
     required void Function() onTap,
-    required Widget leading,
+    required IconData icon,
     required String title,
     String? value,
   }) {
     return InkWell(
       onTap: onTap,
-      child: ListTile(
-        leading: leading,
-        title: Text(title),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            value != null
-                ? Wrap(
-                    direction: Axis.vertical,
-                    children: [
-                      Text(value, style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal)),
-                      const SizedBox(width: 8.0),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-            const Icon(Icons.chevron_right),
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Icon(icon, color: Theme.of(context).colorScheme.onSurface),
+                const SizedBox(width: 16.0),
+                Text(title, style: const TextStyle(fontSize: 16.0)),
+              ],
+            ),
+            const SizedBox(width: 32.0),
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  value != null
+                      ? Expanded(
+                          child: Wrap(
+                            alignment: WrapAlignment.end,
+                            children: [
+                              Text(
+                                value,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                              const SizedBox(width: 8.0),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  const Icon(Icons.chevron_right),
+                ],
+              ),
+            ),
           ],
         ),
       ),

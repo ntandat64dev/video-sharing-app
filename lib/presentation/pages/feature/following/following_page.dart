@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:video_sharing_app/data/repository_impl/follow_repository_impl.dart';
@@ -95,9 +96,14 @@ class _FollowingPageState extends State<FollowingPage> {
                                 onTap: () {},
                                 child: Column(
                                   children: [
-                                    CircleAvatar(
-                                      backgroundImage: NetworkImage(follow.userThumbnails![Thumbnail.kDefault]!.url),
-                                      radius: 36.0,
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(100.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl: follow.userThumbnails![Thumbnail.kDefault]!.url,
+                                        height: 72.0,
+                                        width: 72.0,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                     const SizedBox(height: 8.0),
                                     Text(follow.username!)

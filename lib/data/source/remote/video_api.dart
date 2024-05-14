@@ -35,29 +35,71 @@ class VideoApi {
     return Video.fromJson(jsonDecode(response.body));
   }
 
-  Future<Video> postVideo({required String videoLocalPath, required Video video}) async {
+  Future<Video> postVideo({
+    required String videoLocalPath,
+    required String thumbnailLocalPath,
+    required Video video,
+  }) async {
     final request = http.MultipartRequest('POST', Uri.http(baseURL, '/api/v1/videos'));
     request.headers.addAll(bearerHeader);
-    final videoFile = await http.MultipartFile.fromPath('videoFile', videoLocalPath);
+
+    // Add video file part.
+    final videoFile = await http.MultipartFile.fromPath(
+      'videoFile',
+      videoLocalPath,
+      contentType: MediaType('video', '*'),
+    );
+    request.files.add(videoFile);
+
+    // Add video thumbnail part.
+    final thumbnailFile = await http.MultipartFile.fromPath(
+      'thumbnailFile',
+      thumbnailLocalPath,
+      contentType: MediaType('image', '*'),
+    );
+    request.files.add(thumbnailFile);
+
+    // Add video metadata part.
     final metadata = http.MultipartFile.fromString(
       'metadata',
       jsonEncode(video.toJson()),
       contentType: MediaType('application', 'json'),
     );
-    request.files.add(videoFile);
     request.files.add(metadata);
+
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
     if (response.statusCode != 201) throw Exception('postVideo() [${response.statusCode}] ${response.body}');
     return Video.fromJson(jsonDecode(response.body));
   }
 
-  Future<Video> updateVideo(Video video) async {
-    final response = await http.put(
-      Uri.http(baseURL, '/api/v1/videos'),
-      headers: {'Content-Type': 'application/json', ...bearerHeader},
-      body: jsonEncode(video.toJson()),
+  Future<Video> updateVideo({
+    String? thumbnailLocalPath,
+    required Video video,
+  }) async {
+    final request = http.MultipartRequest('PUT', Uri.http(baseURL, '/api/v1/videos'));
+    request.headers.addAll(bearerHeader);
+
+    // Add thumbnail part.
+    if (thumbnailLocalPath != null) {
+      final thumbnailFile = await http.MultipartFile.fromPath(
+        'thumbnailFile',
+        thumbnailLocalPath,
+        contentType: MediaType('image', '*'),
+      );
+      request.files.add(thumbnailFile);
+    }
+
+    // Add video metadata part.
+    final metadata = http.MultipartFile.fromString(
+      'metadata',
+      jsonEncode(video.toJson()),
+      contentType: MediaType('application', 'json'),
     );
+    request.files.add(metadata);
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
     if (response.statusCode != 200) throw Exception('updateVideo() [${response.statusCode}] ${response.body}');
     return Video.fromJson(jsonDecode(response.body));
   }

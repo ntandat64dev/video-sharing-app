@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -33,9 +34,14 @@ class _CommentItemState extends State<CommentItem> {
                       Expanded(
                         child: Row(
                           children: [
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(widget._comment.authorProfileImageUrl!),
-                              radius: 16.0,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(100.0),
+                              child: CachedNetworkImage(
+                                imageUrl: widget._comment.authorProfileImageUrl!,
+                                fit: BoxFit.cover,
+                                width: 32.0,
+                                height: 32.0,
+                              ),
                             ),
                             const SizedBox(width: 8.0),
                             Text(

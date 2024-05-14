@@ -139,5 +139,7 @@
     "logoutYes": "Có. Đăng xuất",
     "edit": "Chỉnh sửa",
     "delete": "Xóa",
-    "updateVideoAppBarTitle": "Cập Nhật Video"
+    "updateVideoAppBarTitle": "Cập Nhật Video",
+    "selectCategoryAppBarTitle": "Chọn Thể Loại",
+    "findLocation": "Tìm kiếm vị trí"
 }
