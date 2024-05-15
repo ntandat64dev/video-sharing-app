@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
@@ -23,7 +25,23 @@ class YourVideosPage extends StatefulWidget {
 }
 
 class _YourVideosPageState extends State<YourVideosPage> {
+  static const pageSize = 10;
+
   final VideoRepository videoRepository = VideoRepositoryImpl();
+  PagingController<int, Video>? pagingController = PagingController(firstPageKey: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    pagingController!.addPageRequestListener(fetchPage);
+  }
+
+  @override
+  void dispose() {
+    pagingController!.dispose();
+    pagingController = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +52,7 @@ class _YourVideosPageState extends State<YourVideosPage> {
           title: Text(AppLocalizations.of(context)!.yourVideosAppBarTitle),
         ),
         body: ChangeNotifierProvider(
-          create: (context) => YourVideosProvider(),
+          create: (context) => YourVideosProvider(pagingController!),
           builder: (context, child) {
             return Consumer<YourVideosProvider>(
               builder: (context, provider, child) {
@@ -89,12 +107,14 @@ class _YourVideosPageState extends State<YourVideosPage> {
                       ),
                     ),
                     // Videos list
-                    provider.loading
-                        ? const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
-                        : SliverList.builder(
-                            itemCount: provider.videos.length,
-                            itemBuilder: (context, index) => YourVideoItem(video: provider.videos[index]),
-                          ),
+                    PagedSliverList<int, Video>(
+                      pagingController: pagingController!,
+                      builderDelegate: PagedChildBuilderDelegate(
+                        itemBuilder: (context, item, index) {
+                          return YourVideoItem(video: item);
+                        },
+                      ),
+                    ),
                   ],
                 );
               },
@@ -103,6 +123,17 @@ class _YourVideosPageState extends State<YourVideosPage> {
         ),
       ),
     );
+  }
+
+  void fetchPage(int pageKey) async {
+    final pageResponse = await videoRepository.getMyVideos(Pageable(page: pageKey, size: pageSize));
+    final isLastPage = pageResponse.items.length < pageSize;
+    if (isLastPage) {
+      pagingController?.appendLastPage(pageResponse.items);
+    } else {
+      final nextPageKey = pageKey + pageResponse.items.length;
+      pagingController?.appendPage(pageResponse.items, nextPageKey);
+    }
   }
 }
 

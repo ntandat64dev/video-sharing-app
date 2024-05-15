@@ -1,6 +1,8 @@
 import 'package:video_sharing_app/data/source/local/preferences_service.dart';
 import 'package:video_sharing_app/data/source/remote/video_api.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
@@ -33,7 +35,7 @@ class VideoRepositoryImpl implements VideoRepository {
   }) async {
     try {
       video.userId = _prefs.getUserId();
-      return _videoApi.postVideo(
+      return await _videoApi.postVideo(
         videoLocalPath: videoPath,
         thumbnailLocalPath: thumbnailPath,
         video: video,
@@ -69,20 +71,20 @@ class VideoRepositoryImpl implements VideoRepository {
   }
 
   @override
-  Future<List<Video>> getVideosByCategoryAll() async {
+  Future<PageResponse<Video>> getVideosByCategoryAll([Pageable? pageable]) async {
     try {
-      return await _videoApi.getVideoByCategoryAll();
+      return await _videoApi.getVideoByCategoryAll(pageable ?? Pageable());
     } catch (e) {
-      return [];
+      return PageResponse.empty();
     }
   }
 
   @override
-  Future<List<Video>> getMyVideos() async {
+  Future<PageResponse<Video>> getMyVideos([Pageable? pageable]) async {
     try {
-      return await _videoApi.getMyVideos();
+      return await _videoApi.getMyVideos(pageable ?? Pageable());
     } catch (e) {
-      return [];
+      return PageResponse.empty();
     }
   }
 
@@ -105,11 +107,11 @@ class VideoRepositoryImpl implements VideoRepository {
   }
 
   @override
-  Future<List<Video>> getRelatedVideos(String videoId) async {
+  Future<PageResponse<Video>> getRelatedVideos(String videoId, [Pageable? pageable]) async {
     try {
-      return await _videoApi.getRelatedVideos(videoId);
+      return await _videoApi.getRelatedVideos(videoId, pageable ?? Pageable());
     } catch (e) {
-      return [];
+      return PageResponse.empty();
     }
   }
 
@@ -128,6 +130,15 @@ class VideoRepositoryImpl implements VideoRepository {
       return await _videoApi.getAllCategories();
     } catch (e) {
       return [];
+    }
+  }
+
+  @override
+  Future<PageResponse<Video>> getFollowingVideos([Pageable? pageable]) async {
+    try {
+      return await _videoApi.getFollowingVideos(pageable ?? Pageable());
+    } catch (e) {
+      return PageResponse.empty();
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -12,6 +13,7 @@ import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
@@ -38,8 +40,25 @@ class VideoPlayerPage extends StatefulWidget {
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
+  static const relatedVideoPageSize = 10;
+
   final VideoRepository videoRepository = VideoRepositoryImpl();
   final GlobalKey globalKey = GlobalKey();
+
+  PagingController<int, Video>? relatedVideoPagingController = PagingController(firstPageKey: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    relatedVideoPagingController!.addPageRequestListener(fetchRelatedVideoPage);
+  }
+
+  @override
+  void dispose() {
+    relatedVideoPagingController!.dispose();
+    relatedVideoPagingController = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,22 +89,16 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                           video: widget._video,
                         ),
                         // Related videos
-                        FutureBuilder(
-                          future: videoRepository.getRelatedVideos(widget._video.id!),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) return const SizedBox.shrink();
-                            final relatedVideos = snapshot.data!;
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: relatedVideos.length,
-                              itemBuilder: (context, index) {
-                                final relatedVideo = relatedVideos[index];
-                                return VideoCard(video: relatedVideo);
-                              },
-                            );
-                          },
-                        )
+                        PagedListView<int, Video>(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          pagingController: relatedVideoPagingController!,
+                          builderDelegate: PagedChildBuilderDelegate(
+                            itemBuilder: (context, item, index) {
+                              return VideoCard(video: item);
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -96,6 +109,20 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         ),
       ),
     );
+  }
+
+  void fetchRelatedVideoPage(int pageKey) async {
+    final pageResponse = await videoRepository.getRelatedVideos(
+      widget._video.id!,
+      Pageable(page: pageKey, size: relatedVideoPageSize),
+    );
+    final isLastPage = pageResponse.items.length < relatedVideoPageSize;
+    if (isLastPage) {
+      relatedVideoPagingController?.appendLastPage(pageResponse.items);
+    } else {
+      final nextPageKey = pageKey + pageResponse.items.length;
+      relatedVideoPagingController?.appendPage(pageResponse.items, nextPageKey);
+    }
   }
 }
 
@@ -674,11 +701,26 @@ class CommentDetail extends StatefulWidget {
 }
 
 class _CommentDetailState extends State<CommentDetail> {
+  static const commentPageSize = 10;
+
   final commentRepository = CommentRepositoryImpl();
   final commentController = TextEditingController();
   var isCommentFocus = false;
 
-  late Future<List<Comment>> commentsFuture;
+  PagingController<int, Comment>? commentPagingController = PagingController(firstPageKey: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    commentPagingController!.addPageRequestListener(fetchCommentPage);
+  }
+
+  @override
+  void dispose() {
+    commentPagingController!.dispose();
+    commentPagingController = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -723,138 +765,139 @@ class _CommentDetailState extends State<CommentDetail> {
             ),
             const SizedBox(height: 8.0),
             Expanded(
-              child: FutureBuilder(
-                  future: commentRepository.getCommentsByVideoId(widget._video.id!),
-                  builder: (context, snapshot) {
-                    return CustomScrollView(
-                      slivers: [
-                        SliverAppBar(
-                          automaticallyImplyLeading: false,
-                          titleSpacing: 0.0,
-                          floating: true,
-                          title: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                FilterItem(
-                                  onSelected: (value) {},
-                                  text: AppLocalizations.of(context)!.filterTop,
-                                  isActive: true,
-                                ),
-                                const SizedBox(width: 8.0),
-                                FilterItem(onSelected: (value) {}, text: AppLocalizations.of(context)!.filterNewest),
-                              ],
-                            ),
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    automaticallyImplyLeading: false,
+                    titleSpacing: 0.0,
+                    floating: true,
+                    title: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          FilterItem(
+                            onSelected: (value) {},
+                            text: AppLocalizations.of(context)!.filterTop,
+                            isActive: true,
                           ),
-                          bottom: PreferredSize(
-                            preferredSize: const Size.fromHeight(78.0),
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  leading: ClipRRect(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    child: CachedNetworkImage(
-                                      imageUrl: widget._video.userImageUrl!,
-                                      fit: BoxFit.cover,
-                                      width: 48.0,
-                                      height: 48.0,
+                          const SizedBox(width: 8.0),
+                          FilterItem(onSelected: (value) {}, text: AppLocalizations.of(context)!.filterNewest),
+                        ],
+                      ),
+                    ),
+                    bottom: PreferredSize(
+                      preferredSize: const Size.fromHeight(78.0),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(100.0),
+                              child: CachedNetworkImage(
+                                imageUrl: widget._video.userImageUrl!,
+                                fit: BoxFit.cover,
+                                width: 48.0,
+                                height: 48.0,
+                              ),
+                            ),
+                            title: Focus(
+                              onFocusChange: (value) => setState(() => isCommentFocus = value),
+                              child: TextField(
+                                controller: commentController,
+                                cursorColor: Theme.of(context).colorScheme.primary,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  labelText: AppLocalizations.of(context)!.hintAddComment,
+                                  fillColor: Theme.of(context).colorScheme.onInverseSurface,
+                                  filled: true,
+                                  suffixIcon: isCommentFocus
+                                      ? IconButton(
+                                          onPressed: () async {
+                                            // Sent comment
+                                            await widget._sendComment(commentController.text);
+                                            commentPagingController!.refresh();
+                                            setState(() {
+                                              FocusScope.of(context).requestFocus(FocusNode());
+                                              commentController.text = '';
+                                            });
+                                          },
+                                          icon: const Icon(Icons.send),
+                                          color: Theme.of(context).colorScheme.primary)
+                                      : const Icon(null),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(48.0),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.outline.withAlpha(30),
                                     ),
                                   ),
-                                  title: Focus(
-                                    onFocusChange: (value) => setState(() => isCommentFocus = value),
-                                    child: TextField(
-                                      controller: commentController,
-                                      cursorColor: Theme.of(context).colorScheme.primary,
-                                      decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                                        labelText: AppLocalizations.of(context)!.hintAddComment,
-                                        fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                                        filled: true,
-                                        suffixIcon: isCommentFocus
-                                            ? IconButton(
-                                                onPressed: () async {
-                                                  // Sent comment
-                                                  await widget._sendComment(commentController.text);
-                                                  setState(() {
-                                                    FocusScope.of(context).requestFocus(FocusNode());
-                                                    commentController.text = '';
-                                                  });
-                                                },
-                                                icon: const Icon(Icons.send),
-                                                color: Theme.of(context).colorScheme.primary)
-                                            : const Icon(null),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(48.0),
-                                          borderSide: BorderSide(
-                                            color: Theme.of(context).colorScheme.outline.withAlpha(30),
-                                          ),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(48.0),
-                                          borderSide: BorderSide(
-                                            color: Theme.of(context).colorScheme.outline.withAlpha(30),
-                                          ),
-                                        ),
-                                      ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(48.0),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.outline.withAlpha(30),
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 8.0),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                        SliverAppBar(
-                          toolbarHeight: 1.0,
-                          automaticallyImplyLeading: false,
-                          titleSpacing: 0.0,
-                          pinned: true,
-                          title: Divider(
-                            height: 0.0,
-                            thickness: 1.0,
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                          ),
-                        ),
-                        !snapshot.hasData
-                            ? const SliverFillRemaining(
-                                hasScrollBody: false,
-                                child: Center(child: CircularProgressIndicator()),
-                              )
-                            : snapshot.data!.isEmpty
-                                ? SliverFillRemaining(
-                                    hasScrollBody: false,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)!.noComments,
-                                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
-                                        ),
-                                        const SizedBox(height: 8.0),
-                                        Text(AppLocalizations.of(context)!.saySomething),
-                                      ],
-                                    ),
-                                  )
-                                : SliverList.builder(
-                                    itemCount: snapshot.data!.length,
-                                    itemBuilder: (context, index) {
-                                      final comments = snapshot.data!;
-                                      // Temporary sort by newest.
-                                      comments.sort((a, b) => a.publishedAt!.isBefore(b.publishedAt!) ? 1 : -1);
-                                      return CommentItem(comment: comments[index]);
-                                    },
-                                  )
-                      ],
-                    );
-                  }),
+                          const SizedBox(height: 8.0),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverAppBar(
+                    toolbarHeight: 1.0,
+                    automaticallyImplyLeading: false,
+                    titleSpacing: 0.0,
+                    pinned: true,
+                    title: Divider(
+                      height: 0.0,
+                      thickness: 1.0,
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                    ),
+                  ),
+                  PagedSliverList<int, Comment>(
+                    pagingController: commentPagingController!,
+                    builderDelegate: PagedChildBuilderDelegate(
+                      noItemsFoundIndicatorBuilder: (context) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.noComments,
+                              style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(AppLocalizations.of(context)!.saySomething),
+                          ],
+                        );
+                      },
+                      itemBuilder: (context, item, index) => CommentItem(comment: item),
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
         ),
       ),
     );
+  }
+
+  void fetchCommentPage(int pageKey) async {
+    final pageResponse = await commentRepository.getCommentsByVideoId(
+      widget._video.id!,
+      Pageable(page: pageKey, size: commentPageSize),
+    );
+    final isLastPage = pageResponse.items.length < commentPageSize;
+    if (isLastPage) {
+      commentPagingController?.appendLastPage(pageResponse.items);
+    } else {
+      final nextPageKey = pageKey + pageResponse.items.length;
+      commentPagingController?.appendPage(pageResponse.items, nextPageKey);
+    }
   }
 }
 

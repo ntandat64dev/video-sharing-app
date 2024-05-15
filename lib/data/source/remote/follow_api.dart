@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:video_sharing_app/data/source/remote/constants.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 
 class FollowApi {
   FollowApi({required this.token}) {
@@ -12,13 +14,13 @@ class FollowApi {
   final String token;
   late final Map<String, String> bearerHeader;
 
-  Future<List<Follow>> getMyFollows() async {
+  Future<PageResponse<Follow>> getMyFollows(Pageable pageable) async {
     final response = await http.get(
-      Uri.http(baseURL, '/api/v1/follows/mine'),
+      Uri.http(baseURL, '/api/v1/follows/mine', pageable.toParam()),
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) throw Exception('getMyFollows() [${response.statusCode}] ${response.body}');
-    return (jsonDecode(response.body) as List).map((model) => Follow.fromJson(model)).toList();
+    return PageResponse.fromJson(jsonDecode(response.body), Follow.fromJsonModel);
   }
 
   Future<Follow> getFollowsForUserId(String userId) async {

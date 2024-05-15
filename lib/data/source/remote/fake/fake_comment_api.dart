@@ -2,12 +2,14 @@ import 'dart:math';
 
 import 'package:video_sharing_app/data/source/remote/comment_api.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 
 class FakeCommentApi extends CommentApi {
   FakeCommentApi({required super.token});
 
   @override
-  Future<List<Comment>> getCommentsByVideoId(String videoId) async {
+  Future<PageResponse<Comment>> getCommentsByVideoId(String videoId, Pageable pageable) async {
     final comments = <Comment>[];
     for (int i = 0; i < 10; i++) {
       final comment = Comment(
@@ -28,7 +30,7 @@ class FakeCommentApi extends CommentApi {
       comments.add(comment);
     }
 
-    return comments;
+    return PageResponse(pageNumber: 0, pageSize: 10, totalElements: 10, totalPages: 1, items: comments);
   }
 
   @override

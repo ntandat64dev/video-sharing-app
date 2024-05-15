@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:video_sharing_app/data/source/remote/follow_api.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 
 class FakeFollowApi extends FollowApi {
@@ -37,8 +39,8 @@ class FakeFollowApi extends FollowApi {
   }
 
   @override
-  Future<List<Follow>> getMyFollows() async {
-    return follows;
+  Future<PageResponse<Follow>> getMyFollows(Pageable pageable) async {
+    return PageResponse.empty();
   }
 
   @override

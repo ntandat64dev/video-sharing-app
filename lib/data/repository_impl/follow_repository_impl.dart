@@ -1,6 +1,8 @@
 import 'package:video_sharing_app/data/source/local/preferences_service.dart';
 import 'package:video_sharing_app/data/source/remote/follow_api.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 
 class FollowRepositoryImpl implements FollowRepository {
@@ -16,11 +18,11 @@ class FollowRepositoryImpl implements FollowRepository {
   }
 
   @override
-  Future<List<Follow>> getFollows() async {
+  Future<PageResponse<Follow>> getFollows([Pageable? pageable]) async {
     try {
-      return await _followApi.getMyFollows();
+      return await _followApi.getMyFollows(pageable ?? Pageable());
     } catch (e) {
-      return [];
+      return PageResponse.empty();
     }
   }
 
@@ -37,7 +39,7 @@ class FollowRepositoryImpl implements FollowRepository {
   Future<Follow?> follow(Follow follow) async {
     try {
       follow.followerId = _prefs.getUserId();
-      return _followApi.postFollow(follow);
+      return await _followApi.postFollow(follow);
     } catch (e) {
       return null;
     }
@@ -46,7 +48,7 @@ class FollowRepositoryImpl implements FollowRepository {
   @override
   Future<bool> unFollow(String followId) async {
     try {
-      _followApi.deleteFollow(followId);
+      await _followApi.deleteFollow(followId);
       return true;
     } catch (e) {
       return false;

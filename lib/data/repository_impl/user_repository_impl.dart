@@ -15,10 +15,10 @@ class UserRepositoryImpl implements UserRepository {
     _userApi = UserApi(token: token);
   }
 
-   @override
+  @override
   Future<User?> getUserInfo({String? userId}) async {
     try {
-      return userId == null ? _userApi.getMyInfo() : _userApi.getUserByUserId(userId);
+      return userId == null ? await _userApi.getMyInfo() : await _userApi.getUserByUserId(userId);
     } catch (e) {
       return null;
     }

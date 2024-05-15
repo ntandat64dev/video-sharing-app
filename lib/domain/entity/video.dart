@@ -119,4 +119,6 @@ class Video {
           'downloadCount': downloadCount?.toInt(),
         }
       };
+
+  static Video fromJsonModel(Map<String, dynamic> json) => Video.fromJson(json);
 }

@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:video_sharing_app/data/source/remote/constants.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
 
@@ -15,15 +17,15 @@ class VideoApi {
   final String token;
   late final Map<String, String> bearerHeader;
 
-  Future<List<Video>> getMyVideos() async {
+  Future<PageResponse<Video>> getMyVideos(Pageable pageable) async {
     var response = await http.get(
-      Uri.http(baseURL, '/api/v1/videos/mine'),
+      Uri.http(baseURL, '/api/v1/videos/mine', pageable.toParam()),
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) {
       throw Exception('getMyVideos() [${response.statusCode}] ${response.body}');
     }
-    return jsonDecode(response.body).map<Video>((e) => Video.fromJson(e)).toList();
+    return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
   }
 
   Future<Video> getVideoById(String videoId) async {
@@ -112,15 +114,15 @@ class VideoApi {
     if (response.statusCode != 204) throw Exception('deleteVideo() [${response.statusCode}] ${response.body}');
   }
 
-  Future<List<Video>> getVideoByCategoryAll() async {
+  Future<PageResponse<Video>> getVideoByCategoryAll(Pageable pageable) async {
     var response = await http.get(
-      Uri.http(baseURL, '/api/v1/videos/category/all/mine'),
+      Uri.http(baseURL, '/api/v1/videos/category/all/mine', pageable.toParam()),
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) {
       throw Exception('getVideoByCategoryAll() [${response.statusCode}] ${response.body}');
     }
-    return jsonDecode(response.body).map<Video>((e) => Video.fromJson(e)).toList();
+    return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
   }
 
   Future<VideoRating> getVideoRating(String videoId) async {
@@ -144,13 +146,13 @@ class VideoApi {
     return VideoRating.fromJson(jsonDecode(response.body));
   }
 
-  Future<List<Video>> getRelatedVideos(String videoId) async {
+  Future<PageResponse<Video>> getRelatedVideos(String videoId, Pageable pageable) async {
     var response = await http.get(
-      Uri.http(baseURL, '/api/v1/videos/related/mine', {'videoId': videoId}),
+      Uri.http(baseURL, '/api/v1/videos/related/mine', {'videoId': videoId, ...pageable.toParam()}),
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) throw Exception('getRelatedVideos() [${response.statusCode}] ${response.body}');
-    return jsonDecode(response.body).map<Video>((e) => Video.fromJson(e)).toList();
+    return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
   }
 
   Future<List<String>> getVideoCategories() async {
@@ -169,5 +171,14 @@ class VideoApi {
     );
     if (response.statusCode != 200) throw Exception('getAllCategories() [${response.statusCode}] ${response.body}');
     return List<Category>.from((jsonDecode(response.body) as List).map((e) => Category.fromJson(e)));
+  }
+
+  Future<PageResponse<Video>> getFollowingVideos(Pageable pageable) async {
+    var response = await http.get(
+      Uri.http(baseURL, '/api/v1/videos/following/mine', pageable.toParam()),
+      headers: {...bearerHeader},
+    );
+    if (response.statusCode != 200) throw Exception('getFollowingVideos() [${response.statusCode}] ${response.body}');
+    return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
   }
 }

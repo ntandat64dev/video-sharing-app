@@ -49,4 +49,6 @@ class Follow {
           'thumbnails': followerThumbnails?.map((key, value) => MapEntry(key, value.toJson())),
         }
       };
+
+  static Follow fromJsonModel(Map<String, dynamic> json) => Follow.fromJson(json);
 }

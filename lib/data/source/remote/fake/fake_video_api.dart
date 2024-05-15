@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:video_sharing_app/data/source/remote/video_api.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 
 class FakeVideoApi extends VideoApi {
   final videos = <Video>[];
@@ -48,8 +50,8 @@ class FakeVideoApi extends VideoApi {
   }
 
   @override
-  Future<List<Video>> getMyVideos() async {
-    return videos;
+  Future<PageResponse<Video>> getMyVideos(Pageable pageable) async {
+    return PageResponse.empty();
   }
 
   @override
@@ -78,8 +80,8 @@ class FakeVideoApi extends VideoApi {
   Future<void> deleteVideo(String videoId) async {}
 
   @override
-  Future<List<Video>> getVideoByCategoryAll() async {
-    return videos;
+  Future<PageResponse<Video>> getVideoByCategoryAll(Pageable pageable) async {
+    return PageResponse.empty();
   }
 
   @override
@@ -101,8 +103,8 @@ class FakeVideoApi extends VideoApi {
   }
 
   @override
-  Future<List<Video>> getRelatedVideos(String videoId) async {
-    return videos;
+  Future<PageResponse<Video>> getRelatedVideos(String videoId, Pageable pageable) async {
+    return PageResponse.empty();
   }
 
   @override

@@ -64,4 +64,6 @@ class Comment {
         'dislikeCount': dislikeCount,
         'replyCount': replyCount,
       };
+
+  static Comment fromJsonModel(Map<String, dynamic> json) => Comment.fromJson(json);
 }

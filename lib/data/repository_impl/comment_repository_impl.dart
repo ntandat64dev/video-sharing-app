@@ -1,6 +1,8 @@
 import 'package:video_sharing_app/data/source/local/preferences_service.dart';
 import 'package:video_sharing_app/data/source/remote/comment_api.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/repository/comment_repository.dart';
 
 class CommentRepositoryImpl implements CommentRepository {
@@ -15,11 +17,11 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
-  Future<List<Comment>> getCommentsByVideoId(String videoId) async {
+  Future<PageResponse<Comment>> getCommentsByVideoId(String videoId, [Pageable? pageable]) async {
     try {
-      return await _commentApi.getCommentsByVideoId(videoId);
+      return await _commentApi.getCommentsByVideoId(videoId, pageable ?? Pageable());
     } catch (e) {
-      return [];
+      return PageResponse.empty();
     }
   }
 
@@ -27,7 +29,7 @@ class CommentRepositoryImpl implements CommentRepository {
   Future<Comment?> postComment(Comment comment) async {
     try {
       comment.authorId = _prefs.getUserId();
-      return _commentApi.postComment(comment);
+      return await _commentApi.postComment(comment);
     } catch (e) {
       return null;
     }

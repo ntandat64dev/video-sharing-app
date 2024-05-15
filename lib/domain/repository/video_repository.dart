@@ -1,4 +1,6 @@
 import 'package:video_sharing_app/domain/entity/category.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
 
@@ -18,17 +20,19 @@ abstract class VideoRepository {
 
   Future<bool> deleteVideoById(String videoId);
 
-  Future<List<Video>> getVideosByCategoryAll();
+  Future<PageResponse<Video>> getVideosByCategoryAll([Pageable? pageable]);
 
-  Future<List<Video>> getMyVideos();
+  Future<PageResponse<Video>> getMyVideos([Pageable? pageable]);
 
   Future<VideoRating?> getVideoRating(String videoId);
 
   Future<VideoRating?> rateVideo({required String videoId, required Rating rating});
 
-  Future<List<Video>> getRelatedVideos(String videoId);
+  Future<PageResponse<Video>> getRelatedVideos(String videoId, [Pageable? pageable]);
 
   Future<List<String>> getVideoCategories();
 
   Future<List<Category>> getAllCategories();
+
+  Future<PageResponse<Video>> getFollowingVideos([Pageable? pageable]);
 }
