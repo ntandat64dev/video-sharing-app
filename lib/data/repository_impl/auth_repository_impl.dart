@@ -4,13 +4,14 @@ import 'package:video_sharing_app/data/source/remote/auth_api.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final _prefs = PreferencesService.getInstance();
+  AuthRepositoryImpl({
+    required PreferencesService pref,
+    required AuthApi authApi,
+  })  : _prefs = pref,
+        _authApi = authApi;
 
+  late final PreferencesService _prefs;
   late final AuthApi _authApi;
-
-  AuthRepositoryImpl() {
-    _authApi = AuthApi();
-  }
 
   @override
   Future<bool> signUp({required String username, required String password}) async {

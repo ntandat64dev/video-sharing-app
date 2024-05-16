@@ -6,15 +6,14 @@ import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/repository/comment_repository.dart';
 
 class CommentRepositoryImpl implements CommentRepository {
-  final PreferencesService _prefs = PreferencesService.getInstance();
+  CommentRepositoryImpl({
+    required PreferencesService pref,
+    required CommentApi commentApi,
+  })  : _prefs = pref,
+        _commentApi = commentApi;
+
+  late final PreferencesService _prefs;
   late final CommentApi _commentApi;
-
-  CommentRepositoryImpl() {
-    final token = _prefs.getToken();
-    if (token == null) throw Exception('Cannot instantiate CommentRepositoryImpl because token is null');
-
-    _commentApi = CommentApi(token: token);
-  }
 
   @override
   Future<PageResponse<Comment>> getCommentsByVideoId(String videoId, [Pageable? pageable]) async {

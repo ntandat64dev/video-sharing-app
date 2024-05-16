@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/data/repository_impl/preference_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/repository/preference_repository.dart';
 import 'package:video_sharing_app/presentation/components/radio_dialog.dart';
 import 'package:video_sharing_app/presentation/locale_provider.dart';
@@ -15,7 +16,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final PreferenceRepository preferenceRepository = PreferenceRepositoryImpl();
+  final PreferenceRepository preferenceRepository = getIt<PreferenceRepositoryImpl>();
 
   @override
   Widget build(BuildContext context) {

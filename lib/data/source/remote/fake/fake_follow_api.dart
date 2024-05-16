@@ -40,7 +40,13 @@ class FakeFollowApi extends FollowApi {
 
   @override
   Future<PageResponse<Follow>> getMyFollows(Pageable pageable) async {
-    return PageResponse.empty();
+    return PageResponse(
+      pageNumber: 0,
+      pageSize: 10,
+      totalElements: 10,
+      totalPages: 1,
+      items: follows,
+    );
   }
 
   @override

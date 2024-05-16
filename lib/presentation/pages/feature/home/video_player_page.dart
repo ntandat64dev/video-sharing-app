@@ -11,6 +11,7 @@ import 'package:video_sharing_app/data/repository_impl/comment_repository_impl.d
 import 'package:video_sharing_app/data/repository_impl/follow_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
@@ -42,7 +43,7 @@ class VideoPlayerPage extends StatefulWidget {
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
   static const relatedVideoPageSize = 10;
 
-  final VideoRepository videoRepository = VideoRepositoryImpl();
+  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
   final GlobalKey globalKey = GlobalKey();
 
   PagingController<int, Video>? relatedVideoPagingController = PagingController(firstPageKey: 0);
@@ -142,9 +143,9 @@ class VideoDetail extends StatefulWidget {
 }
 
 class _VideoDetailState extends State<VideoDetail> {
-  final UserRepository userRepository = UserRepositoryImpl();
-  final VideoRepository videoRepository = VideoRepositoryImpl();
-  final CommentRepository commentRepository = CommentRepositoryImpl();
+  final UserRepository userRepository = getIt<UserRepositoryImpl>();
+  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
+  final CommentRepository commentRepository = getIt<CommentRepositoryImpl>();
 
   final commentController = TextEditingController();
   var isCommentFocus = false;
@@ -450,9 +451,9 @@ class VideoDescription extends StatefulWidget {
 }
 
 class _VideoDescriptionState extends State<VideoDescription> {
-  final VideoRepository videoRepository = VideoRepositoryImpl();
-  final UserRepository userRepository = UserRepositoryImpl();
-  final FollowRepository followRepository = FollowRepositoryImpl();
+  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
+  final UserRepository userRepository = getIt<UserRepositoryImpl>();
+  final FollowRepository followRepository = getIt<FollowRepositoryImpl>();
 
   @override
   Widget build(BuildContext context) {
@@ -703,7 +704,7 @@ class CommentDetail extends StatefulWidget {
 class _CommentDetailState extends State<CommentDetail> {
   static const commentPageSize = 10;
 
-  final commentRepository = CommentRepositoryImpl();
+  final commentRepository = getIt<CommentRepositoryImpl>();
   final commentController = TextEditingController();
   var isCommentFocus = false;
 
@@ -916,7 +917,7 @@ class MyVideoPlayer extends StatefulWidget {
 const videoPlayerRatio = 230.0;
 
 class _MyVideoPlayerState extends State<MyVideoPlayer> {
-  final VideoRepository videoRepository = VideoRepositoryImpl();
+  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
 
   late VideoPlayerController _videoController;
   late Future<void> _initializeVideoPlayerFuture;

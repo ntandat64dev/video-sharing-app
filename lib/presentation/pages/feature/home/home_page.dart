@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
@@ -20,7 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const pageSize = 5;
 
-  final VideoRepository videoRepository = VideoRepositoryImpl();
+  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
   PagingController<int, Video>? pagingController = PagingController(firstPageKey: 0);
 
   @override

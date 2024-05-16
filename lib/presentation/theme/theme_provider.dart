@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:video_sharing_app/data/repository_impl/preference_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/repository/preference_repository.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  final PreferenceRepository _preferenceRepository = PreferenceRepositoryImpl();
+  final PreferenceRepository _preferenceRepository = getIt<PreferenceRepositoryImpl>();
 
   ThemeMode _themeMode = ThemeMode.system;
 

@@ -8,15 +8,14 @@ import 'package:video_sharing_app/domain/entity/video_rating.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 
 class VideoRepositoryImpl implements VideoRepository {
-  final PreferencesService _prefs = PreferencesService.getInstance();
+  VideoRepositoryImpl({
+    required PreferencesService pref,
+    required VideoApi videoApi,
+  })  : _prefs = pref,
+        _videoApi = videoApi;
+
+  late final PreferencesService _prefs;
   late final VideoApi _videoApi;
-
-  VideoRepositoryImpl() {
-    final token = _prefs.getToken();
-    if (token == null) throw Exception('Cannot instantiate VideoRepositoryImpl because token is null');
-
-    _videoApi = VideoApi(token: token);
-  }
 
   @override
   Future<Video?> getVideoById(String videoId) async {

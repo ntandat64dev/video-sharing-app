@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:video_sharing_app/data/repository_impl/follow_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
@@ -25,8 +26,8 @@ class _FollowingPageState extends State<FollowingPage> {
   static const followPageSize = 15;
   static const videoPageSize = 5;
 
-  final VideoRepository videoRepository = VideoRepositoryImpl();
-  final FollowRepository followRepository = FollowRepositoryImpl();
+  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
+  final FollowRepository followRepository = getIt<FollowRepositoryImpl>();
 
   PagingController<int, Follow>? followPagingController = PagingController(firstPageKey: 0);
   PagingController<int, Video>? videoPagingController = PagingController(firstPageKey: 0);

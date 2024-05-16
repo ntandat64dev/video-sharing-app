@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/auth/sign_up_page.dart';
@@ -17,7 +18,7 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final AuthRepository _authRepository = AuthRepositoryImpl();
+  final AuthRepository _authRepository = getIt<AuthRepositoryImpl>();
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();

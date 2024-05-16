@@ -6,16 +6,14 @@ import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 
 class FollowRepositoryImpl implements FollowRepository {
-  final _prefs = PreferencesService.getInstance();
+  FollowRepositoryImpl({
+    required PreferencesService pref,
+    required FollowApi followApi,
+  })  : _prefs = pref,
+        _followApi = followApi;
 
+  late final PreferencesService _prefs;
   late final FollowApi _followApi;
-
-  FollowRepositoryImpl() {
-    final token = _prefs.getToken();
-    if (token == null) throw Exception('Cannot instantiate FollowRepositoryImpl because token is null');
-
-    _followApi = FollowApi(token: token);
-  }
 
   @override
   Future<PageResponse<Follow>> getFollows([Pageable? pageable]) async {

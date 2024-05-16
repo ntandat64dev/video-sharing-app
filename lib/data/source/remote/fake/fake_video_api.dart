@@ -51,7 +51,13 @@ class FakeVideoApi extends VideoApi {
 
   @override
   Future<PageResponse<Video>> getMyVideos(Pageable pageable) async {
-    return PageResponse.empty();
+    return PageResponse(
+      pageNumber: 0,
+      pageSize: 20,
+      totalElements: 20,
+      totalPages: 1,
+      items: videos,
+    );
   }
 
   @override
@@ -81,7 +87,13 @@ class FakeVideoApi extends VideoApi {
 
   @override
   Future<PageResponse<Video>> getVideoByCategoryAll(Pageable pageable) async {
-    return PageResponse.empty();
+    return PageResponse(
+      pageNumber: 0,
+      pageSize: 20,
+      totalElements: 20,
+      totalPages: 1,
+      items: videos,
+    );
   }
 
   @override
@@ -104,7 +116,13 @@ class FakeVideoApi extends VideoApi {
 
   @override
   Future<PageResponse<Video>> getRelatedVideos(String videoId, Pageable pageable) async {
-    return PageResponse.empty();
+    return PageResponse(
+      pageNumber: 0,
+      pageSize: 20,
+      totalElements: 20,
+      totalPages: 1,
+      items: videos,
+    );
   }
 
   @override

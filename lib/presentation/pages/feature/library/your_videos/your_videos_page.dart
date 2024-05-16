@@ -5,6 +5,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
@@ -27,7 +28,7 @@ class YourVideosPage extends StatefulWidget {
 class _YourVideosPageState extends State<YourVideosPage> {
   static const pageSize = 10;
 
-  final VideoRepository videoRepository = VideoRepositoryImpl();
+  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
   PagingController<int, Video>? pagingController = PagingController(firstPageKey: 0);
 
   @override
@@ -141,7 +142,7 @@ class YourVideoItem extends StatelessWidget {
   YourVideoItem({super.key, required this.video});
 
   final Video video;
-  final VideoRepository videoRepository = VideoRepositoryImpl();
+  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
 
   @override
   Widget build(BuildContext context) {

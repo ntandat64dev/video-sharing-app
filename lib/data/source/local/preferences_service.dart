@@ -5,21 +5,12 @@ const String _kUserId = 'user_id';
 const String _kFirstLaunch = 'is_first_launch';
 
 class PreferencesService {
-  static PreferencesService? _instance;
-  static late SharedPreferences _prefs;
-  static bool _isInit = false;
-
   PreferencesService._();
+  static late SharedPreferences _prefs;
 
-  static Future<void> init() async {
+  static Future<PreferencesService> createAsync() async {
     _prefs = await SharedPreferences.getInstance();
-    _isInit = true;
-  }
-
-  static PreferencesService getInstance() {
-    if (_isInit == false) throw Exception('SharedPreferences was not initialized!');
-    _instance ??= PreferencesService._();
-    return _instance!;
+    return PreferencesService._();
   }
 
   dynamic getData(String key, {String? defaultVal}) {

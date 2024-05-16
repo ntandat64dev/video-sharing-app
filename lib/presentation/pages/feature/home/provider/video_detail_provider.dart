@@ -3,6 +3,7 @@ import 'package:video_sharing_app/data/repository_impl/comment_repository_impl.d
 import 'package:video_sharing_app/data/repository_impl/follow_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
 import 'package:video_sharing_app/domain/entity/user.dart';
@@ -14,10 +15,10 @@ import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 
 class VideoDetailProvider extends ChangeNotifier {
-  final UserRepository _userRepository = UserRepositoryImpl();
-  final FollowRepository _followRepository = FollowRepositoryImpl();
-  final VideoRepository _videoRepository = VideoRepositoryImpl();
-  final CommentRepository _commentRepository = CommentRepositoryImpl();
+  final UserRepository _userRepository = getIt<UserRepositoryImpl>();
+  final FollowRepository _followRepository = getIt<FollowRepositoryImpl>();
+  final VideoRepository _videoRepository = getIt<VideoRepositoryImpl>();
+  final CommentRepository _commentRepository = getIt<CommentRepositoryImpl>();
 
   late Video _initVideo;
 

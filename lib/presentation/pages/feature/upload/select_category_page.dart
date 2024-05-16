@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -11,7 +12,7 @@ class SelectCategoryPage extends StatefulWidget {
 }
 
 class _SelectCategoryPageState extends State<SelectCategoryPage> {
-  final VideoRepository videoRepository = VideoRepositoryImpl();
+  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
 
   @override
   Widget build(BuildContext context) {

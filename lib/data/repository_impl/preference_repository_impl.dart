@@ -5,7 +5,8 @@ const String kSettingTheme = 'theme';
 const String kSettingLocale = 'locale';
 
 class PreferenceRepositoryImpl implements PreferenceRepository {
-  final _prefs = PreferencesService.getInstance();
+  PreferenceRepositoryImpl({required PreferencesService pref}) : _prefs = pref;
+  late final PreferencesService _prefs;
 
   @override
   dynamic getPreference(String key, [String? defaultValue]) => _prefs.getData(key, defaultVal: defaultValue);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
@@ -7,7 +8,7 @@ import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class UploadProvider extends ChangeNotifier {
-  final VideoRepository _videoRepository = VideoRepositoryImpl();
+  final VideoRepository _videoRepository = getIt<VideoRepositoryImpl>();
 
   UploadProvider({required String videoPath}) {
     _videoPath = videoPath;

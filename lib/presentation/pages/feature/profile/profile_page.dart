@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
+import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
@@ -22,8 +23,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final AuthRepository authRepository = AuthRepositoryImpl();
-  final UserRepository userRepository = UserRepositoryImpl();
+  final AuthRepository authRepository = getIt<AuthRepositoryImpl>();
+  final UserRepository userRepository = getIt<UserRepositoryImpl>();
 
   @override
   Widget build(BuildContext context) {
