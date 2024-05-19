@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
+import 'package:video_sharing_app/domain/repository/notification_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
+import 'package:video_sharing_app/presentation/components/notification_button.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/video_editor.dart';
 
@@ -21,7 +22,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const pageSize = 5;
 
-  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
+  final videoRepository = getIt<VideoRepository>();
+  final notificationRepository = getIt<NotificationRepository>();
   PagingController<int, Video>? pagingController = PagingController(firstPageKey: 0);
 
   @override
@@ -49,13 +51,7 @@ class _HomePageState extends State<HomePage> {
             title: const Text('MeTube'),
             actions: [
               IconButton(onPressed: () => onUploadClicked(context), icon: const Icon(Icons.add)),
-              IconButton(
-                onPressed: () {},
-                icon: const Badge(
-                  label: Text('2'),
-                  child: Icon(Icons.notifications_rounded),
-                ),
-              ),
+              const NotificationButton(),
               IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
             ],
             bottom: PreferredSize(
@@ -102,14 +98,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void fetchPage(int pageKey) async {
-    final pageResponse = await videoRepository.getVideosByCategoryAll(Pageable(page: pageKey, size: pageSize));
+  void fetchPage(int page) async {
+    final pageResponse = await videoRepository.getVideosByCategoryAll(Pageable(page: page, size: pageSize));
     final isLastPage = pageResponse.items.length < pageSize;
     if (isLastPage) {
       pagingController?.appendLastPage(pageResponse.items);
     } else {
-      final nextPageKey = pageKey + pageResponse.items.length;
-      pagingController?.appendPage(pageResponse.items, nextPageKey);
+      final nextPage = page + 1;
+      pagingController?.appendPage(pageResponse.items, nextPage);
     }
   }
 

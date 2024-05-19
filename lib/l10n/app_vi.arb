@@ -141,5 +141,6 @@
     "delete": "Xóa",
     "updateVideoAppBarTitle": "Cập Nhật Video",
     "selectCategoryAppBarTitle": "Chọn Thể Loại",
-    "findLocation": "Tìm kiếm vị trí"
+    "findLocation": "Tìm kiếm vị trí",
+    "notificationsAppBarTitle": "Thông Báo"
 }

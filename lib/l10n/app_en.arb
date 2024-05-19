@@ -141,5 +141,6 @@
     "delete": "Delete",
     "updateVideoAppBarTitle": "Update Video",
     "selectCategoryAppBarTitle": "Select Category",
-    "findLocation": "Find location"
+    "findLocation": "Find location",
+    "notificationsAppBarTitle": "Notifications"
 }

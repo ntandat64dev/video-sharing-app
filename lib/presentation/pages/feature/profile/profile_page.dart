@@ -2,13 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
-import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
+import 'package:video_sharing_app/presentation/components/notification_button.dart';
 import 'package:video_sharing_app/presentation/components/radio_dialog.dart';
 import 'package:video_sharing_app/presentation/pages/auth/auth_methods_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/profile/settings_page.dart';
@@ -23,8 +22,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final AuthRepository authRepository = getIt<AuthRepositoryImpl>();
-  final UserRepository userRepository = getIt<UserRepositoryImpl>();
+  final authRepository = getIt<AuthRepository>();
+  final userRepository = getIt<UserRepository>();
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
           leading: Icon(Icons.videocam, size: 32.0, color: Theme.of(context).colorScheme.primary),
           titleSpacing: 0.0,
           actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Badge(
-                label: Text('2'),
-                child: Icon(Icons.notifications_rounded),
-              ),
-            ),
+            const NotificationButton(),
             IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
           ],
         ),

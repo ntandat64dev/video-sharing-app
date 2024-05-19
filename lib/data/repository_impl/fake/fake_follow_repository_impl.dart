@@ -1,15 +1,13 @@
 import 'dart:math';
 
-import 'package:video_sharing_app/data/source/remote/follow_api.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
 import 'package:video_sharing_app/domain/entity/page_response.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
+import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 
-class FakeFollowApi extends FollowApi {
-  final follows = <Follow>[];
-
-  FakeFollowApi({required super.token}) {
+class FakeFollowRepositoryImpl implements FollowRepository {
+  FakeFollowRepositoryImpl() {
     for (int i = 0; i < 10; i++) {
       final follow = Follow(
         id: Random().nextInt(16).toRadixString(16),
@@ -38,27 +36,31 @@ class FakeFollowApi extends FollowApi {
     }
   }
 
+  final follows = <Follow>[];
+
   @override
-  Future<PageResponse<Follow>> getMyFollows(Pageable pageable) async {
+  Future<PageResponse<Follow>> getFollows([Pageable? pageable]) async {
     return PageResponse(
       pageNumber: 0,
-      pageSize: 10,
-      totalElements: 10,
+      pageSize: follows.length,
+      totalElements: follows.length,
       totalPages: 1,
       items: follows,
     );
   }
 
   @override
-  Future<Follow> getFollowsForUserId(String userId) async {
+  Future<Follow?> getFollowFor(String userId) async {
     return follows[0];
   }
 
   @override
-  Future<Follow> postFollow(Follow follow) async {
+  Future<Follow?> follow(Follow follow) async {
     return follows[0];
   }
 
   @override
-  Future<void> deleteFollow(String followId) async {}
+  Future<bool> unFollow(String followId) async {
+    return true;
+  }
 }

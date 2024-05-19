@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
@@ -28,7 +27,7 @@ class YourVideosPage extends StatefulWidget {
 class _YourVideosPageState extends State<YourVideosPage> {
   static const pageSize = 10;
 
-  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
+  final videoRepository = getIt<VideoRepository>();
   PagingController<int, Video>? pagingController = PagingController(firstPageKey: 0);
 
   @override
@@ -126,14 +125,14 @@ class _YourVideosPageState extends State<YourVideosPage> {
     );
   }
 
-  void fetchPage(int pageKey) async {
-    final pageResponse = await videoRepository.getMyVideos(Pageable(page: pageKey, size: pageSize));
+  void fetchPage(int page) async {
+    final pageResponse = await videoRepository.getMyVideos(Pageable(page: page, size: pageSize));
     final isLastPage = pageResponse.items.length < pageSize;
     if (isLastPage) {
       pagingController?.appendLastPage(pageResponse.items);
     } else {
-      final nextPageKey = pageKey + pageResponse.items.length;
-      pagingController?.appendPage(pageResponse.items, nextPageKey);
+      final nextPage = page + 1;
+      pagingController?.appendPage(pageResponse.items, nextPage);
     }
   }
 }
@@ -142,7 +141,7 @@ class YourVideoItem extends StatelessWidget {
   YourVideoItem({super.key, required this.video});
 
   final Video video;
-  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
+  final videoRepository = getIt<VideoRepository>();
 
   @override
   Widget build(BuildContext context) {

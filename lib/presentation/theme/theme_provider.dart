@@ -5,7 +5,7 @@ import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/repository/preference_repository.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  final PreferenceRepository _preferenceRepository = getIt<PreferenceRepositoryImpl>();
+  final _preferenceRepository = getIt<PreferenceRepository>();
 
   ThemeMode _themeMode = ThemeMode.system;
 

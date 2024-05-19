@@ -7,10 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_player/video_player.dart';
-import 'package:video_sharing_app/data/repository_impl/comment_repository_impl.dart';
-import 'package:video_sharing_app/data/repository_impl/follow_repository_impl.dart';
-import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
-import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/follow.dart';
@@ -43,7 +39,7 @@ class VideoPlayerPage extends StatefulWidget {
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
   static const relatedVideoPageSize = 10;
 
-  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
+  final videoRepository = getIt<VideoRepository>();
   final GlobalKey globalKey = GlobalKey();
 
   PagingController<int, Video>? relatedVideoPagingController = PagingController(firstPageKey: 0);
@@ -112,17 +108,17 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     );
   }
 
-  void fetchRelatedVideoPage(int pageKey) async {
+  void fetchRelatedVideoPage(int page) async {
     final pageResponse = await videoRepository.getRelatedVideos(
       widget._video.id!,
-      Pageable(page: pageKey, size: relatedVideoPageSize),
+      Pageable(page: page, size: relatedVideoPageSize),
     );
     final isLastPage = pageResponse.items.length < relatedVideoPageSize;
     if (isLastPage) {
       relatedVideoPagingController?.appendLastPage(pageResponse.items);
     } else {
-      final nextPageKey = pageKey + pageResponse.items.length;
-      relatedVideoPagingController?.appendPage(pageResponse.items, nextPageKey);
+      final nextPage = page + 1;
+      relatedVideoPagingController?.appendPage(pageResponse.items, nextPage);
     }
   }
 }
@@ -143,9 +139,9 @@ class VideoDetail extends StatefulWidget {
 }
 
 class _VideoDetailState extends State<VideoDetail> {
-  final UserRepository userRepository = getIt<UserRepositoryImpl>();
-  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
-  final CommentRepository commentRepository = getIt<CommentRepositoryImpl>();
+  final userRepository = getIt<UserRepository>();
+  final videoRepository = getIt<VideoRepository>();
+  final commentRepository = getIt<CommentRepository>();
 
   final commentController = TextEditingController();
   var isCommentFocus = false;
@@ -451,9 +447,9 @@ class VideoDescription extends StatefulWidget {
 }
 
 class _VideoDescriptionState extends State<VideoDescription> {
-  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
-  final UserRepository userRepository = getIt<UserRepositoryImpl>();
-  final FollowRepository followRepository = getIt<FollowRepositoryImpl>();
+  final videoRepository = getIt<VideoRepository>();
+  final userRepository = getIt<UserRepository>();
+  final followRepository = getIt<FollowRepository>();
 
   @override
   Widget build(BuildContext context) {
@@ -704,7 +700,7 @@ class CommentDetail extends StatefulWidget {
 class _CommentDetailState extends State<CommentDetail> {
   static const commentPageSize = 10;
 
-  final commentRepository = getIt<CommentRepositoryImpl>();
+  final commentRepository = getIt<CommentRepository>();
   final commentController = TextEditingController();
   var isCommentFocus = false;
 
@@ -887,17 +883,17 @@ class _CommentDetailState extends State<CommentDetail> {
     );
   }
 
-  void fetchCommentPage(int pageKey) async {
+  void fetchCommentPage(int page) async {
     final pageResponse = await commentRepository.getCommentsByVideoId(
       widget._video.id!,
-      Pageable(page: pageKey, size: commentPageSize),
+      Pageable(page: page, size: commentPageSize),
     );
     final isLastPage = pageResponse.items.length < commentPageSize;
     if (isLastPage) {
       commentPagingController?.appendLastPage(pageResponse.items);
     } else {
-      final nextPageKey = pageKey + pageResponse.items.length;
-      commentPagingController?.appendPage(pageResponse.items, nextPageKey);
+      final nextPage = page + 1;
+      commentPagingController?.appendPage(pageResponse.items, nextPage);
     }
   }
 }
@@ -917,7 +913,7 @@ class MyVideoPlayer extends StatefulWidget {
 const videoPlayerRatio = 230.0;
 
 class _MyVideoPlayerState extends State<MyVideoPlayer> {
-  final VideoRepository videoRepository = getIt<VideoRepositoryImpl>();
+  final videoRepository = getIt<VideoRepository>();
 
   late VideoPlayerController _videoController;
   late Future<void> _initializeVideoPlayerFuture;

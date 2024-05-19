@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/auth/sign_in_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -15,7 +14,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final AuthRepository _authRepository = getIt<AuthRepositoryImpl>();
+  final _authRepository = getIt<AuthRepository>();
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();

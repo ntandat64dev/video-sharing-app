@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:video_sharing_app/data/repository_impl/auth_repository_impl.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
@@ -8,7 +8,6 @@ import 'package:video_sharing_app/presentation/pages/auth/sign_up_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/main_page.dart';
 import 'package:video_sharing_app/presentation/route_provider.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -18,7 +17,7 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final AuthRepository _authRepository = getIt<AuthRepositoryImpl>();
+  final _authRepository = getIt<AuthRepository>();
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
