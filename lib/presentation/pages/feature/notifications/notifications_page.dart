@@ -10,7 +10,7 @@ import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/repository/notification_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
-import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
@@ -67,8 +67,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       }
                     }
                     if (notification.isRead == false) {
-                      await notificationRepository.readNotification(notification.id);
-                      pagingController!.refresh();
+                      var isReadSuccess = await notificationRepository.readNotification(notification.id);
+                      if (isReadSuccess) {
+                        pagingController!.refresh();
+                      }
                     }
                   },
                   notification: item,

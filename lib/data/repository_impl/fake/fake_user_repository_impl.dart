@@ -41,4 +41,7 @@ class FakeUserRepositoryImpl implements UserRepository {
   Future<User?> getUserInfo({String? userId}) async {
     return users[0];
   }
+
+  @override
+  String? getMyId() => '12345678';
 }

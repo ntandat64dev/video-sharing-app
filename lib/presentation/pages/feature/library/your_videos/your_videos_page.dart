@@ -12,7 +12,7 @@ import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
-import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/provider/your_videos_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/update_video_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/set_privacy_page.dart';

@@ -15,7 +15,7 @@ class FakeAuthRepositoryImpl implements AuthRepository {
   bool wasUserLoggedIn() => true;
 
   @override
-  void signOut() {}
+  Future<bool> signOut() async => true;
 
   @override
   bool isFirstLaunched() => true;

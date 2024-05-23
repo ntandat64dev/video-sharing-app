@@ -72,6 +72,7 @@
     "followedButton": "Followed",
     "comments": "Comments",
     "hintAddComment": "Add a comment...",
+    "hintAddReply": "Add a reply...",
     "nFollowers": "{count, plural, other{{count} followers} zero{0 follower} one{1 follower}}",
     "@nFollowers": {
         "placeholders": {
@@ -142,5 +143,15 @@
     "updateVideoAppBarTitle": "Update Video",
     "selectCategoryAppBarTitle": "Select Category",
     "findLocation": "Find location",
-    "notificationsAppBarTitle": "Notifications"
+    "notificationsAppBarTitle": "Notifications",
+    "replies": "Replies",
+    "nReplies": "{count, plural, other{{count} replies} zero{0 reply} one{1 reply}}",
+    "@nReplies": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    }
 }

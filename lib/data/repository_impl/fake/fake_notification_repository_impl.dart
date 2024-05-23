@@ -40,6 +40,11 @@ class FakeNotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
+  Future<bool> unregisterMessageToken(String token) async {
+    return true;
+  }
+
+  @override
   Future<int> countUnseenNotifications() async {
     return 5;
   }

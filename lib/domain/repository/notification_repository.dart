@@ -5,6 +5,8 @@ import 'package:video_sharing_app/domain/entity/pageable.dart';
 abstract class NotificationRepository {
   Future<bool> registerMessageToken(String token);
 
+  Future<bool> unregisterMessageToken(String token);
+
   Future<bool> readNotification(String id);
 
   Future<int> countUnseenNotifications();

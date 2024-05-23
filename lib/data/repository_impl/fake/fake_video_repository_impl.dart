@@ -6,6 +6,7 @@ import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
+import 'package:video_sharing_app/domain/enum/rating.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 
 class FakeVideoRepositoryImpl implements VideoRepository {
@@ -101,19 +102,21 @@ class FakeVideoRepositoryImpl implements VideoRepository {
   @override
   Future<VideoRating?> getVideoRating(String videoId) async {
     return VideoRating(
-        videoId: videoId,
-        userId: Random().nextInt(16).toRadixString(16),
-        rating: Rating.like,
-        publishedAt: DateTime.now());
+      videoId: videoId,
+      userId: Random().nextInt(16).toRadixString(16),
+      rating: Rating.like,
+      publishedAt: DateTime.now(),
+    );
   }
 
   @override
   Future<VideoRating?> rateVideo({required String videoId, required Rating rating}) async {
     return VideoRating(
-        videoId: videoId,
-        userId: Random().nextInt(16).toRadixString(16),
-        rating: Rating.like,
-        publishedAt: DateTime.now());
+      videoId: videoId,
+      userId: Random().nextInt(16).toRadixString(16),
+      rating: Rating.like,
+      publishedAt: DateTime.now(),
+    );
   }
 
   @override

@@ -21,6 +21,7 @@ void showConsistentBottomSheet({
       ),
       builder: (context) => SizedBox(
         height: height,
+        width: double.infinity,
         child: Column(
           children: [
             const SizedBox(height: 12.0),

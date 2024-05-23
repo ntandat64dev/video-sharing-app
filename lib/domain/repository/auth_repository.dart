@@ -3,9 +3,9 @@ abstract class AuthRepository {
 
   Future<bool> signIn({required String username, required String password});
 
-  bool wasUserLoggedIn();
+  Future<bool> signOut();
 
-  void signOut();
+  bool wasUserLoggedIn();
 
   bool isFirstLaunched();
 

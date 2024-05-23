@@ -25,6 +25,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final authRepository = getIt<AuthRepository>();
   final userRepository = getIt<UserRepository>();
 
+  var sigingOut = false;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -203,14 +205,39 @@ class _ProfilePageState extends State<ProfilePage> {
                         AppLocalizations.of(context)!.logout,
                         style: const TextStyle(color: Colors.red, fontSize: 20.0, fontWeight: FontWeight.bold),
                       ),
-                      negativeButton: bottomSheetNegativeButton(context: context),
-                      confirmButton: bottomSheetConfirmButton(
-                          context: context,
-                          onPressed: () {
-                            Navigator.pop(context);
-                            authRepository.signOut();
-                            Provider.of<RouteProvider>(context, listen: false).route = const AuthMethodsPage();
-                          }),
+                      negativeButton: bottomSheetNegativeButton(
+                        context: context,
+                        onPressed: () {
+                          sigingOut = false;
+                          Navigator.pop(context);
+                        },
+                      ),
+                      confirmButton: StatefulBuilder(
+                        builder: (context, setState) {
+                          return sigingOut
+                              ? const Center(child: CircularProgressIndicator())
+                              : bottomSheetConfirmButton(
+                                  context: context,
+                                  onPressed: () async {
+                                    setState(() => sigingOut = true);
+                                    final isSuccess = await authRepository.signOut();
+                                    setState(() => sigingOut = false);
+                                    if (isSuccess && context.mounted) {
+                                      Navigator.pop(context);
+                                      Provider.of<RouteProvider>(context, listen: false).route =
+                                          const AuthMethodsPage();
+                                    } else if (context.mounted) {
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Log out failed. Please try again!'),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                );
+                        },
+                      ),
                       content: Text(
                         AppLocalizations.of(context)!.youSureLogout,
                         style: const TextStyle(

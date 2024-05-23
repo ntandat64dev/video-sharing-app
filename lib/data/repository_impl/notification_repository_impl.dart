@@ -20,6 +20,16 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
+  Future<bool> unregisterMessageToken(String token) async {
+    try {
+      await _notificationApi.unregisterMessageToken(token);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
   Future<int> countUnseenNotifications() async {
     try {
       return await _notificationApi.countUnseenNotifications();

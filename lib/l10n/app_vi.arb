@@ -72,6 +72,7 @@
     "followedButton": "Đã theo dõi",
     "comments": "Bình luận",
     "hintAddComment": "Thêm bình luận...",
+    "hintAddReply": "Thêm phản hồi...",
     "nFollowers": "{count, plural, other{{count} followers} zero{0 follower} one{1 follower}}",
     "@nFollowers": {
         "placeholders": {
@@ -142,5 +143,15 @@
     "updateVideoAppBarTitle": "Cập Nhật Video",
     "selectCategoryAppBarTitle": "Chọn Thể Loại",
     "findLocation": "Tìm kiếm vị trí",
-    "notificationsAppBarTitle": "Thông Báo"
+    "notificationsAppBarTitle": "Thông Báo",
+    "replies": "Phản hồi",
+    "nReplies": "{count, plural, other{{count} replies} zero{0 reply} one{1 reply}}",
+    "@nReplies": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    }
 }

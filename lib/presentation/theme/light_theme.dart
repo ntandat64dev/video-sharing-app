@@ -17,6 +17,7 @@ ThemeData lightTheme = ThemeData(
     secondaryContainer: Color(0xFFE8DEF8),
     onSecondaryContainer: Color(0xFF1D192B),
     surface: Color(0xFFFEF7FF),
+    surfaceVariant: Color(0xFFF4EFF5),
     onSurface: Color(0xFF1D1B20),
     inverseSurface: Color(0xFF322F35),
     onInverseSurface: Color(0xFFF5EFF7),

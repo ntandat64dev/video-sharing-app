@@ -23,6 +23,17 @@ class NotificationApi {
     if (response.statusCode != 201) throw Exception('registerMessageToken() [${response.statusCode}] ${response.body}');
   }
 
+  Future<void> unregisterMessageToken(String token) async {
+    var response = await http.delete(
+      Uri.http(baseURL, '/api/v1/notifications/message-token'),
+      headers: {...bearerHeader},
+      body: token,
+    );
+    if (response.statusCode != 204) {
+      throw Exception('unregisterMessageToken() [${response.statusCode}] ${response.body}');
+    }
+  }
+
   Future<void> readNotification(String id) async {
     var response = await http.post(
       Uri.http(baseURL, '/api/v1/notifications/read/mine', {'id': id}),

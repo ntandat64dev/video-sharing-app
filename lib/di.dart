@@ -63,7 +63,7 @@ Future<void> configureDependencies() async {
     ),
   );
   getIt.registerFactory<PreferenceRepository>(() => PreferenceRepositoryImpl(pref: pref));
-  getIt.registerFactory<UserRepository>(() => UserRepositoryImpl(userApi: getIt<UserApi>()));
+  getIt.registerFactory<UserRepository>(() => UserRepositoryImpl(userApi: getIt<UserApi>(), pref: pref));
   getIt.registerFactory<VideoRepository>(
     () => VideoRepositoryImpl(
       pref: pref,
