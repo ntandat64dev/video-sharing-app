@@ -9,7 +9,7 @@ import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
-import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/provider/video_details_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/add_description_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/add_location_page.dart';
@@ -57,7 +57,7 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 AspectRatio(
-                                  aspectRatio: MediaQuery.of(context).size.width / videoPlayerRatio,
+                                  aspectRatio: MediaQuery.of(context).size.width / videoPlayerHeight,
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: SinkAnimated(

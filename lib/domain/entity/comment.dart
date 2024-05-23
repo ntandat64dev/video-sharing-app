@@ -16,8 +16,8 @@ class Comment {
 
   Comment.post({
     required this.videoId,
-    required this.authorId,
     required this.text,
+    required this.parentId,
   });
 
   String? id;

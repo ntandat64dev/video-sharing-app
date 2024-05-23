@@ -1,4 +1,4 @@
-enum Rating { like, dislike, none }
+import 'package:video_sharing_app/domain/enum/rating.dart';
 
 class VideoRating {
   VideoRating({

@@ -3,6 +3,7 @@ import 'package:video_sharing_app/domain/entity/page_response.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
+import 'package:video_sharing_app/domain/enum/rating.dart';
 
 abstract class VideoRepository {
   Future<Video?> getVideoById(String videoId);

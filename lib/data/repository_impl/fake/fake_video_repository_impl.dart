@@ -1,17 +1,16 @@
 import 'dart:math';
 
-import 'package:video_sharing_app/data/source/remote/video_api.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/entity/video_rating.dart';
-import 'package:video_sharing_app/domain/entity/pageable.dart';
+import 'package:video_sharing_app/domain/enum/rating.dart';
+import 'package:video_sharing_app/domain/repository/video_repository.dart';
 
-class FakeVideoApi extends VideoApi {
-  final videos = <Video>[];
-
-  FakeVideoApi({required super.token}) {
+class FakeVideoRepositoryImpl implements VideoRepository {
+  FakeVideoRepositoryImpl() {
     for (int i = 0; i < 20; i++) {
       final video = Video(
         id: Random().nextInt(16).toRadixString(16),
@@ -49,77 +48,83 @@ class FakeVideoApi extends VideoApi {
     }
   }
 
-  @override
-  Future<PageResponse<Video>> getMyVideos(Pageable pageable) async {
-    return PageResponse(
-      pageNumber: 0,
-      pageSize: 20,
-      totalElements: 20,
-      totalPages: 1,
-      items: videos,
-    );
-  }
+  final videos = <Video>[];
 
   @override
-  Future<Video> getVideoById(String videoId) async {
+  Future<Video?> getVideoById(String videoId) async {
     return videos[0];
   }
 
   @override
-  Future<Video> postVideo({
-    required String videoLocalPath,
-    required String thumbnailLocalPath,
+  Future<Video?> uploadVideo({
+    required String videoPath,
+    required String thumbnailPath,
     required Video video,
   }) async {
     return videos[0];
   }
 
   @override
-  Future<Video> updateVideo({
-    String? thumbnailLocalPath,
+  Future<Video?> updateVideo({
+    String? thumbnailPath,
     required Video video,
   }) async {
     return videos[0];
   }
 
   @override
-  Future<void> deleteVideo(String videoId) async {}
+  Future<bool> deleteVideoById(String videoId) async {
+    return true;
+  }
 
   @override
-  Future<PageResponse<Video>> getVideoByCategoryAll(Pageable pageable) async {
+  Future<PageResponse<Video>> getVideosByCategoryAll([Pageable? pageable]) async {
     return PageResponse(
       pageNumber: 0,
-      pageSize: 20,
-      totalElements: 20,
+      pageSize: videos.length,
+      totalElements: videos.length,
       totalPages: 1,
       items: videos,
     );
   }
 
   @override
-  Future<VideoRating> getVideoRating(String videoId) async {
-    return VideoRating(
-        videoId: videoId,
-        userId: Random().nextInt(16).toRadixString(16),
-        rating: Rating.like,
-        publishedAt: DateTime.now());
-  }
-
-  @override
-  Future<VideoRating> postVideoRating({required String videoId, required String rating}) async {
-    return VideoRating(
-        videoId: videoId,
-        userId: Random().nextInt(16).toRadixString(16),
-        rating: Rating.like,
-        publishedAt: DateTime.now());
-  }
-
-  @override
-  Future<PageResponse<Video>> getRelatedVideos(String videoId, Pageable pageable) async {
+  Future<PageResponse<Video>> getMyVideos([Pageable? pageable]) async {
     return PageResponse(
       pageNumber: 0,
-      pageSize: 20,
-      totalElements: 20,
+      pageSize: videos.length,
+      totalElements: videos.length,
+      totalPages: 1,
+      items: videos,
+    );
+  }
+
+  @override
+  Future<VideoRating?> getVideoRating(String videoId) async {
+    return VideoRating(
+      videoId: videoId,
+      userId: Random().nextInt(16).toRadixString(16),
+      rating: Rating.like,
+      publishedAt: DateTime.now(),
+    );
+  }
+
+  @override
+  Future<VideoRating?> rateVideo({required String videoId, required Rating rating}) async {
+    return VideoRating(
+      videoId: videoId,
+      userId: Random().nextInt(16).toRadixString(16),
+      rating: Rating.like,
+      publishedAt: DateTime.now(),
+    );
+  }
+
+  @override
+  Future<PageResponse<Video>> getRelatedVideos(String videoId, [Pageable? pageable]) async {
+    return PageResponse(
+      pageNumber: 0,
+      pageSize: videos.length,
+      totalElements: videos.length,
       totalPages: 1,
       items: videos,
     );
@@ -127,16 +132,26 @@ class FakeVideoApi extends VideoApi {
 
   @override
   Future<List<String>> getVideoCategories() async {
-    return ['Anime', 'Music', 'Sport'];
+    return ['Sport', 'Music', 'Football'];
   }
 
   @override
   Future<List<Category>> getAllCategories() async {
-    return [
-      Category(id: Random().nextInt(16).toRadixString(16), category: 'Music'),
-      Category(id: Random().nextInt(16).toRadixString(16), category: 'Sport'),
-      Category(id: Random().nextInt(16).toRadixString(16), category: 'Anime'),
-      Category(id: Random().nextInt(16).toRadixString(16), category: 'Film'),
+    return const [
+      Category(id: '11111111', category: 'Sport'),
+      Category(id: '22222222', category: 'Music'),
+      Category(id: '33333333', category: 'Entertainment'),
     ];
+  }
+
+  @override
+  Future<PageResponse<Video>> getFollowingVideos([Pageable? pageable]) async {
+    return PageResponse(
+      pageNumber: 0,
+      pageSize: videos.length,
+      totalElements: videos.length,
+      totalPages: 1,
+      items: videos,
+    );
   }
 }

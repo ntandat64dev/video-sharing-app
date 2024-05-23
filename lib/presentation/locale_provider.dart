@@ -5,7 +5,7 @@ import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/repository/preference_repository.dart';
 
 class LocaleProvider extends ChangeNotifier {
-  final PreferenceRepository _preferenceRepository = getIt<PreferenceRepositoryImpl>();
+  final _preferenceRepository = getIt<PreferenceRepository>();
 
   late Locale _locale;
 

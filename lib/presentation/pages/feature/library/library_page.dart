@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:video_sharing_app/presentation/components/notification_button.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/your_videos_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
@@ -23,13 +24,7 @@ class _LibraryPageState extends State<LibraryPage> {
             title: Text(AppLocalizations.of(context)!.library),
             floating: true,
             actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Badge(
-                  label: Text('2'),
-                  child: Icon(Icons.notifications_rounded),
-                ),
-              ),
+              const NotificationButton(),
               IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
             ],
           ),

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
-import 'package:video_sharing_app/presentation/pages/feature/home/video_player_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class VideoCard extends StatelessWidget {
@@ -36,12 +37,12 @@ class VideoCard extends StatelessWidget {
                 imageUrl: video.thumbnails![Thumbnail.kDefault]!.url,
                 fadeInDuration: const Duration(milliseconds: 300),
                 fadeOutDuration: const Duration(milliseconds: 1),
-                height: videoPlayerRatio,
+                height: videoPlayerHeight,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Image.asset(
                   Asset.placeholder,
-                  height: videoPlayerRatio,
+                  height: videoPlayerHeight,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
