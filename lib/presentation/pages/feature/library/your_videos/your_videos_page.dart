@@ -12,10 +12,10 @@ import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/provider/your_videos_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/update_video_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/set_privacy_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 
 class YourVideosPage extends StatefulWidget {
   const YourVideosPage({super.key});
@@ -24,11 +24,14 @@ class YourVideosPage extends StatefulWidget {
   State<YourVideosPage> createState() => _YourVideosPageState();
 }
 
+enum Filter { video, shorts, live }
+
 class _YourVideosPageState extends State<YourVideosPage> {
   static const pageSize = 10;
 
   final videoRepository = getIt<VideoRepository>();
   PagingController<int, Video>? pagingController = PagingController(firstPageKey: 0);
+  var filter = Filter.video;
 
   @override
   void initState() {
@@ -69,38 +72,50 @@ class _YourVideosPageState extends State<YourVideosPage> {
                           scrollDirection: Axis.horizontal,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                            child: Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {},
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  child: Ink(
-                                    height: 36.0,
-                                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.outlineVariant,
+                            child: StatefulBuilder(
+                              builder: (context, setState) {
+                                return Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {},
                                       borderRadius: BorderRadius.circular(6.0),
+                                      child: Ink(
+                                        height: 32.0,
+                                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).colorScheme.surfaceVariant,
+                                          borderRadius: BorderRadius.circular(6.0),
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.tune,
+                                            size: 20.0,
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    child: const Center(child: Icon(Icons.filter_list)),
-                                  ),
-                                ),
-                                const SizedBox(width: 10.0),
-                                FilterItem(
-                                  onSelected: (value) {},
-                                  text: AppLocalizations.of(context)!.filterVideos,
-                                  isActive: true,
-                                ),
-                                const SizedBox(width: 10.0),
-                                FilterItem(
-                                  onSelected: (value) {},
-                                  text: AppLocalizations.of(context)!.filterShorts,
-                                ),
-                                const SizedBox(width: 10.0),
-                                FilterItem(
-                                  onSelected: (value) {},
-                                  text: AppLocalizations.of(context)!.filterLive,
-                                ),
-                              ],
+                                    const SizedBox(width: 10.0),
+                                    FilterItem(
+                                      onSelected: (value) => setState(() => filter = Filter.video),
+                                      text: AppLocalizations.of(context)!.filterVideos,
+                                      isActive: filter == Filter.video,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    FilterItem(
+                                      onSelected: (value) => setState(() => filter = Filter.shorts),
+                                      text: AppLocalizations.of(context)!.filterShorts,
+                                      isActive: filter == Filter.shorts,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    FilterItem(
+                                      onSelected: (value) => setState(() => filter = Filter.live),
+                                      text: AppLocalizations.of(context)!.filterLive,
+                                      isActive: filter == Filter.live,
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                         ),

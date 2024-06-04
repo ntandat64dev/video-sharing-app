@@ -7,7 +7,7 @@ import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
-const videoPlayerHeight = 230.0;
+const videoPlayerHeight = 200.0;
 
 class MyVideoPlayer extends StatefulWidget {
   const MyVideoPlayer({super.key, required Video video}) : _video = video;

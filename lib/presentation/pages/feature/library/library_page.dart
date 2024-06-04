@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:video_sharing_app/presentation/components/notification_button.dart';
-import 'package:video_sharing_app/presentation/components/sink_animated.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
+import 'package:video_sharing_app/presentation/pages/feature/library/components/view_history_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/your_videos_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
@@ -19,13 +19,19 @@ class _LibraryPageState extends State<LibraryPage> {
       child: CustomScrollView(
         slivers: [
           SliverAppBar(
-            leading: Icon(Icons.videocam, size: 32.0, color: Theme.of(context).colorScheme.primary),
-            titleSpacing: 0.0,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: Container(
+                alignment: Alignment.center,
+                child: Image.asset(Asset.logoLow, width: 34.0),
+              ),
+            ),
+            titleSpacing: 6.0,
             title: Text(AppLocalizations.of(context)!.library),
             floating: true,
-            actions: [
-              const NotificationButton(),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+            actions: const [
+              NotificationButton(),
+              SearchButton(),
             ],
           ),
           SliverToBoxAdapter(
@@ -50,7 +56,8 @@ class _LibraryPageState extends State<LibraryPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                             child: Text(
                               AppLocalizations.of(context)!.viewAll,
-                              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                              style:
+                                  TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w500),
                             ),
                           ),
                         ),
@@ -65,65 +72,7 @@ class _LibraryPageState extends State<LibraryPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return SinkAnimated(
-                          onTap: () {},
-                          child: SizedBox(
-                            width: 150.0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  child: Image.asset(
-                                    Asset.placeholder,
-                                    fit: BoxFit.cover,
-                                    height: 100,
-                                    width: double.infinity,
-                                  ),
-                                ),
-                                const SizedBox(height: 6.0),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Expanded(
-                                          child: Column(
-                                            children: [
-                                              SizedBox(height: 2.0),
-                                              Text(
-                                                'International Music and Dance',
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        InkWell(
-                                          customBorder: const CircleBorder(),
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(4.0),
-                                            child: Icon(Icons.more_vert, size: 18.0),
-                                          ),
-                                          onTap: () {},
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 4.0),
-                                    const Text(
-                                      'World of Music',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: 13.0),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
+                        return const ViewHistoryItem();
                       },
                     ),
                   ),
@@ -136,8 +85,10 @@ class _LibraryPageState extends State<LibraryPage> {
                   ),
                   // Your videos
                   InkWell(
-                    onTap: () =>
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const YourVideosPage())),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const YourVideosPage()),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: ListTile(
@@ -145,9 +96,9 @@ class _LibraryPageState extends State<LibraryPage> {
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            color: Theme.of(context).colorScheme.primary.withAlpha(100),
+                            color: Theme.of(context).colorScheme.primaryContainer,
                           ),
-                          child: Icon(Icons.play_circle, color: Theme.of(context).colorScheme.primary),
+                          child: Icon(Icons.play_circle_rounded, color: Theme.of(context).colorScheme.primary),
                         ),
                         title: Text(
                           AppLocalizations.of(context)!.yourVideosListTile,
@@ -166,9 +117,9 @@ class _LibraryPageState extends State<LibraryPage> {
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            color: Theme.of(context).colorScheme.primary.withAlpha(100),
+                            color: Theme.of(context).colorScheme.primaryContainer,
                           ),
-                          child: Icon(Icons.download, color: Theme.of(context).colorScheme.primary),
+                          child: Icon(Icons.download_rounded, color: Theme.of(context).colorScheme.primary),
                         ),
                         title: Text(
                           AppLocalizations.of(context)!.downloads,
@@ -201,7 +152,10 @@ class _LibraryPageState extends State<LibraryPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                             child: Text(
                               AppLocalizations.of(context)!.viewAll,
-                              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
@@ -218,9 +172,9 @@ class _LibraryPageState extends State<LibraryPage> {
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            color: Theme.of(context).colorScheme.primary.withAlpha(100),
+                            color: Theme.of(context).colorScheme.primaryContainer,
                           ),
-                          child: Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
+                          child: Icon(Icons.add_rounded, color: Theme.of(context).colorScheme.primary),
                         ),
                         title: Text(
                           AppLocalizations.of(context)!.playlistNew,
@@ -239,9 +193,9 @@ class _LibraryPageState extends State<LibraryPage> {
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            color: Theme.of(context).colorScheme.primary.withAlpha(100),
+                            color: Theme.of(context).colorScheme.primaryContainer,
                           ),
-                          child: Icon(Icons.access_time_filled, color: Theme.of(context).colorScheme.primary),
+                          child: Icon(Icons.access_time_filled_rounded, color: Theme.of(context).colorScheme.primary),
                         ),
                         title: Text(
                           AppLocalizations.of(context)!.playlistWatchLater,
@@ -261,9 +215,9 @@ class _LibraryPageState extends State<LibraryPage> {
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            color: Theme.of(context).colorScheme.primary.withAlpha(100),
+                            color: Theme.of(context).colorScheme.primaryContainer,
                           ),
-                          child: Icon(Icons.thumb_up, color: Theme.of(context).colorScheme.primary),
+                          child: Icon(Icons.thumb_up_rounded, color: Theme.of(context).colorScheme.primary),
                         ),
                         title: Text(
                           AppLocalizations.of(context)!.playlistLikedVideos,
@@ -282,7 +236,7 @@ class _LibraryPageState extends State<LibraryPage> {
                         leading: ClipRRect(
                           borderRadius: BorderRadius.circular(16.0),
                           child: Image.asset(
-                            Asset.illustration4,
+                            Asset.illustrationAuth,
                             fit: BoxFit.cover,
                           ),
                         ),

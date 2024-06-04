@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
@@ -84,15 +85,15 @@ class VideoCard extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           height: 1.25,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18.0,
                                         ),
                                       ),
                                       const SizedBox(height: 4.0),
                                       Text(
-                                        'BBC Learning  ∙  ${video.viewCount} views  ∙  ${timeago.format(video.publishedAt!)}',
+                                        '${video.username}  ∙  ${AppLocalizations.of(context)!.nViews(video.viewCount!.toInt())}  ∙  ${timeago.format(video.publishedAt!)}',
                                         style: TextStyle(
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          color: Theme.of(context).colorScheme.onBackground.withAlpha(200),
                                           height: 1.25,
                                         ),
                                       ),
@@ -112,7 +113,11 @@ class VideoCard extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 3.0),
                   child: IconButton(
                     onPressed: () {},
-                    icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20.0),
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: Theme.of(context).colorScheme.onBackground.withAlpha(200),
+                      size: 20.0,
+                    ),
                   ),
                 )
               ],

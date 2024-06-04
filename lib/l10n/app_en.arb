@@ -153,5 +153,20 @@
                 "format": "compact"
             }
         }
-    }
+    },
+    "reset": "Reset",
+    "titleSearchFilter": "Search Filter",
+    "searchSortBy": "Sort by",
+    "type": "Type",
+    "sortByRelevance": "Relevance",
+    "sortByUploadDate": "Upload date",
+    "sortByViewCount": "View count",
+    "video": "Video",
+    "user": "User",
+    "playlist": "Playlist",
+    "search": "Search",
+    "emptyFollowing": "New videos right to you",
+    "explainEmptyFollowing": "Follow to get the latest videos from user you love.",
+    "notFound": "Not Found",
+    "explainNotFound": "The video could not be found. Please search with another keywords."
 }

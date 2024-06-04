@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 
 class SelectCategoryPage extends StatefulWidget {
   const SelectCategoryPage({super.key});
@@ -18,10 +19,7 @@ class _SelectCategoryPageState extends State<SelectCategoryPage> {
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-        ),
+        leading: appBarBackButton(context),
         title: Text(
           AppLocalizations.of(context)!.selectCategoryAppBarTitle,
           style: const TextStyle(fontWeight: FontWeight.w500),

@@ -10,9 +10,10 @@ class FilterItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FilterChip(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 6.0),
       onSelected: onSelected,
-      backgroundColor: Theme.of(context).colorScheme.outlineVariant,
-      selectedColor: Theme.of(context).colorScheme.inverseSurface,
+      backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+      selectedColor: Theme.of(context).colorScheme.onSurfaceVariant,
       selected: isActive != null && isActive!,
       showCheckmark: false,
       side: BorderSide.none,
@@ -20,8 +21,8 @@ class FilterItem extends StatelessWidget {
         text,
         style: TextStyle(
           color: (isActive != null && isActive!)
-              ? Theme.of(context).colorScheme.onInverseSurface
-              : Theme.of(context).colorScheme.onSurface,
+              ? Theme.of(context).colorScheme.surfaceVariant
+              : Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
     );

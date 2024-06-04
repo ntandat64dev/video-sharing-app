@@ -6,11 +6,13 @@ import 'package:video_sharing_app/data/repository_impl/fake/fake_comment_reposit
 import 'package:video_sharing_app/data/repository_impl/fake/fake_follow_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/fake/fake_notification_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/fake/fake_preference_repository_impl.dart';
+import 'package:video_sharing_app/data/repository_impl/fake/fake_search_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/fake/fake_user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/fake/fake_video_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/follow_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/notification_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/preference_repository_impl.dart';
+import 'package:video_sharing_app/data/repository_impl/search_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/user_repository_impl.dart';
 import 'package:video_sharing_app/data/repository_impl/video_repository_impl.dart';
 import 'package:video_sharing_app/data/source/local/preferences_service.dart';
@@ -18,6 +20,7 @@ import 'package:video_sharing_app/data/source/remote/auth_api.dart';
 import 'package:video_sharing_app/data/source/remote/comment_api.dart';
 import 'package:video_sharing_app/data/source/remote/follow_api.dart';
 import 'package:video_sharing_app/data/source/remote/notification_api.dart';
+import 'package:video_sharing_app/data/source/remote/search_api.dart';
 import 'package:video_sharing_app/data/source/remote/user_api.dart';
 import 'package:video_sharing_app/data/source/remote/video_api.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
@@ -25,6 +28,7 @@ import 'package:video_sharing_app/domain/repository/comment_repository.dart';
 import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 import 'package:video_sharing_app/domain/repository/notification_repository.dart';
 import 'package:video_sharing_app/domain/repository/preference_repository.dart';
+import 'package:video_sharing_app/domain/repository/search_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 
@@ -40,6 +44,7 @@ Future<void> configureDependencies() async {
   getIt.registerFactory(() => UserApi(token: pref.getToken()!));
   getIt.registerFactory(() => VideoApi(token: pref.getToken()!));
   getIt.registerFactory(() => NotificationApi(token: pref.getToken()!));
+  getIt.registerFactory(() => SearchApi(token: pref.getToken()!));
 
   getIt.registerFactory<NotificationRepository>(
     () => NotificationRepositoryImpl(notificationApi: getIt<NotificationApi>()),
@@ -70,6 +75,7 @@ Future<void> configureDependencies() async {
       videoApi: getIt<VideoApi>(),
     ),
   );
+  getIt.registerFactory<SearchRepository>(() => SearchRepositoryImpl(searchApi: getIt<SearchApi>()));
 }
 
 Future<void> configureDependenciesForTest() async {
@@ -82,4 +88,5 @@ Future<void> configureDependenciesForTest() async {
   getIt.registerLazySingleton<PreferenceRepository>(() => FakePreferenceRepositoryImpl());
   getIt.registerLazySingleton<UserRepository>(() => FakeUserRepositoryImpl());
   getIt.registerLazySingleton<VideoRepository>(() => FakeVideoRepositoryImpl());
+  getIt.registerLazySingleton<SearchRepository>(() => FakeSearchRepositoryImpl());
 }

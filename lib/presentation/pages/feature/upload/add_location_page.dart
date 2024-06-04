@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
+import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 
 class AddLocationPage extends StatefulWidget {
   const AddLocationPage({super.key});
@@ -15,32 +18,16 @@ class _AddLocationPageState extends State<AddLocationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80.0,
         surfaceTintColor: Colors.transparent,
-        titleSpacing: 4.0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-        ),
+        titleSpacing: 0.0,
+        leading: appBarBackButton(context),
         title: Padding(
           padding: const EdgeInsets.only(right: 16.0),
-          child: TextField(
+          child: CustomTextField(
             onChanged: findLocation,
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.findLocation,
-              fillColor: Theme.of(context).colorScheme.onInverseSurface,
-              filled: true,
-              prefixIcon: const Icon(Icons.search),
-              contentPadding: const EdgeInsets.all(8.0),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.0),
-                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.0),
-                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-              ),
-            ),
+            hintText: AppLocalizations.of(context)!.findLocation,
+            contentPadding: const EdgeInsets.symmetric(vertical: 4.0),
+            prefixIcon: const Icon(CupertinoIcons.search),
           ),
         ),
       ),

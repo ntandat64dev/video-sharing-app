@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 
 class CommentSettingPage extends StatefulWidget {
   const CommentSettingPage({super.key, required bool commentAllowed}) : _commentAllowed = commentAllowed;
@@ -26,11 +27,8 @@ class _CommentSettingPageState extends State<CommentSettingPage> {
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title:  Text(
+        leading: appBarBackButton(context),
+        title: Text(
           AppLocalizations.of(context)!.comment,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
@@ -46,7 +44,7 @@ class _CommentSettingPageState extends State<CommentSettingPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Padding(
+                      Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
                           AppLocalizations.of(context)!.chooseCommentType,
@@ -60,13 +58,13 @@ class _CommentSettingPageState extends State<CommentSettingPage> {
                         value: CommentAllowed.yes,
                         groupValue: commentAllowed,
                         onChanged: (CommentAllowed? value) => setState(() => commentAllowed = value),
-                        title:  Text(AppLocalizations.of(context)!.commentAllow),
+                        title: Text(AppLocalizations.of(context)!.commentAllow),
                       ),
                       RadioListTile<CommentAllowed>(
                         value: CommentAllowed.no,
                         groupValue: commentAllowed,
                         onChanged: (CommentAllowed? value) => setState(() => commentAllowed = value),
-                        title:  Text(AppLocalizations.of(context)!.commentDisallow),
+                        title: Text(AppLocalizations.of(context)!.commentDisallow),
                       ),
                     ],
                   ),
@@ -84,7 +82,10 @@ class _CommentSettingPageState extends State<CommentSettingPage> {
                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child:  Text(AppLocalizations.of(context)!.apply),
+                        child: Text(
+                          AppLocalizations.of(context)!.apply,
+                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   )

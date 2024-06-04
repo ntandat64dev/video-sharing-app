@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -20,15 +21,36 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (index) => setState(() => _currentNavIndex = index),
-        selectedIndex: _currentNavIndex,
-        surfaceTintColor: Theme.of(context).colorScheme.surface,
-        destinations: [
-          NavigationDestination(label: AppLocalizations.of(context)!.home, icon: const Icon(Icons.home)),
-          NavigationDestination(label: AppLocalizations.of(context)!.following, icon: const Icon(Icons.group)),
-          NavigationDestination(label: AppLocalizations.of(context)!.library, icon: const Icon(Icons.my_library_books)),
-          NavigationDestination(label: AppLocalizations.of(context)!.profile, icon: const Icon(Icons.person)),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Divider(
+            height: 0.7,
+            thickness: 0.7,
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+          NavigationBar(
+            onDestinationSelected: (index) => setState(() => _currentNavIndex = index),
+            selectedIndex: _currentNavIndex,
+            destinations: [
+              NavigationDestination(
+                label: AppLocalizations.of(context)!.home,
+                icon: const Icon(CupertinoIcons.home),
+              ),
+              NavigationDestination(
+                label: AppLocalizations.of(context)!.following,
+                icon: const Icon(CupertinoIcons.person_2),
+              ),
+              NavigationDestination(
+                label: AppLocalizations.of(context)!.library,
+                icon: const Icon(CupertinoIcons.collections),
+              ),
+              NavigationDestination(
+                label: AppLocalizations.of(context)!.profile,
+                icon: const Icon(CupertinoIcons.person),
+              ),
+            ],
+          ),
         ],
       ),
       body: ChangeNotifierProvider(

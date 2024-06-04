@@ -12,7 +12,6 @@ void showConsistentBottomSheet({
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(32.0),
@@ -91,11 +90,14 @@ Widget bottomSheetNegativeButton({
   return TextButton(
     onPressed: onPressed ?? () => Navigator.pop(context),
     style: TextButton.styleFrom(
-      backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(50),
-      foregroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: Theme.of(context).colorScheme.inverseSurface,
+      foregroundColor: Theme.of(context).colorScheme.onInverseSurface,
       padding: const EdgeInsets.all(16.0),
     ),
-    child: Text(text ?? AppLocalizations.of(context)!.cancel),
+    child: Text(
+      text ?? AppLocalizations.of(context)!.cancel,
+      style: const TextStyle(fontWeight: FontWeight.w600),
+    ),
   );
 }
 
@@ -111,6 +113,9 @@ Widget bottomSheetConfirmButton({
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
       padding: const EdgeInsets.all(16.0),
     ),
-    child: Text(text ?? AppLocalizations.of(context)!.ok),
+    child: Text(
+      text ?? AppLocalizations.of(context)!.ok,
+      style: const TextStyle(fontWeight: FontWeight.w600),
+    ),
   );
 }

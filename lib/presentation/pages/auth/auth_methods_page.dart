@@ -16,12 +16,12 @@ class AuthMethodsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 48),
-              Image.asset(Asset.illustration2, width: 200),
+              Image.asset(Asset.illustrationAuth, width: 200),
               const SizedBox(height: 24.0),
               Text(
                 AppLocalizations.of(context)!.letYouIn,
                 style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w500,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
               ),
@@ -37,7 +37,7 @@ class AuthMethodsPage extends StatelessWidget {
                       backgroundColor: Theme.of(context).colorScheme.surface,
                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
+                        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100)),
                         borderRadius: BorderRadius.circular(16.0),
                       ),
                     ),
@@ -64,7 +64,7 @@ class AuthMethodsPage extends StatelessWidget {
                       backgroundColor: Theme.of(context).colorScheme.surface,
                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
+                        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100)),
                         borderRadius: BorderRadius.circular(16.0),
                       ),
                     ),
@@ -91,7 +91,7 @@ class AuthMethodsPage extends StatelessWidget {
                       backgroundColor: Theme.of(context).colorScheme.surface,
                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
+                        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100)),
                         borderRadius: BorderRadius.circular(16.0),
                       ),
                     ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -41,22 +40,7 @@ class AppRoot extends StatelessWidget {
         home: Builder(
           builder: (context) {
             // Adjust status bar color.
-            final platformBrightness = MediaQuery.of(context).platformBrightness;
-            final theme = Provider.of<ThemeProvider>(context, listen: false).themeMode;
-            final statusBarBrightness = theme == ThemeMode.light
-                ? Brightness.dark
-                : theme == ThemeMode.dark
-                    ? Brightness.light
-                    : platformBrightness == Brightness.dark
-                        ? Brightness.light
-                        : Brightness.dark;
-            SystemChrome.setSystemUIOverlayStyle(
-              SystemUiOverlayStyle(
-                statusBarColor: Theme.of(context).colorScheme.surface,
-                statusBarBrightness: statusBarBrightness,
-                statusBarIconBrightness: statusBarBrightness,
-              ),
-            );
+            Provider.of<ThemeProvider>(context, listen: false).changeStatusBarColor(context);
             return Provider.of<RouteProvider>(context).route;
           },
         ),

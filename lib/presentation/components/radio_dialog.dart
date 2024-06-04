@@ -19,24 +19,26 @@ void showRadioDialog<T>({
             backgroundColor: Theme.of(context).colorScheme.surface,
             surfaceTintColor: Colors.transparent,
             title: Text(title),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(32.0),
-              ),
-            ),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
             contentPadding: const EdgeInsets.only(top: 16.0, bottom: 4.0),
             actionsPadding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(AppLocalizations.of(context)!.cancel),
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                   onOkClicked(tempValue);
                 },
-                child: Text(AppLocalizations.of(context)!.ok),
+                child: Text(
+                  AppLocalizations.of(context)!.ok,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
               ),
             ],
             content: Column(

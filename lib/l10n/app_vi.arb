@@ -153,5 +153,20 @@
                 "format": "compact"
             }
         }
-    }
+    },
+    "reset": "Xóa bộ lọc",
+    "titleSearchFilter": "Bộ lọc tìm kiếm",
+    "searchSortBy": "Sắp xếp",
+    "type": "Loại",
+    "sortByRelevance": "Liên quan",
+    "sortByUploadDate": "Ngày đăng",
+    "sortByViewCount": "Lượt xem",
+    "video": "Video",
+    "user": "User",
+    "playlist": "Playlist",
+    "search": "Tìm kiếm",
+    "emptyFollowing": "Video mới dành cho bạn",
+    "explainEmptyFollowing": "Theo dõi để nhận được những video mới nhất từ người dùng mà bạn yêu thích.",
+    "notFound": "Không tìm thấy",
+    "explainNotFound": "Video không được tìm thấy. Vui lòng tìm kiếm với từ khóa khác."
 }

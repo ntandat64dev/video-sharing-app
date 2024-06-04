@@ -24,7 +24,7 @@ class FakeVideoRepositoryImpl implements VideoRepository {
         videoUrl: 'videoUrl',
         thumbnails: {
           Thumbnail.kDefault: const Thumbnail(
-            url: 'https://dummyimage.com/720x450/fff/aaa',
+            url: 'https://dummyimage.com/720x450/5f8dfa/fff/',
             width: 720,
             height: 450,
           )
@@ -40,7 +40,7 @@ class FakeVideoRepositoryImpl implements VideoRepository {
         viewCount: BigInt.zero,
         likeCount: BigInt.zero,
         dislikeCount: BigInt.zero,
-        commentCount: BigInt.zero,
+        commentCount: BigInt.from(100000),
         downloadCount: BigInt.zero,
       );
 
@@ -132,7 +132,7 @@ class FakeVideoRepositoryImpl implements VideoRepository {
 
   @override
   Future<List<String>> getVideoCategories() async {
-    return ['Sport', 'Music', 'Football'];
+    return ['Sport', 'Music', 'Football', 'Sport', 'Music', 'Football', 'Sport', 'Music', 'Football'];
   }
 
   @override

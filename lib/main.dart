@@ -5,7 +5,7 @@ import 'package:video_sharing_app/service/firebase_service.dart' as firebase_ser
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await configureDependencies();
+  await configureDependenciesForTest();
   firebase_service.init();
   runApp(const AppRoot());
 }

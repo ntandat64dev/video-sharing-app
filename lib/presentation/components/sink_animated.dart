@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
 class SinkAnimated extends StatefulWidget {
-  const SinkAnimated({super.key, required this.onTap, required this.child});
+  const SinkAnimated({
+    super.key,
+    required this.onTap,
+    required this.child,
+    this.level = 0.05,
+  });
 
   final Function onTap;
   final Widget child;
+  final double level;
 
   @override
   State<SinkAnimated> createState() => _SinkAnimatedState();
@@ -24,7 +30,7 @@ class _SinkAnimatedState extends State<SinkAnimated> with SingleTickerProviderSt
       vsync: this,
       duration: const Duration(milliseconds: clickAnimationDurationMillis),
       lowerBound: 0.0,
-      upperBound: 0.05,
+      upperBound: widget.level,
     )..addListener(() {
         setState(() => _scaleTransformValue = 1 - animationController.value);
       });
