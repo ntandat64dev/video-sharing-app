@@ -4,11 +4,13 @@ class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
     this.autoFocus = false,
+    this.onTap,
     this.onChanged,
     this.onSubmitted,
     this.onEditingComplete,
     this.controller,
     this.focusNode,
+    this.readOnly = false,
     this.textInputType,
     this.textInputAction,
     this.maxLines = 1,
@@ -21,12 +23,14 @@ class CustomTextField extends StatefulWidget {
     this.suffixIcon,
   });
 
+  final void Function()? onTap;
   final void Function(String value)? onChanged;
   final void Function(String value)? onSubmitted;
   final void Function()? onEditingComplete;
   final bool autoFocus;
   final TextEditingController? controller;
   final FocusNode? focusNode;
+  final bool readOnly;
   final TextInputType? textInputType;
   final TextInputAction? textInputAction;
   final int? maxLines;
@@ -53,11 +57,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: widget.controller,
         autofocus: widget.autoFocus,
         focusNode: widget.focusNode,
+        readOnly: widget.readOnly,
         keyboardType: widget.textInputType,
         textInputAction: widget.textInputAction,
         maxLines: widget.maxLines,
         minLines: widget.minLines,
         maxLength: widget.maxLength,
+        onTap: widget.onTap,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
         onEditingComplete: widget.onEditingComplete,

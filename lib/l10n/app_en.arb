@@ -168,5 +168,10 @@
     "emptyFollowing": "New videos right to you",
     "explainEmptyFollowing": "Follow to get the latest videos from user you love.",
     "notFound": "Not Found",
-    "explainNotFound": "The video could not be found. Please search with another keywords."
+    "explainNotFound": "The video could not be found. Please search with another keywords.",
+    "create": "Create",
+    "playlistTitle": "Playlist Title",
+    "editPlaylist": "Edit Playlist",
+    "title": "Title",
+    "update": "Update"
 }

@@ -168,5 +168,10 @@
     "emptyFollowing": "Video mới dành cho bạn",
     "explainEmptyFollowing": "Theo dõi để nhận được những video mới nhất từ người dùng mà bạn yêu thích.",
     "notFound": "Không tìm thấy",
-    "explainNotFound": "Video không được tìm thấy. Vui lòng tìm kiếm với từ khóa khác."
+    "explainNotFound": "Video không được tìm thấy. Vui lòng tìm kiếm với từ khóa khác.",
+    "create": "Tạo",
+    "playlistTitle": "Tên Danh Sách Phát",
+    "editPlaylist": "Sửa Danh Sách Phát",
+    "title": "Tựa đề",
+    "update": "Cập nhật"
 }
