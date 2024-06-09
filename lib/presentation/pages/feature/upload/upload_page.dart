@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
@@ -63,6 +64,9 @@ class _UploadPageState extends State<UploadPage> {
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.addDetailsAppBarTitle),
                 leading: appBarBackButton(context),
+                actions: const [
+                  MoreButon(),
+                ],
               ),
               body: LayoutBuilder(
                 builder: (context, constraints) {

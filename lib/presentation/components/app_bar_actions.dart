@@ -42,3 +42,15 @@ class SearchButton extends StatelessWidget {
     );
   }
 }
+
+class MoreButon extends StatelessWidget {
+  const MoreButon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {},
+      icon: const Icon(CupertinoIcons.ellipsis_circle),
+    );
+  }
+}

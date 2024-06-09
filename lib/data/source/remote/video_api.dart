@@ -23,7 +23,7 @@ class VideoApi {
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) {
-      throw Exception('getMyVideos() [${response.statusCode}] ${response.body}');
+      throw Exception('[${response.statusCode}] ${response.body}');
     }
     return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
   }
@@ -33,7 +33,7 @@ class VideoApi {
       Uri.http(baseURL, '/api/v1/videos/$videoId'),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getVideoById() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return Video.fromJson(jsonDecode(response.body));
   }
 
@@ -71,7 +71,7 @@ class VideoApi {
 
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
-    if (response.statusCode != 201) throw Exception('postVideo() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 201) throw Exception('[${response.statusCode}] ${response.body}');
     return Video.fromJson(jsonDecode(response.body));
   }
 
@@ -102,7 +102,7 @@ class VideoApi {
 
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
-    if (response.statusCode != 200) throw Exception('updateVideo() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return Video.fromJson(jsonDecode(response.body));
   }
 
@@ -111,7 +111,7 @@ class VideoApi {
       Uri.http(baseURL, '/api/v1/videos', {'id': videoId}),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 204) throw Exception('deleteVideo() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 204) throw Exception('[${response.statusCode}] ${response.body}');
   }
 
   Future<PageResponse<Video>> getVideoByCategoryAll(Pageable pageable) async {
@@ -120,7 +120,7 @@ class VideoApi {
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) {
-      throw Exception('getVideoByCategoryAll() [${response.statusCode}] ${response.body}');
+      throw Exception('[${response.statusCode}] ${response.body}');
     }
     return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
   }
@@ -130,7 +130,7 @@ class VideoApi {
       Uri.http(baseURL, '/api/v1/videos/rate/mine', {'videoId': videoId}),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getVideoRating() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return VideoRating.fromJson(jsonDecode(response.body));
   }
 
@@ -142,7 +142,7 @@ class VideoApi {
       }),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('postVideoRating() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return VideoRating.fromJson(jsonDecode(response.body));
   }
 
@@ -151,7 +151,7 @@ class VideoApi {
       Uri.http(baseURL, '/api/v1/videos/related/mine', {'videoId': videoId, ...pageable.toParam()}),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getRelatedVideos() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
   }
 
@@ -160,7 +160,7 @@ class VideoApi {
       Uri.http(baseURL, '/api/v1/videos/video-categories/mine'),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getVideoCategories() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return List<String>.from(jsonDecode(response.body));
   }
 
@@ -169,7 +169,7 @@ class VideoApi {
       Uri.http(baseURL, '/api/v1/categories'),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getAllCategories() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return List<Category>.from((jsonDecode(response.body) as List).map((e) => Category.fromJson(e)));
   }
 
@@ -178,7 +178,7 @@ class VideoApi {
       Uri.http(baseURL, '/api/v1/videos/following/mine', pageable.toParam()),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getFollowingVideos() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
   }
 }

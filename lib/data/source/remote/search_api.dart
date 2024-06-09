@@ -31,7 +31,7 @@ class SearchApi {
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) {
-      throw Exception('search() [${response.statusCode}] ${response.body}');
+      throw Exception('[${response.statusCode}] ${response.body}');
     }
     return PageResponse.fromSearchJson(
       jsonDecode(response.body),

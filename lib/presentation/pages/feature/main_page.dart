@@ -25,9 +25,9 @@ class _MainPageState extends State<MainPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Divider(
-            height: 0.7,
-            thickness: 0.7,
-            color: Theme.of(context).colorScheme.outlineVariant,
+            height: 0.8,
+            thickness: 0.8,
+            color: Theme.of(context).colorScheme.surfaceVariant,
           ),
           NavigationBar(
             onDestinationSelected: (index) => setState(() => _currentNavIndex = index),

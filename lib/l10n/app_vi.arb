@@ -44,6 +44,24 @@
             }
         }
     },
+    "nUnwatchedVideos": "{count, plural, other{{count} video chưa xem} zero{0 video chưa xem} one{1 video chưa xem}}",
+    "@nUnwatchedVideos": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nLikedVideos": "{count, plural, other{{count} video đã thích} zero{0 video đã thích} one{1 video đã thích}}",
+    "@nLikedVideos": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
     "playlists": "Danh sách phát",
     "playlistNew": "Tạo Danh Sách Phát",
     "playlistWatchLater": "Xem Sau",
@@ -173,5 +191,18 @@
     "playlistTitle": "Tên Danh Sách Phát",
     "editPlaylist": "Sửa Danh Sách Phát",
     "title": "Tựa đề",
-    "update": "Cập nhật"
+    "update": "Cập nhật",
+    "saveVideoTo": "Lưu Video vào",
+    "play": "Phát",
+    "shuffle": "Trộn",
+    "removeFrom": "Xóa khỏi {param}",
+    "@removeFrom": {
+        "placeholders": {
+            "param": {
+                "type": "String"
+            }
+        }
+    },
+    "playlistNoVideos": "Danh sách phát chưa có videos nào.",
+    "saveToPlaylist": "Lưu vào danh sách phát"
 }

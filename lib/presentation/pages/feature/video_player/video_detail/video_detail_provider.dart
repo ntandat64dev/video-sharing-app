@@ -11,6 +11,7 @@ import 'package:video_sharing_app/domain/entity/video_rating.dart';
 import 'package:video_sharing_app/domain/enum/rating.dart';
 import 'package:video_sharing_app/domain/repository/comment_repository.dart';
 import 'package:video_sharing_app/domain/repository/follow_repository.dart';
+import 'package:video_sharing_app/domain/repository/playlist_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 
@@ -19,12 +20,14 @@ class VideoDetailProvider extends ChangeNotifier {
   final _followRepository = getIt<FollowRepository>();
   final _videoRepository = getIt<VideoRepository>();
   final _commentRepository = getIt<CommentRepository>();
+  final _playlistRepository = getIt<PlaylistRepository>();
 
   late Video _video;
   late VideoRating _videoRating;
   late List<CommentRating> _commentRatings;
   late Follow? _follow;
   late User _user;
+  late List<String> _containingPlaylistIds;
 
   var _isDetailLoaded = false;
   var _shouldLoadVideoDescription = false;
@@ -38,12 +41,14 @@ class VideoDetailProvider extends ChangeNotifier {
       _videoRepository.getVideoById(_video.id!),
       _videoRepository.getVideoRating(_video.id!),
       _followRepository.getFollowFor(_video.userId!),
-      _userRepository.getUserInfo(userId: _video.userId!)
+      _userRepository.getUserInfo(userId: _video.userId!),
+      _playlistRepository.getPlaylistIdsContainingVideo(_video.id!),
     ]).then((value) {
       _video = value[0] as Video;
       _videoRating = value[1] as VideoRating;
       _follow = value[2] as Follow?;
       _user = value[3] as User;
+      _containingPlaylistIds = value[4] as List<String>;
 
       _isDetailLoaded = true;
       notifyListeners();
@@ -62,6 +67,8 @@ class VideoDetailProvider extends ChangeNotifier {
 
       // Reload video info (including like count, dislike count,...)
       _video = (await _videoRepository.getVideoById(_video.id!)) as Video;
+      // Reload containingPlaylistIds
+      _containingPlaylistIds = await _playlistRepository.getPlaylistIdsContainingVideo(_video.id!);
       notifyListeners();
     }
   }
@@ -120,11 +127,17 @@ class VideoDetailProvider extends ChangeNotifier {
     return isDeleted;
   }
 
+  void refreshPlaylists() async {
+    _containingPlaylistIds = await _playlistRepository.getPlaylistIdsContainingVideo(_video.id!);
+    notifyListeners();
+  }
+
   Video get video => _video;
   VideoRating get videoRating => _videoRating;
   List<CommentRating> get commentRatings => _commentRatings;
   Follow? get follow => _follow;
   User get user => _user;
+  List<String> get containingPlaylistIds => _containingPlaylistIds;
 
   bool get isDetailLoaded => _isDetailLoaded;
 

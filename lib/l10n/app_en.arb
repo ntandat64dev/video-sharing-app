@@ -44,6 +44,24 @@
             }
         }
     },
+    "nUnwatchedVideos": "{count, plural, other{{count} unwatched videos} zero{0 unwatched video} one{1 unwatched video}}",
+    "@nUnwatchedVideos": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nLikedVideos": "{count, plural, other{{count} liked videos} zero{0 liked video} one{1 liked video}}",
+    "@nLikedVideos": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
     "playlists": "Playlists",
     "playlistNew": "New Playlist",
     "playlistWatchLater": "Watch Later",
@@ -173,5 +191,18 @@
     "playlistTitle": "Playlist Title",
     "editPlaylist": "Edit Playlist",
     "title": "Title",
-    "update": "Update"
+    "update": "Update",
+    "saveVideoTo": "Save Video to",
+    "play": "Play",
+    "shuffle": "Shuffle",
+    "removeFrom": "Remove from {param}",
+    "@removeFrom": {
+        "placeholders": {
+            "param": {
+                "type": "String"
+            }
+        }
+    },
+    "playlistNoVideos": "No videos in this playlist yet",
+    "saveToPlaylist": "Save to playlist"
 }

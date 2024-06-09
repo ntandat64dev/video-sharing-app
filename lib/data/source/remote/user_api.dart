@@ -17,7 +17,7 @@ class UserApi {
       Uri.http(baseURL, '/api/v1/users/mine'),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getMyInfo() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return User.fromJson(jsonDecode(response.body));
   }
 
@@ -26,7 +26,7 @@ class UserApi {
       Uri.http(baseURL, '/api/v1/users/$userId'),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getUserByUserId() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return User.fromJson(jsonDecode(response.body));
   }
 }

@@ -21,7 +21,7 @@ class CommentApi {
       body: jsonEncode(comment.toJson()),
       headers: {'Content-Type': 'application/json', ...bearerHeader},
     );
-    if (response.statusCode != 201) throw Exception('getCommentsByVideoId() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 201) throw Exception('[${response.statusCode}] ${response.body}');
     return Comment.fromJson(jsonDecode(response.body));
   }
 
@@ -30,7 +30,7 @@ class CommentApi {
       Uri.http(baseURL, '/api/v1/comments', {'id': commentId}),
       headers: bearerHeader,
     );
-    if (response.statusCode != 204) throw Exception('deleteCommentById() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 204) throw Exception('[${response.statusCode}] ${response.body}');
   }
 
   Future<Comment> getCommentById(String commentId) async {
@@ -38,7 +38,7 @@ class CommentApi {
       Uri.http(baseURL, '/api/v1/comments/$commentId'),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getCommentById() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return Comment.fromJson(jsonDecode(response.body));
   }
 
@@ -47,7 +47,7 @@ class CommentApi {
       Uri.http(baseURL, '/api/v1/comments', {'videoId': videoId, ...pageable.toParam()}),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getCommentsByVideoId() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return PageResponse.fromJson(jsonDecode(response.body), Comment.fromJsonModel);
   }
 
@@ -57,7 +57,7 @@ class CommentApi {
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) {
-      throw Exception('getRepliesByCommentId() [${response.statusCode}] ${response.body}');
+      throw Exception('[${response.statusCode}] ${response.body}');
     }
     return PageResponse.fromJson(jsonDecode(response.body), Comment.fromJsonModel);
   }
@@ -70,7 +70,7 @@ class CommentApi {
       }),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('postCommentRating() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return CommentRating.fromJson(jsonDecode(response.body));
   }
 
@@ -79,7 +79,7 @@ class CommentApi {
       Uri.http(baseURL, '/api/v1/comments/rate/mine', {'commentId': commentId}),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getCommentRating() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return CommentRating.fromJson(jsonDecode(response.body));
   }
 
@@ -90,7 +90,7 @@ class CommentApi {
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) {
-      throw Exception('getCommentRatingsOfVideo() [${response.statusCode}] ${response.body}');
+      throw Exception('[${response.statusCode}] ${response.body}');
     }
     return PageResponse.fromJson(jsonDecode(response.body), CommentRating.fromJsonModel);
   }

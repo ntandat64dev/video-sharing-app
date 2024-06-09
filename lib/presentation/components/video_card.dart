@@ -1,10 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
+import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
@@ -112,7 +115,7 @@ class VideoCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 3.0),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () => showOptionBottomSheet(context, video: video),
                     icon: Icon(
                       Icons.more_vert,
                       color: Theme.of(context).colorScheme.onBackground.withAlpha(200),
@@ -128,3 +131,36 @@ class VideoCard extends StatelessWidget {
     );
   }
 }
+
+void showOptionBottomSheet(BuildContext context, {required Video video}) => showConsistentBottomSheet(
+      context: context,
+      height: 230.0,
+      negativeButton: bottomSheetNegativeButton(context: context),
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                showSaveVideoBottomSheet(
+                  context: context,
+                  videoId: video.id!,
+                  refreshPlaylists: () {},
+                );
+              },
+              child: ListTile(
+                leading: const Icon(CupertinoIcons.trash),
+                title: Text(AppLocalizations.of(context)!.saveToPlaylist),
+              ),
+            ),
+            InkWell(
+              onTap: () async {},
+              child: ListTile(
+                leading: const Icon(CupertinoIcons.arrowshape_turn_up_right),
+                title: Text(AppLocalizations.of(context)!.shareButton),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );

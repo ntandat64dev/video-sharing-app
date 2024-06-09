@@ -40,6 +40,17 @@ class Video {
     required this.commentAllowed,
   });
 
+  Video.playlistItem({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.userId,
+    required this.username,
+    required this.videoUrl,
+    required this.thumbnails,
+    required this.duration,
+  });
+
   String? id;
   DateTime? publishedAt;
   String? userId;

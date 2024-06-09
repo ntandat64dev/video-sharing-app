@@ -9,7 +9,7 @@ class AuthApi {
       'username': username,
       'password': password,
     }));
-    if (response.statusCode != 200) throw Exception('signIn() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return jsonDecode(response.body)['token']!;
   }
 
@@ -18,6 +18,6 @@ class AuthApi {
       'username': username,
       'password': password,
     }));
-    if (response.statusCode != 201) throw Exception('signUp() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 201) throw Exception('[${response.statusCode}] ${response.body}');
   }
 }

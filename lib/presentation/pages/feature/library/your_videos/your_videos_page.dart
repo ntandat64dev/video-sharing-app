@@ -9,6 +9,7 @@ import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
@@ -53,6 +54,9 @@ class _YourVideosPageState extends State<YourVideosPage> {
         appBar: AppBar(
           leading: appBarBackButton(context),
           title: Text(AppLocalizations.of(context)!.yourVideosAppBarTitle),
+          actions: const [
+            MoreButon(),
+          ],
         ),
         body: ChangeNotifierProvider(
           create: (context) => YourVideosProvider(pagingController!),

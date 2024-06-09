@@ -6,12 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/comment.dart';
+import 'package:video_sharing_app/domain/entity/page_response.dart';
+import 'package:video_sharing_app/domain/entity/playlist.dart';
 import 'package:video_sharing_app/domain/enum/rating.dart';
 import 'package:video_sharing_app/domain/repository/comment_repository.dart';
+import 'package:video_sharing_app/domain/repository/playlist_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
 import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
+import 'package:video_sharing_app/presentation/pages/feature/library/library_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 
@@ -31,6 +36,7 @@ class _VideoDetailState extends State<VideoDetail> {
   final userRepository = getIt<UserRepository>();
   final videoRepository = getIt<VideoRepository>();
   final commentRepository = getIt<CommentRepository>();
+  final playlistRepository = getIt<PlaylistRepository>();
 
   final commentController = TextEditingController();
   var isCommentFocus = false;
@@ -45,6 +51,9 @@ class _VideoDetailState extends State<VideoDetail> {
         final videoRating = provider.videoRating;
         final follow = provider.follow;
         final user = provider.user;
+        final containingPlaylistIds = provider.containingPlaylistIds;
+
+        final Future<PageResponse<Playlist>> myPlaylistsFuture = playlistRepository.getMyPlaylists();
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,6 +109,7 @@ class _VideoDetailState extends State<VideoDetail> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  // Like
                   SinkAnimated(
                     onTap: () => provider.rateVideo(Rating.like),
                     level: 0.1,
@@ -135,6 +145,7 @@ class _VideoDetailState extends State<VideoDetail> {
                     ),
                   ),
                   const SizedBox(width: 8.0),
+                  // Dislike
                   SinkAnimated(
                     onTap: () => provider.rateVideo(Rating.dislike),
                     level: 0.1,
@@ -170,6 +181,7 @@ class _VideoDetailState extends State<VideoDetail> {
                     ),
                   ),
                   const SizedBox(width: 8.0),
+                  // Share
                   SinkAnimated(
                     onTap: () {},
                     level: 0.1,
@@ -199,6 +211,7 @@ class _VideoDetailState extends State<VideoDetail> {
                     ),
                   ),
                   const SizedBox(width: 8.0),
+                  // Download
                   SinkAnimated(
                     onTap: () {},
                     level: 0.1,
@@ -228,8 +241,15 @@ class _VideoDetailState extends State<VideoDetail> {
                     ),
                   ),
                   const SizedBox(width: 8.0),
+                  // Save
                   SinkAnimated(
-                    onTap: () {},
+                    onTap: () => showSaveVideoBottomSheet(
+                      context: context,
+                      myPlaylistsFuture: myPlaylistsFuture,
+                      containingPlaylistIdsFuture: containingPlaylistIds,
+                      videoId: video.id!,
+                      refreshPlaylists: () => provider.refreshPlaylists(),
+                    ),
                     level: 0.1,
                     child: Container(
                       color: Colors.transparent,
@@ -239,7 +259,7 @@ class _VideoDetailState extends State<VideoDetail> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            CupertinoIcons.bookmark,
+                            containingPlaylistIds.isNotEmpty ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark,
                             size: 24.0,
                             color: Theme.of(context).colorScheme.onBackground.withAlpha(230),
                           ),
@@ -305,19 +325,21 @@ class _VideoDetailState extends State<VideoDetail> {
                           ),
                         ],
                       ),
-                      ElevatedButton(
-                        onPressed: () => provider.followUser(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        child: Text(
-                          follow != null
-                              ? AppLocalizations.of(context)!.followedButton
-                              : AppLocalizations.of(context)!.followButton,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      )
+                      userRepository.getMyId() == video.userId
+                          ? const SizedBox.shrink()
+                          : ElevatedButton(
+                              onPressed: () => provider.followUser(),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                              child: Text(
+                                follow != null
+                                    ? AppLocalizations.of(context)!.followedButton
+                                    : AppLocalizations.of(context)!.followButton,
+                                style: const TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            )
                     ],
                   ),
                 ),
@@ -405,4 +427,134 @@ class _VideoDetailState extends State<VideoDetail> {
       },
     );
   }
+}
+
+void showSaveVideoBottomSheet({
+  required BuildContext context,
+  Future<PageResponse<Playlist>>? myPlaylistsFuture,
+  List<String>? containingPlaylistIdsFuture,
+  required String videoId,
+  required void Function() refreshPlaylists,
+}) async {
+  final playlistRepository = getIt<PlaylistRepository>();
+
+  myPlaylistsFuture ??= playlistRepository.getMyPlaylists();
+  containingPlaylistIdsFuture ??= await playlistRepository.getPlaylistIdsContainingVideo(videoId);
+
+  Set<String> oldIds = Set.from(containingPlaylistIdsFuture);
+  Set<String> videoContainingPlaylistIds = Set.from(containingPlaylistIdsFuture);
+
+  if (!context.mounted) return;
+
+  showConsistentBottomSheet(
+    context: context,
+    height: 400,
+    title: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          AppLocalizations.of(context)!.saveVideoTo,
+          style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+            showNewPlaylistBottomSheet(
+                context: context,
+                onRefresh: (Playlist p) async {
+                  final playlistItem = await playlistRepository.addPlaylistItem(playlistId: p.id!, videoId: videoId);
+                  if (playlistItem != null) refreshPlaylists();
+                });
+          },
+          child: Row(
+            children: [
+              Icon(CupertinoIcons.add, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 5.0),
+              Text(
+                AppLocalizations.of(context)!.playlistNew,
+                style: TextStyle(
+                    fontSize: 16.0, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        )
+      ],
+    ),
+    negativeButton: bottomSheetNegativeButton(context: context),
+    confirmButton: bottomSheetConfirmButton(
+      onPressed: () async {
+        final isSuccess = await playlistRepository.addPlaylistItems(
+          videoId: videoId,
+          oldIds: oldIds,
+          newIds: videoContainingPlaylistIds,
+        );
+        if (isSuccess && context.mounted) {
+          refreshPlaylists();
+          Navigator.pop(context);
+        }
+      },
+      context: context,
+      text: AppLocalizations.of(context)!.saveButton,
+    ),
+    content: FutureBuilder(
+      future: myPlaylistsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done || snapshot.data == null) {
+          return const SizedBox.shrink();
+        }
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (final (index, playlist) in snapshot.data!.items.indexed)
+                    if (index != 1)
+                      Builder(builder: (context) {
+                        onChange() {
+                          if (videoContainingPlaylistIds.contains(playlist.id!)) {
+                            videoContainingPlaylistIds.remove(playlist.id!);
+                          } else {
+                            videoContainingPlaylistIds.add(playlist.id!);
+                          }
+                          setState(() {});
+                        }
+
+                        return InkWell(
+                          onTap: onChange,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 2.0, top: 6.0, right: 16.0, bottom: 6.0),
+                            child: Row(
+                              children: [
+                                CupertinoCheckbox(
+                                  value: videoContainingPlaylistIds.contains(playlist.id),
+                                  onChanged: (value) => onChange(),
+                                  activeColor: Theme.of(context).colorScheme.primary,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    !playlist.isDefaultPlaylist!
+                                        ? playlist.title!
+                                        : index == 0
+                                            ? AppLocalizations.of(context)!.playlistWatchLater
+                                            : AppLocalizations.of(context)!.playlistLikedVideos,
+                                    style: const TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                Icon(playlist.privacy == 'PRIVATE' ? Icons.lock_outline_rounded : Icons.public_rounded),
+                              ],
+                            ),
+                          ),
+                        );
+                      })
+                ],
+              ),
+            );
+          },
+        );
+      },
+    ),
+  );
 }

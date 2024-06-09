@@ -36,9 +36,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
       // Register FCM token.
       final fcmToken = await firebase_service.getToken();
-      if (fcmToken == null) throw Exception('signIn(): Message token is null');
+      if (fcmToken == null) throw Exception('is null');
       final result = await getIt<NotificationRepository>().registerMessageToken(fcmToken);
-      if (result == false) throw Exception('Register message token failed');
+      if (result == false) throw Exception('token failed');
 
       return true;
     } catch (e) {
@@ -51,9 +51,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<bool> signOut() async {
     try {
       final fcmToken = await firebase_service.getToken();
-      if (fcmToken == null) throw Exception('signOut(): Message token is null');
+      if (fcmToken == null) throw Exception('is null');
       final result = await getIt<NotificationRepository>().unregisterMessageToken(fcmToken);
-      if (result == false) throw Exception('Unregister message token failed');
+      if (result == false) throw Exception('token failed');
       _prefs.clearUser();
       return true;
     } catch (e) {

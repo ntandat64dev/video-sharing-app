@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 
@@ -44,6 +45,9 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
           AppLocalizations.of(context)!.addDescription,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
+        actions: const [
+          MoreButon(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
