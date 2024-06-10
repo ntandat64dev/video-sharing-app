@@ -91,6 +91,15 @@
     "comments": "Comments",
     "hintAddComment": "Add a comment...",
     "hintAddReply": "Add a reply...",
+    "n": "{count, plural, other{{count}} zero{0} one{1}}",
+    "@n": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
     "nFollowers": "{count, plural, other{{count} followers} zero{0 follower} one{1 follower}}",
     "@nFollowers": {
         "placeholders": {
@@ -106,7 +115,7 @@
         "placeholders": {
             "count": {
                 "type": "int",
-                "example": "1"
+                "format": "compact"
             }
         }
     },
@@ -204,5 +213,6 @@
         }
     },
     "playlistNoVideos": "No videos in this playlist yet",
-    "saveToPlaylist": "Save to playlist"
+    "saveToPlaylist": "Save to playlist",
+    "recentlyAdded": "Recently Added"
 }

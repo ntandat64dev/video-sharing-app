@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:video_sharing_app/presentation/components/duration_chip.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
@@ -7,6 +10,13 @@ class ViewHistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final testThumbnails = [
+      Asset.thumnnail_1,
+      Asset.thumnnail_2,
+      Asset.thumnnail_3,
+      Asset.thumnnail_4,
+      Asset.thumnnail_5,
+    ];
     return SinkAnimated(
       onTap: () {},
       child: SizedBox(
@@ -14,14 +24,19 @@ class ViewHistoryItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: Image.asset(
-                Asset.placeholder,
-                fit: BoxFit.cover,
-                height: 100,
-                width: double.infinity,
-              ),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: Image.asset(
+                    testThumbnails[Random().nextInt(5)],
+                    fit: BoxFit.cover,
+                    height: 100,
+                    width: double.infinity,
+                  ),
+                ),
+                const DurationChip(isoDuration: 'PT24M12S'),
+              ],
             ),
             const SizedBox(height: 6.0),
             Column(

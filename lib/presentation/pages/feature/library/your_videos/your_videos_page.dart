@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
@@ -12,6 +13,7 @@ import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
+import 'package:video_sharing_app/presentation/components/duration_chip.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/provider/your_videos_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/update_video_page.dart';
@@ -32,6 +34,7 @@ class _YourVideosPageState extends State<YourVideosPage> {
 
   final videoRepository = getIt<VideoRepository>();
   PagingController<int, Video>? pagingController = PagingController(firstPageKey: 0);
+  final refreshController = RefreshController(initialRefresh: false);
   var filter = Filter.video;
 
   @override
@@ -126,12 +129,21 @@ class _YourVideosPageState extends State<YourVideosPage> {
                       ),
                     ),
                     // Videos list
-                    PagedSliverList<int, Video>(
-                      pagingController: pagingController!,
-                      builderDelegate: PagedChildBuilderDelegate(
-                        itemBuilder: (context, item, index) {
-                          return YourVideoItem(video: item);
+                    SliverFillRemaining(
+                      child: SmartRefresher(
+                        controller: refreshController,
+                        onRefresh: () async {
+                          provider.reload();
+                          refreshController.refreshCompleted();
                         },
+                        child: PagedListView<int, Video>(
+                          pagingController: pagingController!,
+                          builderDelegate: PagedChildBuilderDelegate(
+                            itemBuilder: (context, item, index) {
+                              return YourVideoItem(video: item);
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -180,14 +192,19 @@ class YourVideoItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: CachedNetworkImage(
-                imageUrl: video.thumbnails![Thumbnail.kDefault]!.url,
-                fit: BoxFit.cover,
-                width: 100.0,
-                height: 100.0,
-              ),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: CachedNetworkImage(
+                    imageUrl: video.thumbnails![Thumbnail.kDefault]!.url,
+                    fit: BoxFit.cover,
+                    width: 135.0,
+                    height: 100.0,
+                  ),
+                ),
+                DurationChip(isoDuration: video.duration!),
+              ],
             ),
             const SizedBox(width: 16.0),
             Expanded(

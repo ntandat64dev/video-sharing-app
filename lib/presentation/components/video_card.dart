@@ -6,6 +6,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
+import 'package:video_sharing_app/presentation/components/duration_chip.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
@@ -35,22 +36,27 @@ class VideoCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
-              child: CachedNetworkImage(
-                imageUrl: video.thumbnails![Thumbnail.kDefault]!.url,
-                fadeInDuration: const Duration(milliseconds: 300),
-                fadeOutDuration: const Duration(milliseconds: 1),
-                height: videoPlayerHeight,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Image.asset(
-                  Asset.placeholder,
-                  height: videoPlayerHeight,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: CachedNetworkImage(
+                    imageUrl: video.thumbnails![Thumbnail.kDefault]!.url,
+                    fadeInDuration: const Duration(milliseconds: 300),
+                    fadeOutDuration: const Duration(milliseconds: 1),
+                    height: videoPlayerHeight,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Image.asset(
+                      Asset.placeholder,
+                      height: videoPlayerHeight,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
+                DurationChip(isoDuration: video.duration!),
+              ],
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,

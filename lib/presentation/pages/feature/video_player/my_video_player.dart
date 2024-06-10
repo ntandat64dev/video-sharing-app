@@ -90,7 +90,8 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
                   VideoPlayer(videoController!),
                   GestureDetector(
                     onTap: () => setState(() => isShowAction = !isShowAction),
-                    child: Opacity(
+                    child: AnimatedOpacity(
+                      duration: Durations.medium1,
                       opacity: isShowAction ? 1 : 0,
                       child: Container(
                         color: Colors.black.withAlpha(isShowAction ? 150 : 0),

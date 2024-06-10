@@ -12,6 +12,7 @@ import 'package:video_sharing_app/domain/repository/playlist_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
+import 'package:video_sharing_app/presentation/components/duration_chip.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/playlist/playlist_player_page.dart';
 
@@ -307,14 +308,19 @@ class _PlaylistItemsPageState extends State<PlaylistItemsPage> {
                                         Column(
                                           children: [
                                             const SizedBox(height: 4.0),
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(16.0),
-                                              child: CachedNetworkImage(
-                                                imageUrl: item.thumbnails![Thumbnail.kDefault]!.url,
-                                                fit: BoxFit.cover,
-                                                width: 120.0,
-                                                height: 90.0,
-                                              ),
+                                            Stack(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(16.0),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: item.thumbnails![Thumbnail.kDefault]!.url,
+                                                    fit: BoxFit.cover,
+                                                    width: 120.0,
+                                                    height: 90.0,
+                                                  ),
+                                                ),
+                                                DurationChip(isoDuration: item.duration!),
+                                              ],
                                             ),
                                           ],
                                         ),

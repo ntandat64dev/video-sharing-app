@@ -131,7 +131,7 @@ class _VideoDetailState extends State<VideoDetail> {
                           ),
                           const SizedBox(height: 8.0),
                           Text(
-                            video.likeCount.toString(),
+                            AppLocalizations.of(context)!.n(video.likeCount!.toInt()),
                             style: TextStyle(
                               fontSize: 14.0,
                               color: videoRating.rating == Rating.like
@@ -167,7 +167,7 @@ class _VideoDetailState extends State<VideoDetail> {
                           ),
                           const SizedBox(height: 8.0),
                           Text(
-                            video.dislikeCount.toString(),
+                            AppLocalizations.of(context)!.n(video.dislikeCount!.toInt()),
                             style: TextStyle(
                               fontSize: 14.0,
                               color: videoRating.rating == Rating.dislike
@@ -371,7 +371,7 @@ class _VideoDetailState extends State<VideoDetail> {
                         ),
                         const SizedBox(width: 6.0),
                         Text(
-                          '${video.commentCount}',
+                          AppLocalizations.of(context)!.n(video.commentCount!.toInt()),
                           style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                         ),
                       ],

@@ -34,7 +34,7 @@ class VideoDescriptionSheet extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          provider.video.likeCount.toString(),
+                          AppLocalizations.of(context)!.n(provider.video.likeCount!.toInt()),
                           style: const TextStyle(
                             fontSize: 28.0,
                             fontWeight: FontWeight.w600,
@@ -46,7 +46,7 @@ class VideoDescriptionSheet extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          provider.video.dislikeCount.toString(),
+                          AppLocalizations.of(context)!.n(provider.video.dislikeCount!.toInt()),
                           style: const TextStyle(
                             fontSize: 28.0,
                             fontWeight: FontWeight.w600,
@@ -58,7 +58,7 @@ class VideoDescriptionSheet extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          provider.video.viewCount.toString(),
+                          AppLocalizations.of(context)!.n(provider.video.viewCount!.toInt()),
                           style: const TextStyle(
                             fontSize: 28.0,
                             fontWeight: FontWeight.w600,

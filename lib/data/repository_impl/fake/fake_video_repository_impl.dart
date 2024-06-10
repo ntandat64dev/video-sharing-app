@@ -30,7 +30,7 @@ class FakeVideoRepositoryImpl implements VideoRepository {
           )
         },
         hashtags: ['music', 'sport', 'football'],
-        duration: 'duration',
+        duration: 'PT50M',
         location: null,
         category: Category(id: Random().nextInt(16).toRadixString(16), category: 'Music'),
         privacy: 'public',
@@ -110,7 +110,7 @@ class FakeVideoRepositoryImpl implements VideoRepository {
           )
         },
         hashtags: ['music', 'sport', 'football'],
-        duration: 'duration',
+        duration: 'PT50M',
         location: null,
         category: Category(id: Random().nextInt(16).toRadixString(16), category: 'Music'),
         privacy: 'public',

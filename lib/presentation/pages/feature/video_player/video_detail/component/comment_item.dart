@@ -183,7 +183,7 @@ class _CommentItemState extends State<CommentItem> {
                             size: 20.0,
                             color: Theme.of(context).colorScheme.onBackground.withAlpha(220),
                           ),
-                          label: Text(widget._comment.likeCount.toString()),
+                          label: Text(AppLocalizations.of(context)!.n(widget._comment.likeCount!.toInt())),
                           style: TextButton.styleFrom(
                             foregroundColor: Theme.of(context).colorScheme.onBackground.withAlpha(220),
                           ),
@@ -197,7 +197,7 @@ class _CommentItemState extends State<CommentItem> {
                             size: 20.0,
                             color: Theme.of(context).colorScheme.onBackground.withAlpha(220),
                           ),
-                          label: Text(widget._comment.dislikeCount.toString()),
+                          label: Text(AppLocalizations.of(context)!.n(widget._comment.dislikeCount!.toInt())),
                           style: TextButton.styleFrom(
                             foregroundColor: Theme.of(context).colorScheme.onBackground.withAlpha(220),
                           ),
@@ -212,7 +212,7 @@ class _CommentItemState extends State<CommentItem> {
                                   size: 20.0,
                                   color: Theme.of(context).colorScheme.onBackground.withAlpha(220),
                                 ),
-                                label: Text(widget._comment.replyCount.toString()),
+                                label: Text(AppLocalizations.of(context)!.n(widget._comment.replyCount!.toInt())),
                                 style: TextButton.styleFrom(
                                   foregroundColor: Theme.of(context).colorScheme.onBackground.withAlpha(220),
                                 ),

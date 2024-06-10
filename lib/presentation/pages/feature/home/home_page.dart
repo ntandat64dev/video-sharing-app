@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   final notificationRepository = getIt<NotificationRepository>();
 
   PagingController<int, Video>? pagingController = PagingController(firstPageKey: 0);
+  final refreshController = RefreshController(initialRefresh: false);
 
   @override
   void initState() {
@@ -100,12 +102,21 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          PagedSliverList<int, Video>(
-            pagingController: pagingController!,
-            builderDelegate: PagedChildBuilderDelegate(
-              itemBuilder: (context, video, index) {
-                return VideoCard(video: video);
+          SliverFillRemaining(
+            child: SmartRefresher(
+              controller: refreshController,
+              onRefresh: () async {
+                pagingController!.refresh();
+                refreshController.refreshCompleted();
               },
+              child: PagedListView<int, Video>(
+                pagingController: pagingController!,
+                builderDelegate: PagedChildBuilderDelegate(
+                  itemBuilder: (context, video, index) {
+                    return VideoCard(video: video);
+                  },
+                ),
+              ),
             ),
           ),
         ],

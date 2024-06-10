@@ -196,7 +196,7 @@ class _LibraryPageState extends State<LibraryPage> {
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                                           child: Text(
-                                            AppLocalizations.of(context)!.viewAll,
+                                            AppLocalizations.of(context)!.recentlyAdded,
                                             style: TextStyle(
                                               color: Theme.of(context).colorScheme.primary,
                                               fontWeight: FontWeight.w500,
