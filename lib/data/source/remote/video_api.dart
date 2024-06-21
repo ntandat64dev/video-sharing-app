@@ -17,6 +17,20 @@ class VideoApi {
   final String token;
   late final Map<String, String> bearerHeader;
 
+  Future<PageResponse<Video>> getVideosByUserId({
+    required String userId,
+    required Pageable pageable,
+  }) async {
+    var response = await http.get(
+      Uri.http(baseURL, '/api/v1/videos/for-user', {'userId': userId, ...pageable.toParam()}),
+      headers: {...bearerHeader},
+    );
+    if (response.statusCode != 200) {
+      throw Exception('[${response.statusCode}] ${response.body}');
+    }
+    return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
+  }
+
   Future<PageResponse<Video>> getMyVideos(Pageable pageable) async {
     var response = await http.get(
       Uri.http(baseURL, '/api/v1/videos/mine', pageable.toParam()),
@@ -106,6 +120,23 @@ class VideoApi {
     return Video.fromJson(jsonDecode(response.body));
   }
 
+  Future<Video> changeThumbnailImage({required String imagePath, required String videoId}) async {
+    final request = http.MultipartRequest('POST', Uri.http(baseURL, '/api/v1/videos/thumbnails', {'videoId': videoId}));
+    request.headers.addAll(bearerHeader);
+
+    final imageFile = await http.MultipartFile.fromPath(
+      'imageFile',
+      imagePath,
+      contentType: MediaType('image', '*'),
+    );
+    request.files.add(imageFile);
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
+    return Video.fromJson(jsonDecode(response.body));
+  }
+
   Future<void> deleteVideo(String videoId) async {
     final response = await http.delete(
       Uri.http(baseURL, '/api/v1/videos', {'id': videoId}),
@@ -123,6 +154,15 @@ class VideoApi {
       throw Exception('[${response.statusCode}] ${response.body}');
     }
     return PageResponse.fromJson(jsonDecode(response.body), Video.fromJsonModel);
+  }
+
+  Future<bool> viewVideo({required String videoId}) async {
+    var response = await http.post(
+      Uri.http(baseURL, '/api/v1/videos/view', {'videoId': videoId}),
+      headers: {...bearerHeader},
+    );
+    if (response.statusCode != 204) throw Exception('[${response.statusCode}] ${response.body}');
+    return true;
   }
 
   Future<VideoRating> getVideoRating(String videoId) async {

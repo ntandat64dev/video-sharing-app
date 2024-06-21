@@ -10,10 +10,10 @@ import 'package:video_sharing_app/domain/repository/preference_repository.dart';
 class ThemeProvider extends ChangeNotifier {
   final _preferenceRepository = getIt<PreferenceRepository>();
 
-  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode _themeMode = ThemeMode.light;
 
   ThemeProvider() {
-    final mode = _preferenceRepository.getPreference(kSettingTheme, ThemeMode.system.name);
+    final mode = _preferenceRepository.getPreference(kSettingTheme, ThemeMode.light.name);
     _themeMode = mode == 'light'
         ? ThemeMode.light
         : mode == 'dark'

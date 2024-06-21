@@ -2,13 +2,13 @@ import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 
 class FakeAuthRepositoryImpl implements AuthRepository {
   @override
-  Future<bool> signUp({required String username, required String password}) async {
-    return true;
+  Future<String?> signUp({required String username, required String password}) async {
+    return null;
   }
 
   @override
-  Future<bool> signIn({required String username, required String password}) async {
-    return true;
+  Future<String?> signIn({required String username, required String password}) async {
+    return null;
   }
 
   @override

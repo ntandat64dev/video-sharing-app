@@ -33,6 +33,10 @@ ThemeData darkTheme = ThemeData(
           : TextStyle(color: colorOnBackground.withAlpha(180)),
     ),
   ),
+  snackBarTheme: const SnackBarThemeData(
+    backgroundColor: Colors.white,
+    contentTextStyle: TextStyle(color: Colors.black),
+  ),
   colorScheme: const ColorScheme.dark(
     primary: Color(0xFFFF4D67),
     onPrimary: Color(0xFFFFFFFF),

@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:video_player/video_player.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:video_sharing_app/presentation/shared/ext.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class UploadProvider extends ChangeNotifier {
@@ -25,16 +29,24 @@ class UploadProvider extends ChangeNotifier {
             }
           })
         });
+
+    // Get video duration.
+    final controller = VideoPlayerController.file(File(videoPath));
+    controller.initialize().then((value) {
+      _duration = controller.value.duration.toIsoString();
+    });
   }
 
   String? _thumbnailPath;
   String? _videoPath;
+  String? _duration;
 
   final Video _video = Video.post(
     userId: null, // Repository will set userId
     title: null,
     description: null,
     hashtags: [],
+    duration: null,
     location: null,
     category: null,
     privacy: 'public',
@@ -48,7 +60,7 @@ class UploadProvider extends ChangeNotifier {
     final result = await _videoRepository.uploadVideo(
       videoPath: _videoPath!,
       thumbnailPath: thumbnailPath!,
-      video: _video,
+      video: _video..duration = _duration,
     );
     if (result == null) throw Exception('upload video!');
   }

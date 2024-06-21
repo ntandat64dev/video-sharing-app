@@ -32,6 +32,7 @@ class Video {
     required this.title,
     required this.description,
     required this.hashtags,
+    required this.duration,
     required this.location,
     required this.category,
     required this.privacy,

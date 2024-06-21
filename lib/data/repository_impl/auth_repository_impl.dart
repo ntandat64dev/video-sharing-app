@@ -2,8 +2,10 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:video_sharing_app/data/source/local/preferences_service.dart';
 import 'package:video_sharing_app/data/source/remote/auth_api.dart';
 import 'package:video_sharing_app/di.dart';
+import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/domain/repository/notification_repository.dart';
+import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/service/firebase_service.dart' as firebase_service;
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -17,17 +19,17 @@ class AuthRepositoryImpl implements AuthRepository {
   late final AuthApi _authApi;
 
   @override
-  Future<bool> signUp({required String username, required String password}) async {
+  Future<String?> signUp({required String username, required String password}) async {
     try {
       await _authApi.signUp(username: username, password: password);
-      return true;
+      return null;
     } catch (e) {
-      return false;
+      return e.toString();
     }
   }
 
   @override
-  Future<bool> signIn({required String username, required String password}) async {
+  Future<String?> signIn({required String username, required String password}) async {
     try {
       final jwtToken = await _authApi.signIn(username: username, password: password);
       final claims = JwtDecoder.decode(jwtToken);
@@ -40,10 +42,14 @@ class AuthRepositoryImpl implements AuthRepository {
       final result = await getIt<NotificationRepository>().registerMessageToken(fcmToken);
       if (result == false) throw Exception('token failed');
 
-      return true;
+      final me = await getIt<UserRepository>().getUserInfo();
+      if (me == null) throw Exception('User is null');
+      _prefs.setUserImageUrl(me.thumbnails[Thumbnail.kDefault]!.url);
+
+      return null;
     } catch (e) {
       _prefs.clearUser();
-      return false;
+      return e.toString();
     }
   }
 

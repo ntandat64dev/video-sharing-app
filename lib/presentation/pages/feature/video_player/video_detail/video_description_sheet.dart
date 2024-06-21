@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail_provider.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/provider/video_detail_provider.dart';
 
 class VideoDescriptionSheet extends StatelessWidget {
   const VideoDescriptionSheet({super.key});
@@ -145,18 +145,20 @@ class VideoDescriptionSheet extends StatelessWidget {
                             ),
                           ],
                         ),
-                        ElevatedButton(
-                          onPressed: () async => await provider.followUser(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                          child: Text(
-                            provider.follow != null
-                                ? AppLocalizations.of(context)!.followedButton
-                                : AppLocalizations.of(context)!.followButton,
-                          ),
-                        )
+                        provider.isThisMyVideo
+                            ? const SizedBox.shrink()
+                            : ElevatedButton(
+                                onPressed: () async => await provider.followUser(),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(context).colorScheme.primary,
+                                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                                ),
+                                child: Text(
+                                  provider.follow != null
+                                      ? AppLocalizations.of(context)!.followingButton
+                                      : AppLocalizations.of(context)!.followButton,
+                                ),
+                              )
                       ],
                     ),
                   ),

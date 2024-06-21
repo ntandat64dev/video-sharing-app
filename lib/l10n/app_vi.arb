@@ -87,7 +87,7 @@
     "downloadButton": "Tải xuống",
     "saveButton": "Lưu",
     "followButton": "Theo dõi",
-    "followedButton": "Đã theo dõi",
+    "followingButton": "Đang theo dõi",
     "comments": "Bình luận",
     "hintAddComment": "Thêm bình luận...",
     "hintAddReply": "Thêm phản hồi...",
@@ -214,5 +214,9 @@
     },
     "playlistNoVideos": "Danh sách phát chưa có videos nào.",
     "saveToPlaylist": "Lưu vào danh sách phát",
-    "recentlyAdded": "Đã Thêm Gần Đây"
+    "recentlyAdded": "Đã Thêm Gần Đây",
+     "loginFailed": "Đăng nhập thất bại",
+    "signupFailed": "Đăng ký thất bại",
+    "followers": "Người theo đõi",
+    "videos": "Videos"
 }

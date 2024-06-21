@@ -9,11 +9,12 @@ import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/enum/rating.dart';
 import 'package:video_sharing_app/domain/repository/comment_repository.dart';
+import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/component/comment_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/reply_sheet.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail_provider.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/provider/video_detail_provider.dart';
 
 class CommentSheet extends StatefulWidget {
   const CommentSheet({
@@ -36,6 +37,7 @@ class CommentSheet extends StatefulWidget {
 class _CommentSheetState extends State<CommentSheet> with TickerProviderStateMixin {
   static const commentPageSize = 10;
 
+  final userRepository = getIt<UserRepository>();
   final commentRepository = getIt<CommentRepository>();
   final commentController = TextEditingController();
   var isCommentFocus = false;
@@ -310,7 +312,7 @@ class _CommentSheetState extends State<CommentSheet> with TickerProviderStateMix
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(100.0),
                         child: CachedNetworkImage(
-                          imageUrl: provider.video.userImageUrl!,
+                          imageUrl: userRepository.getMyImageUrl()!,
                           fit: BoxFit.cover,
                           width: 48.0,
                           height: 48.0,

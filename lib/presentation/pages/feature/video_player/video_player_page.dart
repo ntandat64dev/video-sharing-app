@@ -9,10 +9,10 @@ import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/provider/video_detail_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/comment_sheet.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_description_sheet.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail_provider.dart';
 import 'package:video_sharing_app/presentation/theme/theme_provider.dart';
 
 const videoPlayerRoute = 'video_player_route';

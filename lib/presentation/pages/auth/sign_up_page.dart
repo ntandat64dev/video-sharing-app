@@ -22,6 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isRememberMe = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -96,15 +97,23 @@ class _SignUpPageState extends State<SignUpPage> {
                   width: double.infinity,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: TextButton(
-                      onPressed: () => onSignUp(context),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                      child: Text(AppLocalizations.of(context)!.signup, style: const TextStyle(fontSize: 16)),
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 56.0,
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        : SizedBox(
+                            height: 56.0,
+                            child: TextButton(
+                              onPressed: () => onSignUp(context),
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                              child: Text(AppLocalizations.of(context)!.signup, style: const TextStyle(fontSize: 16)),
+                            ),
+                          ),
                   ),
                 ),
                 Padding(
@@ -197,14 +206,19 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void onSignUp(context) async {
+    setState(() => _isLoading = true);
     if (_passwordController.text != _confirmPasswordController.text) return;
-    bool result = await _authRepository.signUp(username: _usernameController.text, password: _passwordController.text);
-    if (result == true && context.mounted) {
+    String? error =
+        await _authRepository.signUp(username: _usernameController.text, password: _passwordController.text);
+    setState(() => _isLoading = false);
+    if (error == null && context.mounted) {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const SignInPage()),
         (route) => route.isFirst,
       );
+    } else if (error != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.signupFailed)));
     }
   }
 }

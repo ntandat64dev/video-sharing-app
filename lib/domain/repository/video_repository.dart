@@ -25,6 +25,10 @@ abstract class VideoRepository {
 
   Future<PageResponse<Video>> getMyVideos([Pageable? pageable]);
 
+  Future<PageResponse<Video>> getVideosByUserId(String userId, [Pageable? pageable]);
+
+  Future<bool> viewVideo({required String videoId});
+
   Future<VideoRating?> getVideoRating(String videoId);
 
   Future<VideoRating?> rateVideo({required String videoId, required Rating rating});

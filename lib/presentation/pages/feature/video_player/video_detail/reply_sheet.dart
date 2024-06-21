@@ -7,7 +7,7 @@ import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/enum/rating.dart';
 import 'package:video_sharing_app/domain/repository/comment_repository.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/component/comment_item.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail_provider.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/provider/video_detail_provider.dart';
 
 class ReplySheet extends StatefulWidget {
   const ReplySheet({

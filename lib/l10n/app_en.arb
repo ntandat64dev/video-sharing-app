@@ -87,7 +87,7 @@
     "downloadButton": "Download",
     "saveButton": "Save",
     "followButton": "Follow",
-    "followedButton": "Followed",
+    "followingButton": "Following",
     "comments": "Comments",
     "hintAddComment": "Add a comment...",
     "hintAddReply": "Add a reply...",
@@ -214,5 +214,9 @@
     },
     "playlistNoVideos": "No videos in this playlist yet",
     "saveToPlaylist": "Save to playlist",
-    "recentlyAdded": "Recently Added"
+    "recentlyAdded": "Recently Added",
+    "loginFailed": "Login failed",
+    "signupFailed": "Signup failed",
+    "followers": "Followers",
+    "videos": "Videos"
 }

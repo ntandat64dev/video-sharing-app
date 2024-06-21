@@ -33,6 +33,10 @@ ThemeData lightTheme = ThemeData(
           : TextStyle(color: colorOnBackground.withAlpha(180)),
     ),
   ),
+  snackBarTheme: const SnackBarThemeData(
+    backgroundColor: Color(0xFF000000),
+    contentTextStyle: TextStyle(color: Colors.white)
+  ),
   colorScheme: const ColorScheme.light(
     primary: Color(0xFFFF4D67),
     onPrimary: Color(0xFFFFFFFF),

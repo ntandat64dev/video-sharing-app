@@ -14,6 +14,7 @@ import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/following/following_empty_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/user_info/user_info_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class FollowingPage extends StatefulWidget {
@@ -120,13 +121,24 @@ class _FollowingPageState extends State<FollowingPage> {
                                 builderDelegate: PagedChildBuilderDelegate(
                                   itemBuilder: (context, follow, index) {
                                     return SinkAnimated(
-                                      onTap: () {},
+                                      onTap: () async {
+                                        final isChangedFollow = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => UserInfoPage(userId: follow.userId!)),
+                                        );
+                                        if (isChangedFollow) {
+                                          followPagingController!.refresh();
+                                          videoPagingController!.refresh();
+                                        }
+                                      },
                                       child: Column(
                                         children: [
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(100.0),
                                             child: CachedNetworkImage(
                                               imageUrl: follow.userThumbnails![Thumbnail.kDefault]!.url,
+                                              fadeInDuration: const Duration(milliseconds: 100),
+                                              fadeOutDuration: const Duration(milliseconds: 100),
                                               height: 72.0,
                                               width: 72.0,
                                               fit: BoxFit.cover,

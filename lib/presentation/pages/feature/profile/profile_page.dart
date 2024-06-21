@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
+import 'package:video_sharing_app/domain/entity/user.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
@@ -27,6 +31,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final authRepository = getIt<AuthRepository>();
   final userRepository = getIt<UserRepository>();
 
+  User? updatedUser;
+  var updatingImage = false;
   var sigingOut = false;
 
   @override
@@ -59,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: 160.0,
                   child: FutureBuilder(
-                    future: userRepository.getUserInfo(),
+                    future: updatedUser != null ? Future.value(updatedUser) : userRepository.getUserInfo(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
                       var user = snapshot.data!;
@@ -70,13 +76,48 @@ class _ProfilePageState extends State<ProfilePage> {
                             Stack(
                               alignment: Alignment.bottomRight,
                               children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(100.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: user.thumbnails[Thumbnail.kDefault]!.url,
-                                    fit: BoxFit.cover,
-                                    width: 108.0,
-                                    height: 108.0,
+                                GestureDetector(
+                                  onTap: () async {
+                                    final picker = ImagePicker();
+                                    final file = await picker.pickImage(source: ImageSource.gallery);
+                                    if (file != null) {
+                                      setState(() => updatingImage = true);
+                                      updatedUser = await userRepository.changeProfileImage(imageLocalPath: file.path);
+                                      if (updatedUser != null) {
+                                        await DefaultCacheManager()
+                                            .downloadFile(updatedUser!.thumbnails[Thumbnail.kDefault]!.url);
+                                      }
+                                      setState(() => updatingImage = false);
+                                    }
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(100.0),
+                                        child: CachedNetworkImage(
+                                          imageUrl: user.thumbnails[Thumbnail.kDefault]!.url,
+                                          fit: BoxFit.cover,
+                                          fadeInDuration: const Duration(milliseconds: 100),
+                                          fadeOutDuration: const Duration(milliseconds: 100),
+                                          width: 108.0,
+                                          height: 108.0,
+                                        ),
+                                      ),
+                                      !updatingImage
+                                          ? const SizedBox.shrink()
+                                          : ClipRRect(
+                                              borderRadius: BorderRadius.circular(100.0),
+                                              child: Container(
+                                                width: 108,
+                                                height: 108,
+                                                color: Theme.of(context).colorScheme.background.withAlpha(150),
+                                                child: SpinKitThreeBounce(
+                                                  color: Theme.of(context).colorScheme.primary,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ),
+                                    ],
                                   ),
                                 ),
                                 Padding(

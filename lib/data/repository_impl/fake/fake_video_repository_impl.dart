@@ -89,6 +89,53 @@ class FakeVideoRepositoryImpl implements VideoRepository {
   }
 
   @override
+  Future<PageResponse<Video>> getVideosByUserId(String userId, [Pageable? pageable]) async {
+    var myVideos = <Video>[];
+    for (int i = 0; i < 20; i++) {
+      final video = Video(
+        id: Random().nextInt(16).toRadixString(16),
+        publishedAt: DateTime.now(),
+        userId: '12345678',
+        username: 'fakeuser',
+        userImageUrl:
+            'https://ui-avatars.com/api/?name=Fake+User&size=500&background=0D8ABC&color=fff&rouded=true&bold=true',
+        title: 'Best Video Ever!',
+        description: null,
+        videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+        thumbnails: {
+          Thumbnail.kDefault: const Thumbnail(
+            url: 'https://dummyimage.com/720x450/5f8dfa/fff/',
+            width: 720,
+            height: 450,
+          )
+        },
+        hashtags: ['music', 'sport', 'football'],
+        duration: 'PT50M',
+        location: null,
+        category: Category(id: Random().nextInt(16).toRadixString(16), category: 'Music'),
+        privacy: 'public',
+        madeForKids: false,
+        ageRestricted: false,
+        commentAllowed: true,
+        viewCount: BigInt.zero,
+        likeCount: BigInt.zero,
+        dislikeCount: BigInt.zero,
+        commentCount: BigInt.from(100000),
+        downloadCount: BigInt.zero,
+      );
+
+      myVideos.add(video);
+    }
+    return PageResponse(
+      pageNumber: 0,
+      pageSize: myVideos.length,
+      totalElements: myVideos.length,
+      totalPages: 1,
+      items: myVideos,
+    );
+  }
+
+  @override
   Future<PageResponse<Video>> getMyVideos([Pageable? pageable]) async {
     var myVideos = <Video>[];
     for (int i = 0; i < 20; i++) {
@@ -134,6 +181,9 @@ class FakeVideoRepositoryImpl implements VideoRepository {
       items: myVideos,
     );
   }
+
+  @override
+  Future<bool> viewVideo({required String videoId}) async => true;
 
   @override
   Future<VideoRating?> getVideoRating(String videoId) async {

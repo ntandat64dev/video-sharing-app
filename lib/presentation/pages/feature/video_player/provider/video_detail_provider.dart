@@ -29,11 +29,12 @@ class VideoDetailProvider extends ChangeNotifier {
   late User _user;
   late List<String> _containingPlaylistIds;
 
-  var _isDetailLoaded = false;
   var _shouldLoadVideoDescription = false;
   var _shouldLoadComments = false;
   var _shouldUpdateComments = false;
   var _shouldUpdateReplies = false;
+  var _isDetailLoaded = false;
+  var _isThisMyVideo = false;
 
   VideoDetailProvider(Video initVideo) {
     _video = initVideo;
@@ -51,6 +52,7 @@ class VideoDetailProvider extends ChangeNotifier {
       _containingPlaylistIds = value[4] as List<String>;
 
       _isDetailLoaded = true;
+      _isThisMyVideo = _video.userId == _userRepository.getMyId();
       notifyListeners();
     });
   }
@@ -132,6 +134,12 @@ class VideoDetailProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void refreshUserAndFollow() async {
+    _user = (await _userRepository.getUserInfo(userId: _video.userId)) as User;
+    _follow = await _followRepository.getFollowFor(_video.userId!);
+    notifyListeners();
+  }
+
   Video get video => _video;
   VideoRating get videoRating => _videoRating;
   List<CommentRating> get commentRatings => _commentRatings;
@@ -140,6 +148,7 @@ class VideoDetailProvider extends ChangeNotifier {
   List<String> get containingPlaylistIds => _containingPlaylistIds;
 
   bool get isDetailLoaded => _isDetailLoaded;
+  bool get isThisMyVideo => _isThisMyVideo;
 
   bool get shouldLoadVideoDescription => _shouldLoadVideoDescription;
   set shouldLoadVideoDescription(value) {

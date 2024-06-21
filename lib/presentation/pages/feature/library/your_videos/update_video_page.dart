@@ -10,7 +10,6 @@ import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/your_videos/provider/video_details_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/add_description_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/add_location_page.dart';
@@ -18,6 +17,7 @@ import 'package:video_sharing_app/presentation/pages/feature/upload/comment_sett
 import 'package:video_sharing_app/presentation/pages/feature/upload/select_audience_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/select_category_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/set_privacy_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
 import 'package:video_sharing_app/presentation/shared/ext.dart';
 
 class UpdateVideoPage extends StatefulWidget {
@@ -137,7 +137,7 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       });
                                     }
                                   },
-                                  icon: (Icons.edit),
+                                  icon: (CupertinoIcons.text_alignright),
                                   title: AppLocalizations.of(context)!.addDescription,
                                 ),
                                 // Category
@@ -154,7 +154,7 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       provider.updateVideoDetails((video) => video.category = category);
                                     }
                                   },
-                                  icon: (Icons.category),
+                                  icon: (CupertinoIcons.layers),
                                   title: AppLocalizations.of(context)!.category,
                                   value: provider.category?.category,
                                 ),
@@ -172,7 +172,7 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       provider.updateVideoDetails((video) => video.privacy = privacy);
                                     }
                                   },
-                                  icon: (Icons.remove_red_eye_sharp),
+                                  icon: (CupertinoIcons.eye),
                                   title: AppLocalizations.of(context)!.privacy,
                                   value: provider.privacy.capitalize(),
                                 ),
@@ -196,7 +196,7 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       });
                                     }
                                   },
-                                  icon: (Icons.group),
+                                  icon: (CupertinoIcons.person_2),
                                   title: AppLocalizations.of(context)!.selectAudience,
                                 ),
                                 // Comment
@@ -215,7 +215,7 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       provider.updateVideoDetails((video) => video.commentAllowed = commentAllowed);
                                     }
                                   },
-                                  icon: (Icons.comment),
+                                  icon: (CupertinoIcons.chat_bubble),
                                   title: AppLocalizations.of(context)!.comment,
                                   value: provider.commentAllowed
                                       ? AppLocalizations.of(context)!.commentAllow
@@ -233,7 +233,7 @@ class _UpdateVideoPageState extends State<UpdateVideoPage> {
                                       provider.updateVideoDetails((video) => video.location = location);
                                     }
                                   },
-                                  icon: Icons.location_pin,
+                                  icon: CupertinoIcons.placemark,
                                   title: AppLocalizations.of(context)!.location,
                                   value: provider.location,
                                 ),

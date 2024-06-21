@@ -24,6 +24,7 @@ class _SignInPageState extends State<SignInPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -84,15 +85,23 @@ class _SignInPageState extends State<SignInPage> {
                   width: double.infinity,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: TextButton(
-                      onPressed: () => signIn(context),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                      child: Text(AppLocalizations.of(context)!.signin, style: const TextStyle(fontSize: 16)),
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 56.0,
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        : SizedBox(
+                            height: 56,
+                            child: TextButton(
+                              onPressed: () => signIn(context),
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                              child: Text(AppLocalizations.of(context)!.signin, style: const TextStyle(fontSize: 16)),
+                            ),
+                          ),
                   ),
                 ),
                 Padding(
@@ -185,10 +194,15 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void signIn(context) async {
-    bool result = await _authRepository.signIn(username: _usernameController.text, password: _passwordController.text);
-    if (result == true && context.mounted) {
+    setState(() => _isLoading = true);
+    String? error =
+        await _authRepository.signIn(username: _usernameController.text, password: _passwordController.text);
+    setState(() => _isLoading = false);
+    if (error == null && context.mounted) {
       Navigator.popUntil(context, (route) => route.isFirst);
       Provider.of<RouteProvider>(context, listen: false).route = const MainPage();
+    } else if (error != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.loginFailed)));
     }
   }
 }

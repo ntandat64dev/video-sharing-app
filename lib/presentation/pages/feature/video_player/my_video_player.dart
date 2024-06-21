@@ -36,6 +36,7 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
   void initState() {
     super.initState();
     init();
+    videoRepository.viewVideo(videoId: widget.video.id!);
   }
 
   @override

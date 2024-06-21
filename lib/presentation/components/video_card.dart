@@ -155,7 +155,7 @@ void showOptionBottomSheet(BuildContext context, {required Video video}) => show
                 );
               },
               child: ListTile(
-                leading: const Icon(CupertinoIcons.trash),
+                leading: const Icon(CupertinoIcons.bookmark),
                 title: Text(AppLocalizations.of(context)!.saveToPlaylist),
               ),
             ),

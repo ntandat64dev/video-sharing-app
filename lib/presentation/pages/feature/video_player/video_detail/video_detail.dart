@@ -17,7 +17,8 @@ import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
 import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/pages/feature/library/library_page.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail_provider.dart';
+import 'package:video_sharing_app/presentation/pages/feature/user_info/user_info_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/provider/video_detail_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 
 class VideoDetail extends StatefulWidget {
@@ -288,7 +289,15 @@ class _VideoDetailState extends State<VideoDetail> {
             ),
             // Channel, Follow button
             InkWell(
-              onTap: () {},
+              onTap: () async {
+                final isChangedFollow = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserInfoPage(userId: user.id)),
+                );
+                if (isChangedFollow) {
+                  provider.refreshUserAndFollow();
+                }
+              },
               child: SizedBox(
                 width: double.infinity,
                 child: Padding(
@@ -327,19 +336,57 @@ class _VideoDetailState extends State<VideoDetail> {
                       ),
                       userRepository.getMyId() == video.userId
                           ? const SizedBox.shrink()
-                          : ElevatedButton(
-                              onPressed: () => provider.followUser(),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).colorScheme.primary,
-                                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                              ),
-                              child: Text(
-                                follow != null
-                                    ? AppLocalizations.of(context)!.followedButton
-                                    : AppLocalizations.of(context)!.followButton,
-                                style: const TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                            )
+                          : follow != null
+                              ? SizedBox(
+                                  width: 120.0,
+                                  child: TextButton(
+                                    onPressed: () => provider.followUser(),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Theme.of(context).colorScheme.surface,
+                                      foregroundColor: Theme.of(context).colorScheme.onSurface,
+                                      elevation: 8.0,
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                                          width: 1.0,
+                                        ),
+                                        borderRadius: BorderRadius.circular(100.0),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 4.0),
+                                      child: Text(
+                                        AppLocalizations.of(context)!.followingButton,
+                                        style: const TextStyle(fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(
+                                  width: 120.0,
+                                  child: TextButton(
+                                    onPressed: () => provider.followUser(),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Theme.of(context).colorScheme.primary,
+                                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                                      elevation: 8.0,
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          color: Theme.of(context).colorScheme.primary,
+                                          width: 1.0,
+                                        ),
+                                        borderRadius: BorderRadius.circular(100.0),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 4.0),
+                                      child: Text(
+                                        AppLocalizations.of(context)!.followButton,
+                                        style: const TextStyle(fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                     ],
                   ),
                 ),
@@ -389,7 +436,7 @@ class _VideoDetailState extends State<VideoDetail> {
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(100.0),
                 child: CachedNetworkImage(
-                  imageUrl: video.userImageUrl!,
+                  imageUrl: userRepository.getMyImageUrl()!,
                   fit: BoxFit.cover,
                   width: 48.0,
                   height: 48.0,

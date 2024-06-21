@@ -16,6 +16,7 @@ import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
 import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/searching/search_not_found_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/user_info/user_info_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class SearchPage extends StatefulWidget {
@@ -506,6 +507,13 @@ class _SearchPageState extends State<SearchPage> {
             var currentUser = user;
             return StatefulBuilder(
               builder: (context, setState) {
+                refresh() async {
+                  final freshUser = await userRepository.getUserInfo(userId: currentUser.id);
+                  if (freshUser != null) {
+                    setState(() => currentUser = freshUser);
+                  }
+                }
+
                 return FutureBuilder(
                   future: followRepository.getFollowFor(currentUser.id),
                   builder: (context, snapshot) {
@@ -519,7 +527,16 @@ class _SearchPageState extends State<SearchPage> {
                           color: Theme.of(context).colorScheme.outlineVariant,
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () async {
+                            final isChangedFollow = await Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => UserInfoPage(userId: user.id)),
+                            );
+
+                            if (isChangedFollow) {
+                              refresh();
+                            }
+                          },
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
@@ -562,37 +579,47 @@ class _SearchPageState extends State<SearchPage> {
                                             const SizedBox(height: 8.0),
                                             userRepository.getMyId() == user.id
                                                 ? const SizedBox.shrink()
-                                                : TextButton(
-                                                    style: TextButton.styleFrom(
-                                                      backgroundColor: Theme.of(context).colorScheme.onBackground,
-                                                      foregroundColor: Theme.of(context).colorScheme.background,
-                                                    ),
-                                                    onPressed: () async {
-                                                      refresh() async {
-                                                        final freshUser =
-                                                            await userRepository.getUserInfo(userId: currentUser.id);
-                                                        if (freshUser != null) {
-                                                          setState(() => currentUser = freshUser);
+                                                : SizedBox(
+                                                    width: 120.0,
+                                                    child: TextButton(
+                                                      style: follow == null
+                                                          ? TextButton.styleFrom(
+                                                              elevation: 8.0,
+                                                              backgroundColor:
+                                                                  Theme.of(context).colorScheme.onBackground,
+                                                              foregroundColor: Theme.of(context).colorScheme.background,
+                                                            )
+                                                          : TextButton.styleFrom(
+                                                              elevation: 8.0,
+                                                              shape: RoundedRectangleBorder(
+                                                                side: BorderSide(
+                                                                  color: Theme.of(context)
+                                                                      .colorScheme
+                                                                      .outlineVariant
+                                                                      .withAlpha(100),
+                                                                  width: 1.0,
+                                                                ),
+                                                                borderRadius: BorderRadius.circular(100.0),
+                                                              ),
+                                                              backgroundColor: Theme.of(context).colorScheme.surface,
+                                                              foregroundColor: Theme.of(context).colorScheme.onSurface,
+                                                            ),
+                                                      onPressed: () async {
+                                                        if (follow != null) {
+                                                          final isSuccessful =
+                                                              await followRepository.unFollow(follow.id!);
+                                                          if (isSuccessful) await refresh();
+                                                        } else {
+                                                          final result = await followRepository.follow(
+                                                            Follow.post(userId: currentUser.id, followerId: null),
+                                                          );
+                                                          if (result != null) await refresh();
                                                         }
-                                                      }
-
-                                                      if (follow != null) {
-                                                        final isSuccessful =
-                                                            await followRepository.unFollow(follow.id!);
-                                                        if (isSuccessful) await refresh();
-                                                      } else {
-                                                        final result = await followRepository.follow(
-                                                          Follow.post(userId: currentUser.id, followerId: null),
-                                                        );
-                                                        if (result != null) await refresh();
-                                                      }
-                                                    },
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                      },
                                                       child: Text(
                                                         follow == null
                                                             ? AppLocalizations.of(context)!.followButton
-                                                            : AppLocalizations.of(context)!.followedButton,
+                                                            : AppLocalizations.of(context)!.followingButton,
                                                       ),
                                                     ),
                                                   ),
