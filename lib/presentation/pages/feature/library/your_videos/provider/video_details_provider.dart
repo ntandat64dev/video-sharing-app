@@ -49,19 +49,19 @@ class VideoDetailsProvider extends ChangeNotifier {
   }
 
   void _validateVideo() {
-    if (_video.title == null || _video.title!.trim().isEmpty) throw Exception('Video title can not be null.');
-    if (_video.hashtags == null) throw Exception('Video hashtags can not be null.');
-    if (_video.privacy == null) throw Exception('Video privacy can not be null.');
+    if (_video.title == null || _video.title!.trim().isEmpty) throw Exception('be null.');
+    if (_video.hashtags == null) throw Exception('be null.');
+    if (_video.privacy == null) throw Exception('be null.');
     if (_video.privacy! != 'public' && _video.privacy! != 'private') {
-      throw Exception('Video privacy must be either \'private\' or \'public\'.');
+      throw Exception('or \'public\'.');
     }
-    if (_video.madeForKids == null) throw Exception('Video madeForKids can not be null.');
-    if (_video.ageRestricted == null) throw Exception('Video ageRestricted can not be null.');
+    if (_video.madeForKids == null) throw Exception('be null.');
+    if (_video.ageRestricted == null) throw Exception('be null.');
     if (_video.madeForKids! && _video.ageRestricted!) {
-      throw Exception('Video ageRestricted can not be true if madeForKids is true.');
+      throw Exception('is true.');
     }
-    if (_video.category == null) throw Exception('Video category can not be null.');
-    if (_video.commentAllowed == null) throw Exception('Video commentAllowed can not be null.');
+    if (_video.category == null) throw Exception('be null.');
+    if (_video.commentAllowed == null) throw Exception('be null.');
   }
 
   String? get title => _video.title;

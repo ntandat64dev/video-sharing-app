@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 
 class SetPrivacyPage extends StatefulWidget {
   const SetPrivacyPage({super.key, required String privacy}) : _privacy = privacy;
@@ -26,10 +27,7 @@ class _SetPrivacyPageState extends State<SetPrivacyPage> {
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-        ),
+        leading: appBarBackButton(context),
         title: Text(
           AppLocalizations.of(context)!.setPrivacy,
           style: const TextStyle(fontWeight: FontWeight.w500),
@@ -74,7 +72,10 @@ class _SetPrivacyPageState extends State<SetPrivacyPage> {
                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child: Text(AppLocalizations.of(context)!.apply),
+                        child: Text(
+                          AppLocalizations.of(context)!.apply,
+                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   )

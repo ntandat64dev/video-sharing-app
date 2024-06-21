@@ -38,10 +38,19 @@ class FakeUserRepositoryImpl implements UserRepository {
   final users = <User>[];
 
   @override
+  Future<User?> changeProfileImage({required String imageLocalPath}) async {
+    return users[0];
+  }
+
+  @override
   Future<User?> getUserInfo({String? userId}) async {
     return users[0];
   }
 
   @override
   String? getMyId() => '12345678';
+
+  @override
+  String? getMyImageUrl() =>
+      'https://ui-avatars.com/api/?name=Fake+User&size=500&background=0D8ABC&color=fff&rouded=true&bold=true';
 }

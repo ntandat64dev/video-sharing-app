@@ -9,10 +9,11 @@ import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/provider/video_detail_provider.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/comment_sheet.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_description_sheet.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail_provider.dart';
+import 'package:video_sharing_app/presentation/theme/theme_provider.dart';
 
 const videoPlayerRoute = 'video_player_route';
 
@@ -63,6 +64,14 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Change status bar color to black for only this page.
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.black,
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
@@ -79,73 +88,67 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         }
 
         if (commentSheetController.size < 0.2 && showingReplies == false) {
+          // Reset theme
+          Provider.of<ThemeProvider>(context, listen: false).changeStatusBarColor(context);
           Navigator.pop(context);
         }
       },
-      // Change status bar color to black for only this page.
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: const SystemUiOverlayStyle(
-          statusBarColor: Colors.black,
-          statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.light,
-        ),
-        child: ChangeNotifierProvider(
-          create: (context) => VideoDetailProvider(widget._video),
-          builder: (context, child) {
-            return Scaffold(
-              body: SafeArea(
-                child: GestureDetector(
-                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      double snapPoint = 1 - videoPlayerHeight / constraints.maxHeight;
-                      return Stack(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MyVideoPlayer(video: widget._video),
-                              Expanded(
-                                child: CustomScrollView(
-                                  slivers: [
-                                    SliverToBoxAdapter(
-                                      child: VideoDetail(
-                                        onShowBottomSheet: (type) => showSheet(type, snapPoint),
-                                      ),
+      child: ChangeNotifierProvider(
+        create: (context) => VideoDetailProvider(widget._video),
+        builder: (context, child) {
+          return Scaffold(
+            body: SafeArea(
+              child: GestureDetector(
+                onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    double snapPoint = 1 - videoPlayerHeight / constraints.maxHeight;
+                    return Stack(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            MyVideoPlayer(video: widget._video),
+                            Expanded(
+                              child: CustomScrollView(
+                                slivers: [
+                                  SliverToBoxAdapter(
+                                    child: VideoDetail(
+                                      onShowBottomSheet: (type) => showSheet(type, snapPoint),
                                     ),
-                                    PagedSliverList<int, Video>(
-                                      pagingController: relatedVideoPagingController!,
-                                      builderDelegate: PagedChildBuilderDelegate(
-                                        itemBuilder: (context, item, index) => VideoCard(video: item),
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  ),
+                                  PagedSliverList<int, Video>(
+                                    pagingController: relatedVideoPagingController!,
+                                    builderDelegate: PagedChildBuilderDelegate(
+                                      itemBuilder: (context, item, index) => VideoCard(video: item),
+                                    ),
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
-                          // Video description.
-                          modalSheet(
-                            sheetController: videoDescriptionSheetController,
-                            title: AppLocalizations.of(context)!.descriptions,
-                            snapPoint: snapPoint,
-                            child: const VideoDescriptionSheet(),
-                          ),
-                          // Comments.
-                          CommentSheet(
-                            snapPoint: snapPoint,
-                            sheetController: commentSheetController,
-                            showingReplies: (value) => showingReplies = value,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                            ),
+                          ],
+                        ),
+                        // Video description.
+                        modalSheet(
+                          sheetController: videoDescriptionSheetController,
+                          title: AppLocalizations.of(context)!.descriptions,
+                          snapPoint: snapPoint,
+                          child: const VideoDescriptionSheet(),
+                        ),
+                        // Comments.
+                        CommentSheet(
+                          snapPoint: snapPoint,
+                          sheetController: commentSheetController,
+                          showingReplies: (value) => showingReplies = value,
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -184,17 +187,17 @@ Widget modalSheet({
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
+              toolbarHeight: 72.0,
               titleSpacing: 0.0,
               pinned: true,
               automaticallyImplyLeading: false,
-              toolbarHeight: 80.0,
               title: SingleChildScrollView(
                 controller: scrollController,
                 child: Column(
                   children: [
                     Container(
-                      width: 50.0,
-                      height: 6.0,
+                      width: 42.0,
+                      height: 4.0,
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.outlineVariant,
                         borderRadius: BorderRadius.circular(8.0),
@@ -218,7 +221,7 @@ Widget modalSheet({
                             },
                             child: const Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.close),
+                              child: Icon(Icons.close_rounded),
                             ),
                           ),
                         ],

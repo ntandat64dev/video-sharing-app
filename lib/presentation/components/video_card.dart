@@ -1,9 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
+import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
+import 'package:video_sharing_app/presentation/components/duration_chip.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 import 'package:video_sharing_app/presentation/shared/asset.dart';
 
@@ -31,22 +36,27 @@ class VideoCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
-              child: CachedNetworkImage(
-                imageUrl: video.thumbnails![Thumbnail.kDefault]!.url,
-                fadeInDuration: const Duration(milliseconds: 300),
-                fadeOutDuration: const Duration(milliseconds: 1),
-                height: videoPlayerHeight,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Image.asset(
-                  Asset.placeholder,
-                  height: videoPlayerHeight,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: CachedNetworkImage(
+                    imageUrl: video.thumbnails![Thumbnail.kDefault]!.url,
+                    fadeInDuration: const Duration(milliseconds: 300),
+                    fadeOutDuration: const Duration(milliseconds: 1),
+                    height: videoPlayerHeight,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Image.asset(
+                      Asset.placeholder,
+                      height: videoPlayerHeight,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
+                DurationChip(isoDuration: video.duration!),
+              ],
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,15 +94,15 @@ class VideoCard extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           height: 1.25,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18.0,
                                         ),
                                       ),
                                       const SizedBox(height: 4.0),
                                       Text(
-                                        'BBC Learning  ∙  ${video.viewCount} views  ∙  ${timeago.format(video.publishedAt!)}',
+                                        '${video.username}  ∙  ${AppLocalizations.of(context)!.nViews(video.viewCount!.toInt())}  ∙  ${timeago.format(video.publishedAt!)}',
                                         style: TextStyle(
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          color: Theme.of(context).colorScheme.onBackground.withAlpha(200),
                                           height: 1.25,
                                         ),
                                       ),
@@ -111,8 +121,12 @@ class VideoCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 3.0),
                   child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20.0),
+                    onPressed: () => showOptionBottomSheet(context, video: video),
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: Theme.of(context).colorScheme.onBackground.withAlpha(200),
+                      size: 20.0,
+                    ),
                   ),
                 )
               ],
@@ -123,3 +137,36 @@ class VideoCard extends StatelessWidget {
     );
   }
 }
+
+void showOptionBottomSheet(BuildContext context, {required Video video}) => showConsistentBottomSheet(
+      context: context,
+      height: 230.0,
+      negativeButton: bottomSheetNegativeButton(context: context),
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                showSaveVideoBottomSheet(
+                  context: context,
+                  videoId: video.id!,
+                  refreshPlaylists: () {},
+                );
+              },
+              child: ListTile(
+                leading: const Icon(CupertinoIcons.bookmark),
+                title: Text(AppLocalizations.of(context)!.saveToPlaylist),
+              ),
+            ),
+            InkWell(
+              onTap: () async {},
+              child: ListTile(
+                leading: const Icon(CupertinoIcons.arrowshape_turn_up_right),
+                title: Text(AppLocalizations.of(context)!.shareButton),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );

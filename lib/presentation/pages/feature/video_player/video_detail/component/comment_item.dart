@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:video_sharing_app/domain/enum/rating.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
 import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail_provider.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/provider/video_detail_provider.dart';
 
 class CommentItem extends StatefulWidget {
   const CommentItem({
@@ -77,7 +77,7 @@ class _CommentItemState extends State<CommentItem> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: widget._isReply ? Theme.of(context).colorScheme.surfaceVariant : Theme.of(context).colorScheme.surface,
+      color: widget._isReply ? Theme.of(context).colorScheme.surfaceVariant : Theme.of(context).colorScheme.background,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -105,12 +105,21 @@ class _CommentItemState extends State<CommentItem> {
                               ),
                             ),
                             const SizedBox(width: 8.0),
-                            Text(
-                              widget._comment.authorDisplayName!,
-                              style: const TextStyle(fontWeight: FontWeight.w500),
-                            ),
-                            const SizedBox(width: 8.0),
-                            Text(timeago.format(widget._comment.publishedAt!)),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                Text(
+                                  widget._comment.authorDisplayName!,
+                                  style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500),
+                                ),
+                                const SizedBox(width: 8.0),
+                                const Text('∙'),
+                                const SizedBox(width: 8.0),
+                                Text(timeago.format(widget._comment.publishedAt!)),
+                              ],
+                            )
                           ],
                         ),
                       ),
@@ -146,7 +155,7 @@ class _CommentItemState extends State<CommentItem> {
                             }
                           },
                           icon: const Icon(Icons.more_vert),
-                          iconSize: 16.0,
+                          iconSize: 20.0,
                         ),
                       )
                     ],
@@ -171,10 +180,13 @@ class _CommentItemState extends State<CommentItem> {
                               .rateComment(widget._comment, Rating.like),
                           icon: Icon(
                             widget._rating == Rating.like ? Icons.thumb_up_alt : Icons.thumb_up_alt_outlined,
-                            size: 16.0,
+                            size: 20.0,
+                            color: Theme.of(context).colorScheme.onBackground.withAlpha(220),
                           ),
-                          label: Text(widget._comment.likeCount.toString()),
-                          style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant),
+                          label: Text(AppLocalizations.of(context)!.n(widget._comment.likeCount!.toInt())),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Theme.of(context).colorScheme.onBackground.withAlpha(220),
+                          ),
                         ),
                         // Dislike button
                         TextButton.icon(
@@ -182,20 +194,27 @@ class _CommentItemState extends State<CommentItem> {
                               .rateComment(widget._comment, Rating.dislike),
                           icon: Icon(
                             widget._rating == Rating.dislike ? Icons.thumb_down_alt : Icons.thumb_down_alt_outlined,
-                            size: 16.0,
+                            size: 20.0,
+                            color: Theme.of(context).colorScheme.onBackground.withAlpha(220),
                           ),
-                          label: Text(widget._comment.dislikeCount.toString()),
-                          style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant),
+                          label: Text(AppLocalizations.of(context)!.n(widget._comment.dislikeCount!.toInt())),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Theme.of(context).colorScheme.onBackground.withAlpha(220),
+                          ),
                         ),
                         // Reply button
                         widget._reply == true
                             ? const SizedBox.shrink()
                             : TextButton.icon(
                                 onPressed: widget._onReplyButtonClicked,
-                                icon: const Icon(Icons.comment_outlined, size: 16.0),
-                                label: Text(widget._comment.replyCount.toString()),
+                                icon: Icon(
+                                  Icons.comment_outlined,
+                                  size: 20.0,
+                                  color: Theme.of(context).colorScheme.onBackground.withAlpha(220),
+                                ),
+                                label: Text(AppLocalizations.of(context)!.n(widget._comment.replyCount!.toInt())),
                                 style: TextButton.styleFrom(
-                                  foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  foregroundColor: Theme.of(context).colorScheme.onBackground.withAlpha(220),
                                 ),
                               ),
                       ],

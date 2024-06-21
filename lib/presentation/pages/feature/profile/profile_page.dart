@@ -1,17 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
+import 'package:video_sharing_app/domain/entity/user.dart';
 import 'package:video_sharing_app/domain/repository/auth_repository.dart';
 import 'package:video_sharing_app/domain/repository/user_repository.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
 import 'package:video_sharing_app/presentation/components/bottom_sheet.dart';
-import 'package:video_sharing_app/presentation/components/notification_button.dart';
 import 'package:video_sharing_app/presentation/components/radio_dialog.dart';
 import 'package:video_sharing_app/presentation/pages/auth/auth_methods_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/profile/settings_page.dart';
 import 'package:video_sharing_app/presentation/route_provider.dart';
+import 'package:video_sharing_app/presentation/shared/asset.dart';
 import 'package:video_sharing_app/presentation/theme/theme_provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -25,6 +31,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final authRepository = getIt<AuthRepository>();
   final userRepository = getIt<UserRepository>();
 
+  User? updatedUser;
+  var updatingImage = false;
   var sigingOut = false;
 
   @override
@@ -33,11 +41,17 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.yourProfileAppBarTitle),
-          leading: Icon(Icons.videocam, size: 32.0, color: Theme.of(context).colorScheme.primary),
-          titleSpacing: 0.0,
-          actions: [
-            const NotificationButton(),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Container(
+              alignment: Alignment.center,
+              child: Image.asset(Asset.logoLow, width: 34.0),
+            ),
+          ),
+          titleSpacing: 6.0,
+          actions: const [
+            NotificationButton(),
+            SearchButton(),
           ],
         ),
         body: SizedBox(
@@ -51,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: 160.0,
                   child: FutureBuilder(
-                    future: userRepository.getUserInfo(),
+                    future: updatedUser != null ? Future.value(updatedUser) : userRepository.getUserInfo(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
                       var user = snapshot.data!;
@@ -62,17 +76,52 @@ class _ProfilePageState extends State<ProfilePage> {
                             Stack(
                               alignment: Alignment.bottomRight,
                               children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(100.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: user.thumbnails[Thumbnail.kDefault]!.url,
-                                    fit: BoxFit.cover,
-                                    width: 108.0,
-                                    height: 108.0,
+                                GestureDetector(
+                                  onTap: () async {
+                                    final picker = ImagePicker();
+                                    final file = await picker.pickImage(source: ImageSource.gallery);
+                                    if (file != null) {
+                                      setState(() => updatingImage = true);
+                                      updatedUser = await userRepository.changeProfileImage(imageLocalPath: file.path);
+                                      if (updatedUser != null) {
+                                        await DefaultCacheManager()
+                                            .downloadFile(updatedUser!.thumbnails[Thumbnail.kDefault]!.url);
+                                      }
+                                      setState(() => updatingImage = false);
+                                    }
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(100.0),
+                                        child: CachedNetworkImage(
+                                          imageUrl: user.thumbnails[Thumbnail.kDefault]!.url,
+                                          fit: BoxFit.cover,
+                                          fadeInDuration: const Duration(milliseconds: 100),
+                                          fadeOutDuration: const Duration(milliseconds: 100),
+                                          width: 108.0,
+                                          height: 108.0,
+                                        ),
+                                      ),
+                                      !updatingImage
+                                          ? const SizedBox.shrink()
+                                          : ClipRRect(
+                                              borderRadius: BorderRadius.circular(100.0),
+                                              child: Container(
+                                                width: 108,
+                                                height: 108,
+                                                color: Theme.of(context).colorScheme.background.withAlpha(150),
+                                                child: SpinKitThreeBounce(
+                                                  color: Theme.of(context).colorScheme.primary,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ),
+                                    ],
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 3.0, right: 7.0),
+                                  padding: const EdgeInsets.only(bottom: 3.0, right: 6.0),
                                   child: Container(
                                     padding: const EdgeInsets.all(3.0),
                                     decoration: BoxDecoration(
@@ -80,14 +129,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                       borderRadius: BorderRadius.circular(100.0),
                                     ),
                                     child: Container(
-                                      padding: const EdgeInsets.all(2.0),
+                                      padding: const EdgeInsets.all(3.0),
                                       decoration: BoxDecoration(
                                         color: Theme.of(context).colorScheme.primary,
                                         borderRadius: BorderRadius.circular(100.0),
                                       ),
                                       child: Icon(
-                                        Icons.edit,
-                                        size: 14.0,
+                                        Icons.edit_rounded,
+                                        size: 13.0,
                                         color: Theme.of(context).colorScheme.onPrimary,
                                       ),
                                     ),
@@ -96,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                             const SizedBox(height: 16.0),
-                            Text(user.username, style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                            Text(user.username, style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                             if (user.bio != null) Text(user.bio!),
                           ],
                         ),
@@ -112,7 +161,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: BorderRadius.circular(34.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.outlineVariant.withAlpha(50),
                         border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5),
                         borderRadius: BorderRadius.circular(36.0),
                       ),
@@ -142,7 +190,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                           ),
-                          Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.primary)
+                          Icon(CupertinoIcons.chevron_forward, color: Theme.of(context).colorScheme.primary)
                         ],
                       ),
                     ),
@@ -152,7 +200,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 profileListTile(
                   onTap: () {},
                   title: AppLocalizations.of(context)!.editProfile,
-                  leading: const Icon(Icons.edit),
+                  leading: const Icon(CupertinoIcons.square_pencil),
                 ),
                 // Theme
                 profileListTile(
@@ -177,7 +225,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     );
                   },
                   title: AppLocalizations.of(context)!.theme,
-                  leading: const Icon(Icons.dark_mode_rounded),
+                  leading: const Icon(CupertinoIcons.moon),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -185,7 +233,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         Provider.of<ThemeProvider>(context).getLocalizedThemeModeName(context),
                         style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
                       ),
-                      const Icon(Icons.chevron_right),
+                      const SizedBox(width: 8.0),
+                      const Icon(CupertinoIcons.chevron_right, size: 20.0),
                     ],
                   ),
                 ),
@@ -193,7 +242,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 profileListTile(
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage())),
                   title: AppLocalizations.of(context)!.settings,
-                  leading: const Icon(Icons.settings),
+                  leading: const Icon(CupertinoIcons.gear),
                 ),
                 // Logout
                 InkWell(
@@ -203,7 +252,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 220,
                       title: Text(
                         AppLocalizations.of(context)!.logout,
-                        style: const TextStyle(color: Colors.red, fontSize: 20.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       negativeButton: bottomSheetNegativeButton(
                         context: context,
@@ -249,10 +302,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    leading: const Icon(Icons.logout, color: Colors.red),
+                    leading: Icon(CupertinoIcons.square_arrow_right, color: Theme.of(context).colorScheme.error),
                     title: Text(
                       AppLocalizations.of(context)!.logout,
-                      style: const TextStyle(color: Colors.red),
+                      style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ),
@@ -276,7 +329,10 @@ Widget profileListTile({
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
         leading: leading,
-        trailing: trailing ?? const Icon(Icons.chevron_right),
-        title: Text(title),
+        trailing: trailing ?? const Icon(CupertinoIcons.chevron_right, size: 20.0),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        ),
       ),
     );

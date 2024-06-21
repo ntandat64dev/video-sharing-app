@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:video_player/video_player.dart';
 import 'package:video_sharing_app/di.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:video_sharing_app/presentation/shared/ext.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class UploadProvider extends ChangeNotifier {
@@ -25,16 +29,24 @@ class UploadProvider extends ChangeNotifier {
             }
           })
         });
+
+    // Get video duration.
+    final controller = VideoPlayerController.file(File(videoPath));
+    controller.initialize().then((value) {
+      _duration = controller.value.duration.toIsoString();
+    });
   }
 
   String? _thumbnailPath;
   String? _videoPath;
+  String? _duration;
 
   final Video _video = Video.post(
     userId: null, // Repository will set userId
     title: null,
     description: null,
     hashtags: [],
+    duration: null,
     location: null,
     category: null,
     privacy: 'public',
@@ -48,9 +60,9 @@ class UploadProvider extends ChangeNotifier {
     final result = await _videoRepository.uploadVideo(
       videoPath: _videoPath!,
       thumbnailPath: thumbnailPath!,
-      video: _video,
+      video: _video..duration = _duration,
     );
-    if (result == null) throw Exception('Cannot upload video!');
+    if (result == null) throw Exception('upload video!');
   }
 
   void updateVideoDetails(Function(Video video) onUpdate) {
@@ -64,19 +76,19 @@ class UploadProvider extends ChangeNotifier {
   }
 
   void _validateVideo() {
-    if (_video.title == null || _video.title!.trim().isEmpty) throw Exception('Video title can not be null.');
-    if (_video.hashtags == null) throw Exception('Video hashtags can not be null.');
-    if (_video.privacy == null) throw Exception('Video privacy can not be null.');
+    if (_video.title == null || _video.title!.trim().isEmpty) throw Exception('be null.');
+    if (_video.hashtags == null) throw Exception('be null.');
+    if (_video.privacy == null) throw Exception('be null.');
     if (_video.privacy! != 'public' && _video.privacy! != 'private') {
-      throw Exception('Video privacy must be either \'private\' or \'public\'.');
+      throw Exception('or \'public\'.');
     }
-    if (_video.madeForKids == null) throw Exception('Video madeForKids can not be null.');
-    if (_video.ageRestricted == null) throw Exception('Video ageRestricted can not be null.');
+    if (_video.madeForKids == null) throw Exception('be null.');
+    if (_video.ageRestricted == null) throw Exception('be null.');
     if (_video.madeForKids! && _video.ageRestricted!) {
-      throw Exception('Video ageRestricted can not be true if madeForKids is true.');
+      throw Exception('is true.');
     }
-    if (_video.category == null) throw Exception('Video category can not be null.');
-    if (_video.commentAllowed == null) throw Exception('Video commentAllowed can not be null.');
+    if (_video.category == null) throw Exception('be null.');
+    if (_video.commentAllowed == null) throw Exception('be null.');
   }
 
   String? get title => _video.title;

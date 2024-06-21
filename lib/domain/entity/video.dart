@@ -32,12 +32,24 @@ class Video {
     required this.title,
     required this.description,
     required this.hashtags,
+    required this.duration,
     required this.location,
     required this.category,
     required this.privacy,
     required this.madeForKids,
     required this.ageRestricted,
     required this.commentAllowed,
+  });
+
+  Video.playlistItem({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.userId,
+    required this.username,
+    required this.videoUrl,
+    required this.thumbnails,
+    required this.duration,
   });
 
   String? id;

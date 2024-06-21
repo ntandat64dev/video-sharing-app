@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FollowingEmptyPage extends StatelessWidget {
   const FollowingEmptyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'New videos right to you',
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+              AppLocalizations.of(context)!.emptyFollowing,
+              style: const TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 4.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 4.0),
               child: Text(
-                'Follow to get the latest videos from user you love.',
+                AppLocalizations.of(context)!.explainEmptyFollowing,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 17.0),
+                style: const TextStyle(fontSize: 15.0),
               ),
             ),
           ],

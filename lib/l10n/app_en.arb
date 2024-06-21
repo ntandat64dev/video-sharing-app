@@ -44,6 +44,24 @@
             }
         }
     },
+    "nUnwatchedVideos": "{count, plural, other{{count} unwatched videos} zero{0 unwatched video} one{1 unwatched video}}",
+    "@nUnwatchedVideos": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nLikedVideos": "{count, plural, other{{count} liked videos} zero{0 liked video} one{1 liked video}}",
+    "@nLikedVideos": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
     "playlists": "Playlists",
     "playlistNew": "New Playlist",
     "playlistWatchLater": "Watch Later",
@@ -69,10 +87,19 @@
     "downloadButton": "Download",
     "saveButton": "Save",
     "followButton": "Follow",
-    "followedButton": "Followed",
+    "followingButton": "Following",
     "comments": "Comments",
     "hintAddComment": "Add a comment...",
     "hintAddReply": "Add a reply...",
+    "n": "{count, plural, other{{count}} zero{0} one{1}}",
+    "@n": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
     "nFollowers": "{count, plural, other{{count} followers} zero{0 follower} one{1 follower}}",
     "@nFollowers": {
         "placeholders": {
@@ -88,7 +115,7 @@
         "placeholders": {
             "count": {
                 "type": "int",
-                "example": "1"
+                "format": "compact"
             }
         }
     },
@@ -153,5 +180,43 @@
                 "format": "compact"
             }
         }
-    }
+    },
+    "reset": "Reset",
+    "titleSearchFilter": "Search Filter",
+    "searchSortBy": "Sort by",
+    "type": "Type",
+    "sortByRelevance": "Relevance",
+    "sortByUploadDate": "Upload date",
+    "sortByViewCount": "View count",
+    "video": "Video",
+    "user": "User",
+    "playlist": "Playlist",
+    "search": "Search",
+    "emptyFollowing": "New videos right to you",
+    "explainEmptyFollowing": "Follow to get the latest videos from user you love.",
+    "notFound": "Not Found",
+    "explainNotFound": "The video could not be found. Please search with another keywords.",
+    "create": "Create",
+    "playlistTitle": "Playlist Title",
+    "editPlaylist": "Edit Playlist",
+    "title": "Title",
+    "update": "Update",
+    "saveVideoTo": "Save Video to",
+    "play": "Play",
+    "shuffle": "Shuffle",
+    "removeFrom": "Remove from {param}",
+    "@removeFrom": {
+        "placeholders": {
+            "param": {
+                "type": "String"
+            }
+        }
+    },
+    "playlistNoVideos": "No videos in this playlist yet",
+    "saveToPlaylist": "Save to playlist",
+    "recentlyAdded": "Recently Added",
+    "loginFailed": "Login failed",
+    "signupFailed": "Signup failed",
+    "followers": "Followers",
+    "videos": "Videos"
 }

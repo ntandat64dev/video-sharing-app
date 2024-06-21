@@ -7,8 +7,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:video_sharing_app/domain/entity/category.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
+import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/my_video_player.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/add_description_page.dart';
 import 'package:video_sharing_app/presentation/pages/feature/upload/add_location_page.dart';
@@ -62,6 +64,9 @@ class _UploadPageState extends State<UploadPage> {
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.addDetailsAppBarTitle),
                 leading: appBarBackButton(context),
+                actions: const [
+                  MoreButon(),
+                ],
               ),
               body: LayoutBuilder(
                 builder: (context, constraints) {
@@ -76,6 +81,7 @@ class _UploadPageState extends State<UploadPage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Thumbnail
                                 AspectRatio(
                                   aspectRatio: MediaQuery.of(context).size.width / videoPlayerHeight,
                                   child: Padding(
@@ -129,25 +135,8 @@ class _UploadPageState extends State<UploadPage> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                  child: TextField(
+                                  child: CustomTextField(
                                     onChanged: (value) => provider.updateVideoDetails((video) => video.title = value),
-                                    cursorColor: Theme.of(context).colorScheme.primary,
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                                      fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                                      filled: true,
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        borderSide:
-                                            BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        borderSide:
-                                            BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-                                      ),
-                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 16.0),
@@ -171,7 +160,7 @@ class _UploadPageState extends State<UploadPage> {
                                       });
                                     }
                                   },
-                                  icon: Icons.edit,
+                                  icon: CupertinoIcons.text_alignright,
                                   title: AppLocalizations.of(context)!.addDescription,
                                 ),
                                 // Category
@@ -188,7 +177,7 @@ class _UploadPageState extends State<UploadPage> {
                                       provider.updateVideoDetails((video) => video.category = category);
                                     }
                                   },
-                                  icon: Icons.category,
+                                  icon: CupertinoIcons.layers,
                                   title: AppLocalizations.of(context)!.category,
                                   value: provider.category?.category,
                                 ),
@@ -206,7 +195,7 @@ class _UploadPageState extends State<UploadPage> {
                                       provider.updateVideoDetails((video) => video.privacy = privacy);
                                     }
                                   },
-                                  icon: Icons.remove_red_eye_sharp,
+                                  icon: CupertinoIcons.eye,
                                   title: AppLocalizations.of(context)!.privacy,
                                   value: provider.privacy.capitalize(),
                                 ),
@@ -230,7 +219,7 @@ class _UploadPageState extends State<UploadPage> {
                                       });
                                     }
                                   },
-                                  icon: Icons.group,
+                                  icon: CupertinoIcons.person_2,
                                   title: AppLocalizations.of(context)!.selectAudience,
                                 ),
                                 // Comment
@@ -249,7 +238,7 @@ class _UploadPageState extends State<UploadPage> {
                                       provider.updateVideoDetails((video) => video.commentAllowed = commentAllowed);
                                     }
                                   },
-                                  icon: Icons.comment,
+                                  icon: CupertinoIcons.chat_bubble,
                                   title: AppLocalizations.of(context)!.comment,
                                   value: provider.commentAllowed
                                       ? AppLocalizations.of(context)!.commentAllow
@@ -267,7 +256,7 @@ class _UploadPageState extends State<UploadPage> {
                                       provider.updateVideoDetails((video) => video.location = location);
                                     }
                                   },
-                                  icon: Icons.location_pin,
+                                  icon: CupertinoIcons.placemark,
                                   title: AppLocalizations.of(context)!.location,
                                   value: provider.location,
                                 ),
@@ -301,7 +290,7 @@ class _UploadPageState extends State<UploadPage> {
                                         ),
                                         child: Text(
                                           AppLocalizations.of(context)!.uploadVideo,
-                                          style: const TextStyle(fontSize: 16.0),
+                                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
                                         ),
                                       ),
                               ),
@@ -373,7 +362,7 @@ class _UploadPageState extends State<UploadPage> {
                           ),
                         )
                       : const SizedBox.shrink(),
-                  const Icon(Icons.chevron_right),
+                  const Icon(CupertinoIcons.chevron_right, size: 20.0),
                 ],
               ),
             ),

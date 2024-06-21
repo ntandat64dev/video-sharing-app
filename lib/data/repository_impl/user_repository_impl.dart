@@ -14,6 +14,15 @@ class UserRepositoryImpl implements UserRepository {
   late final PreferencesService _pref;
 
   @override
+  Future<User?> changeProfileImage({required String imageLocalPath}) async {
+    try {
+      return await _userApi.changeProfileImage(imagePath: imageLocalPath);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
   Future<User?> getUserInfo({String? userId}) async {
     try {
       return userId == null ? await _userApi.getMyInfo() : await _userApi.getUserByUserId(userId);
@@ -24,4 +33,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   String? getMyId() => _pref.getUserId();
+
+  @override
+  String? getMyImageUrl() => _pref.getUserImageUrl();
 }

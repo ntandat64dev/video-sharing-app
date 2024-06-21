@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
+import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 
 class AddDescriptionPage extends StatefulWidget {
   const AddDescriptionPage({
@@ -37,14 +40,14 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-        ),
+        leading: appBarBackButton(context),
         title: Text(
           AppLocalizations.of(context)!.addDescription,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
+        actions: const [
+          MoreButon(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -66,26 +69,12 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: TextField(
+                        child: CustomTextField(
                           controller: descriptionController,
-                          minLines: 12,
                           maxLines: 12,
-                          maxLength: 1000,
-                          cursorColor: Theme.of(context).colorScheme.primary,
-                          decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!.yourDescription,
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                            filled: true,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-                            ),
-                          ),
+                          minLines: 12,
+                          maxLength: 10000,
+                          hintText: AppLocalizations.of(context)!.yourDescription,
                         ),
                       ),
                       // Hashtag
@@ -98,7 +87,7 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: TextField(
+                        child: CustomTextField(
                           controller: hashtagsController,
                           onSubmitted: (value) {
                             if (value.trim().isEmpty) return;
@@ -108,23 +97,9 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                             });
                           },
                           onEditingComplete: () {},
-                          minLines: 1,
                           maxLines: 1,
-                          cursorColor: Theme.of(context).colorScheme.primary,
-                          decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!.typeAndEnter,
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                            filled: true,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(30)),
-                            ),
-                          ),
+                          minLines: 1,
+                          hintText: AppLocalizations.of(context)!.typeAndEnter,
                         ),
                       ),
                       Padding(
@@ -135,12 +110,8 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                             ...hashtags.map(
                               (e) => Chip(
                                 label: Text(e),
-                                deleteIcon: const Icon(Icons.close, size: 20.0),
-                                onDeleted: () {
-                                  setState(() {
-                                    hashtags.remove(e);
-                                  });
-                                },
+                                deleteIcon: const Icon(Icons.close_rounded, size: 20.0),
+                                onDeleted: () => setState(() => hashtags.remove(e)),
                                 side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                               ),
                             )
@@ -166,7 +137,10 @@ class _AddDescriptionPageState extends State<AddDescriptionPage> {
                           foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child: Text(AppLocalizations.of(context)!.apply),
+                        child: Text(
+                          AppLocalizations.of(context)!.apply,
+                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   )

@@ -19,7 +19,7 @@ class FollowApi {
       Uri.http(baseURL, '/api/v1/follows/mine', pageable.toParam()),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getMyFollows() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return PageResponse.fromJson(jsonDecode(response.body), Follow.fromJsonModel);
   }
 
@@ -28,7 +28,7 @@ class FollowApi {
       Uri.http(baseURL, '/api/v1/follows/for-user', {'userId': userId}),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 200) throw Exception('getFollowsForUserId() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 200) throw Exception('[${response.statusCode}] ${response.body}');
     return Follow.fromJson(jsonDecode(response.body));
   }
 
@@ -38,7 +38,7 @@ class FollowApi {
       body: jsonEncode(follow.toJson()),
       headers: {'Content-Type': 'application/json', ...bearerHeader},
     );
-    if (response.statusCode != 201) throw Exception('postFollow() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 201) throw Exception('[${response.statusCode}] ${response.body}');
     return Follow.fromJson(jsonDecode(response.body));
   }
 
@@ -47,6 +47,6 @@ class FollowApi {
       Uri.http(baseURL, '/api/v1/follows', {'id': followId}),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 204) throw Exception('deleteFollow() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 204) throw Exception('[${response.statusCode}] ${response.body}');
   }
 }

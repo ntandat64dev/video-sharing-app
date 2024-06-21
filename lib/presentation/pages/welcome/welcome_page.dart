@@ -16,7 +16,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin {
   final authRepository = getIt<AuthRepository>();
-  
+
   late PageController pageViewController;
   late TabController tabController;
   var currentPageIndex = 0;
@@ -52,16 +52,16 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                   color: backgroundColor,
                   child: Column(
                     children: [
-                      Image.asset(Asset.illustration1, width: 350),
+                      Image.asset(Asset.illustration1, width: 320),
                       const SizedBox(height: 32),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
                           AppLocalizations.of(context)!.wellcomePage1,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 28,
+                                fontWeight: FontWeight.w500,
                               ),
                         ),
                       ),
@@ -72,16 +72,16 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                   color: backgroundColor,
                   child: Column(
                     children: [
-                      Image.asset(Asset.illustration2, width: 350),
+                      Image.asset(Asset.illustration2, width: 320),
                       const SizedBox(height: 32),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
                           AppLocalizations.of(context)!.wellcomePage2,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 28,
+                                fontWeight: FontWeight.w500,
                               ),
                         ),
                       ),
@@ -92,16 +92,16 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                   color: backgroundColor,
                   child: Column(
                     children: [
-                      Image.asset(Asset.illustration3, width: 350),
+                      Image.asset(Asset.illustration3, width: 320),
                       const SizedBox(height: 32),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
                           AppLocalizations.of(context)!.wellcomePage3,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 28,
+                                fontWeight: FontWeight.w500,
                               ),
                         ),
                       ),
@@ -115,7 +115,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
             controller: tabController,
             color: Theme.of(context).colorScheme.onBackground.withAlpha(75),
             borderStyle: BorderStyle.none,
-            selectedColor: Colors.red,
+            selectedColor: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: 42),
           SizedBox(
@@ -125,7 +125,10 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton(
                 onPressed: next,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                ),
                 child: Text(
                     currentPageIndex == 2
                         ? AppLocalizations.of(context)!.getStartedButton

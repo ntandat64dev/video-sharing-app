@@ -9,11 +9,13 @@ import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/entity/video.dart';
 import 'package:video_sharing_app/domain/repository/follow_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
-import 'package:video_sharing_app/presentation/components/notification_button.dart';
 import 'package:video_sharing_app/presentation/components/sink_animated.dart';
 import 'package:video_sharing_app/presentation/components/video_card.dart';
 import 'package:video_sharing_app/presentation/pages/feature/following/following_empty_page.dart';
+import 'package:video_sharing_app/presentation/pages/feature/user_info/user_info_page.dart';
+import 'package:video_sharing_app/presentation/shared/asset.dart';
 
 class FollowingPage extends StatefulWidget {
   const FollowingPage({super.key});
@@ -21,6 +23,8 @@ class FollowingPage extends StatefulWidget {
   @override
   State<FollowingPage> createState() => _FollowingPageState();
 }
+
+enum Filter { all, today, videos, shorts, live, posts, continueWatching, unwatched }
 
 class _FollowingPageState extends State<FollowingPage> {
   static const followPageSize = 15;
@@ -31,6 +35,8 @@ class _FollowingPageState extends State<FollowingPage> {
 
   PagingController<int, Follow>? followPagingController = PagingController(firstPageKey: 0);
   PagingController<int, Video>? videoPagingController = PagingController(firstPageKey: 0);
+
+  var filter = Filter.all;
 
   @override
   void initState() {
@@ -60,21 +66,27 @@ class _FollowingPageState extends State<FollowingPage> {
               SliverAppBar(
                 title: Text(AppLocalizations.of(context)!.following),
                 floating: true,
-                leading: Icon(Icons.videocam, size: 32.0, color: Theme.of(context).colorScheme.primary),
-                titleSpacing: 0.0,
-                actions: [
-                  const NotificationButton(),
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Image.asset(Asset.logoLow, width: 34.0),
+                  ),
+                ),
+                titleSpacing: 6.0,
+                actions: const [
+                  NotificationButton(),
+                  SearchButton(),
                 ],
                 bottom: isEmpty
                     ? null
                     : PreferredSize(
-                        preferredSize: const Size.fromHeight(240),
+                        preferredSize: const Size.fromHeight(224),
                         child: Column(
                           children: [
                             // Followings
                             Padding(
-                              padding: const EdgeInsets.only(left: 16.0, top: 16.0, bottom: 16.0, right: 8.0),
+                              padding: const EdgeInsets.only(left: 16.0, top: 0.0, bottom: 16.0, right: 8.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,7 +102,10 @@ class _FollowingPageState extends State<FollowingPage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                                       child: Text(
                                         AppLocalizations.of(context)!.viewAll,
-                                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.primary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -106,20 +121,34 @@ class _FollowingPageState extends State<FollowingPage> {
                                 builderDelegate: PagedChildBuilderDelegate(
                                   itemBuilder: (context, follow, index) {
                                     return SinkAnimated(
-                                      onTap: () {},
+                                      onTap: () async {
+                                        final isChangedFollow = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => UserInfoPage(userId: follow.userId!)),
+                                        );
+                                        if (isChangedFollow) {
+                                          followPagingController!.refresh();
+                                          videoPagingController!.refresh();
+                                        }
+                                      },
                                       child: Column(
                                         children: [
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(100.0),
                                             child: CachedNetworkImage(
                                               imageUrl: follow.userThumbnails![Thumbnail.kDefault]!.url,
+                                              fadeInDuration: const Duration(milliseconds: 100),
+                                              fadeOutDuration: const Duration(milliseconds: 100),
                                               height: 72.0,
                                               width: 72.0,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
                                           const SizedBox(height: 8.0),
-                                          Text(follow.username!)
+                                          Text(
+                                            follow.username!,
+                                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                          )
                                         ],
                                       ),
                                     );
@@ -131,55 +160,82 @@ class _FollowingPageState extends State<FollowingPage> {
                             // Filters
                             SizedBox(
                               width: double.infinity,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                  child: Row(
-                                    children: [
-                                      FilterItem(
-                                        onSelected: (value) {},
-                                        text: AppLocalizations.of(context)!.filterAll,
-                                        isActive: true,
+                              child: StatefulBuilder(
+                                builder: (context, setState) {
+                                  return SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                      child: Row(
+                                        children: [
+                                          FilterItem(
+                                            onSelected: (value) {
+                                              setState(() => filter = Filter.all);
+                                            },
+                                            text: AppLocalizations.of(context)!.filterAll,
+                                            isActive: filter == Filter.all,
+                                          ),
+                                          const SizedBox(width: 10.0),
+                                          FilterItem(
+                                            onSelected: (value) {
+                                              setState(() => filter = Filter.today);
+                                            },
+                                            text: AppLocalizations.of(context)!.filterToday,
+                                            isActive: filter == Filter.today,
+                                          ),
+                                          const SizedBox(width: 10.0),
+                                          FilterItem(
+                                            onSelected: (value) {
+                                              setState(() => filter = Filter.videos);
+                                            },
+                                            text: AppLocalizations.of(context)!.filterVideos,
+                                            isActive: filter == Filter.videos,
+                                          ),
+                                          const SizedBox(width: 10.0),
+                                          FilterItem(
+                                            onSelected: (value) {
+                                              setState(() => filter = Filter.shorts);
+                                            },
+                                            text: AppLocalizations.of(context)!.filterShorts,
+                                            isActive: filter == Filter.shorts,
+                                          ),
+                                          const SizedBox(width: 10.0),
+                                          FilterItem(
+                                            onSelected: (value) {
+                                              setState(() => filter = Filter.live);
+                                            },
+                                            text: AppLocalizations.of(context)!.filterLive,
+                                            isActive: filter == Filter.live,
+                                          ),
+                                          const SizedBox(width: 10.0),
+                                          FilterItem(
+                                            onSelected: (value) {
+                                              setState(() => filter = Filter.posts);
+                                            },
+                                            text: AppLocalizations.of(context)!.filterPosts,
+                                            isActive: filter == Filter.posts,
+                                          ),
+                                          const SizedBox(width: 10.0),
+                                          FilterItem(
+                                            onSelected: (value) {
+                                              setState(() => filter = Filter.continueWatching);
+                                            },
+                                            text: AppLocalizations.of(context)!.filterContinueWatching,
+                                            isActive: filter == Filter.continueWatching,
+                                          ),
+                                          const SizedBox(width: 10.0),
+                                          FilterItem(
+                                            onSelected: (value) {
+                                              setState(() => filter = Filter.unwatched);
+                                            },
+                                            text: AppLocalizations.of(context)!.filterUnwatched,
+                                            isActive: filter == Filter.unwatched,
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(width: 10.0),
-                                      FilterItem(
-                                        onSelected: (value) {},
-                                        text: AppLocalizations.of(context)!.filterToday,
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      FilterItem(
-                                        onSelected: (value) {},
-                                        text: AppLocalizations.of(context)!.filterVideos,
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      FilterItem(
-                                        onSelected: (value) {},
-                                        text: AppLocalizations.of(context)!.filterShorts,
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      FilterItem(
-                                        onSelected: (value) {},
-                                        text: AppLocalizations.of(context)!.filterLive,
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      FilterItem(
-                                        onSelected: (value) {},
-                                        text: AppLocalizations.of(context)!.filterPosts,
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      FilterItem(
-                                        onSelected: (value) {},
-                                        text: AppLocalizations.of(context)!.filterContinueWatching,
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      FilterItem(
-                                        onSelected: (value) {},
-                                        text: AppLocalizations.of(context)!.filterUnwatched,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],

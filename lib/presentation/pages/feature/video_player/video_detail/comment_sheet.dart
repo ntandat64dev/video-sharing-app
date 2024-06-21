@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -8,10 +9,12 @@ import 'package:video_sharing_app/domain/entity/comment.dart';
 import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/enum/rating.dart';
 import 'package:video_sharing_app/domain/repository/comment_repository.dart';
+import 'package:video_sharing_app/domain/repository/user_repository.dart';
+import 'package:video_sharing_app/presentation/components/custom_text_field.dart';
 import 'package:video_sharing_app/presentation/components/filter_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/component/comment_item.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/reply_sheet.dart';
-import 'package:video_sharing_app/presentation/pages/feature/video_player/video_detail/video_detail_provider.dart';
+import 'package:video_sharing_app/presentation/pages/feature/video_player/provider/video_detail_provider.dart';
 
 class CommentSheet extends StatefulWidget {
   const CommentSheet({
@@ -34,6 +37,7 @@ class CommentSheet extends StatefulWidget {
 class _CommentSheetState extends State<CommentSheet> with TickerProviderStateMixin {
   static const commentPageSize = 10;
 
+  final userRepository = getIt<UserRepository>();
   final commentRepository = getIt<CommentRepository>();
   final commentController = TextEditingController();
   var isCommentFocus = false;
@@ -86,17 +90,17 @@ class _CommentSheetState extends State<CommentSheet> with TickerProviderStateMix
               slivers: [
                 // Header.
                 SliverAppBar(
+                  toolbarHeight: 72.0,
                   titleSpacing: 0.0,
                   pinned: true,
                   automaticallyImplyLeading: false,
-                  toolbarHeight: 80.0,
                   title: SingleChildScrollView(
                     controller: scrollController,
                     child: Column(
                       children: [
                         Container(
-                          width: 50.0,
-                          height: 6.0,
+                          width: 42.0,
+                          height: 4.0,
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.outlineVariant,
                             borderRadius: BorderRadius.circular(8.0),
@@ -135,7 +139,7 @@ class _CommentSheetState extends State<CommentSheet> with TickerProviderStateMix
                                             onTap: hideRepliesSheet,
                                             child: const Padding(
                                               padding: EdgeInsets.all(8.0),
-                                              child: Icon(Icons.arrow_back),
+                                              child: Icon(CupertinoIcons.arrow_left),
                                             ),
                                           ),
                                           const SizedBox(width: 12.0),
@@ -162,7 +166,7 @@ class _CommentSheetState extends State<CommentSheet> with TickerProviderStateMix
                                 },
                                 child: const Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Icon(Icons.close),
+                                  child: Icon(Icons.close_rounded),
                                 ),
                               ),
                             ],
@@ -203,7 +207,6 @@ class _CommentSheetState extends State<CommentSheet> with TickerProviderStateMix
                                 automaticallyImplyLeading: false,
                                 titleSpacing: 0.0,
                                 floating: true,
-                                toolbarHeight: kToolbarHeight + 8.0,
                                 // Filters.
                                 title: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
@@ -309,56 +312,35 @@ class _CommentSheetState extends State<CommentSheet> with TickerProviderStateMix
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(100.0),
                         child: CachedNetworkImage(
-                          imageUrl: provider.video.userImageUrl!,
+                          imageUrl: userRepository.getMyImageUrl()!,
                           fit: BoxFit.cover,
                           width: 48.0,
                           height: 48.0,
                         ),
                       ),
-                      title: TextField(
+                      title: CustomTextField(
                         controller: commentController,
-                        cursorColor: Theme.of(context).colorScheme.primary,
                         focusNode: focusNode,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 12.0,
-                          ),
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          hintText: replyComment != null
-                              ? AppLocalizations.of(context)!.hintAddReply
-                              : AppLocalizations.of(context)!.hintAddComment,
-                          fillColor: Theme.of(context).colorScheme.onInverseSurface,
-                          filled: true,
-                          suffixIcon: IconButton(
-                              onPressed: () async {
-                                provider.sendComment(
-                                  Comment.post(
-                                    videoId: provider.video.id!,
-                                    text: commentController.text,
-                                    parentId: replyComment?.id,
-                                  ),
-                                );
-                                setState(() {
-                                  FocusScope.of(context).requestFocus(FocusNode());
-                                  commentController.text = '';
-                                });
-                              },
-                              icon: const Icon(Icons.send),
-                              color: Theme.of(context).colorScheme.primary),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(48.0),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline.withAlpha(30),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(48.0),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline.withAlpha(30),
-                            ),
-                          ),
-                        ),
+                        hintText: replyComment != null
+                            ? AppLocalizations.of(context)!.hintAddReply
+                            : AppLocalizations.of(context)!.hintAddComment,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                        suffixIcon: IconButton(
+                            onPressed: () async {
+                              provider.sendComment(
+                                Comment.post(
+                                  videoId: provider.video.id!,
+                                  text: commentController.text,
+                                  parentId: replyComment?.id,
+                                ),
+                              );
+                              setState(() {
+                                FocusScope.of(context).requestFocus(FocusNode());
+                                commentController.text = '';
+                              });
+                            },
+                            icon: const Icon(Icons.send_rounded),
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                     )
                   ],

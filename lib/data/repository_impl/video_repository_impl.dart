@@ -51,10 +51,24 @@ class VideoRepositoryImpl implements VideoRepository {
     required Video video,
   }) async {
     try {
-      return await _videoApi.updateVideo(
-        thumbnailLocalPath: thumbnailPath,
-        video: video,
-      );
+      if (thumbnailPath == null) {
+        return await _videoApi.updateVideo(
+          thumbnailLocalPath: thumbnailPath,
+          video: video,
+        );
+      }
+
+      final videos = await Future.wait([
+        _videoApi.updateVideo(
+          thumbnailLocalPath: thumbnailPath,
+          video: video,
+        ),
+        _videoApi.changeThumbnailImage(imagePath: thumbnailPath, videoId: video.id!),
+      ]);
+
+      if (videos.length != 2 || videos.contains(null)) return null;
+
+      return videos[0];
     } catch (e) {
       return null;
     }
@@ -80,11 +94,29 @@ class VideoRepositoryImpl implements VideoRepository {
   }
 
   @override
+  Future<PageResponse<Video>> getVideosByUserId(String userId, [Pageable? pageable]) async {
+    try {
+      return await _videoApi.getVideosByUserId(userId: userId, pageable: pageable ?? Pageable());
+    } catch (e) {
+      return PageResponse.empty();
+    }
+  }
+
+  @override
   Future<PageResponse<Video>> getMyVideos([Pageable? pageable]) async {
     try {
       return await _videoApi.getMyVideos(pageable ?? Pageable());
     } catch (e) {
       return PageResponse.empty();
+    }
+  }
+
+  @override
+  Future<bool> viewVideo({required String videoId}) async {
+    try {
+      return await _videoApi.viewVideo(videoId: videoId);
+    } catch (e) {
+      return false;
     }
   }
 

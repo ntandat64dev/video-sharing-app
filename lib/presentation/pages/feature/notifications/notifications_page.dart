@@ -9,6 +9,7 @@ import 'package:video_sharing_app/domain/entity/pageable.dart';
 import 'package:video_sharing_app/domain/entity/thumbnail.dart';
 import 'package:video_sharing_app/domain/repository/notification_repository.dart';
 import 'package:video_sharing_app/domain/repository/video_repository.dart';
+import 'package:video_sharing_app/presentation/components/app_bar_actions.dart';
 import 'package:video_sharing_app/presentation/components/app_bar_back_button.dart';
 import 'package:video_sharing_app/presentation/pages/feature/video_player/video_player_page.dart';
 
@@ -46,6 +47,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
         appBar: AppBar(
           leading: appBarBackButton(context),
           title: Text(AppLocalizations.of(context)!.notificationsAppBarTitle),
+          actions: const [
+            MoreButon(),
+          ],
         ),
         body: Center(
           child: PagedListView<int, n.Notification>(
@@ -137,12 +141,15 @@ class NotificationItem extends StatelessWidget {
                 children: [
                   Text(
                     notification.message,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 17.0,
+                      fontSize: 16.0,
                       fontWeight: FontWeight.w500,
+                      height: 1.28
                     ),
                   ),
-                  const SizedBox(height: 4.0),
+                  const SizedBox(height: 1.0),
                   Text(
                     timeago.format(notification.publishedAt),
                     style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
@@ -155,13 +162,13 @@ class NotificationItem extends StatelessWidget {
                     children: [
                       const SizedBox(width: 6.0),
                       Padding(
-                        padding: const EdgeInsets.only(top: 6.0),
+                        padding: const EdgeInsets.only(top: 5.0),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
+                          borderRadius: BorderRadius.circular(16.0),
                           child: CachedNetworkImage(
                             imageUrl: notification.thumbnails[Thumbnail.kDefault]!.url,
                             fit: BoxFit.cover,
-                            width: 100.0,
+                            width: 90.0,
                             height: 70.0,
                           ),
                         ),
@@ -173,9 +180,13 @@ class NotificationItem extends StatelessWidget {
             InkWell(
               onTap: () {},
               customBorder: const CircleBorder(),
-              child: const Padding(
-                padding: EdgeInsets.all(4.0),
-                child: Icon(Icons.more_vert, size: 22.0),
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Icon(
+                  Icons.more_vert,
+                  size: 18.0,
+                  color: Theme.of(context).colorScheme.onBackground.withAlpha(200),
+                ),
               ),
             ),
           ],

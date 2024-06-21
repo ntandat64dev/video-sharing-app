@@ -20,7 +20,7 @@ class NotificationApi {
       headers: {...bearerHeader},
       body: token,
     );
-    if (response.statusCode != 201) throw Exception('registerMessageToken() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 201) throw Exception('[${response.statusCode}] ${response.body}');
   }
 
   Future<void> unregisterMessageToken(String token) async {
@@ -30,7 +30,7 @@ class NotificationApi {
       body: token,
     );
     if (response.statusCode != 204) {
-      throw Exception('unregisterMessageToken() [${response.statusCode}] ${response.body}');
+      throw Exception('[${response.statusCode}] ${response.body}');
     }
   }
 
@@ -39,7 +39,7 @@ class NotificationApi {
       Uri.http(baseURL, '/api/v1/notifications/read/mine', {'id': id}),
       headers: {...bearerHeader},
     );
-    if (response.statusCode != 204) throw Exception('readNotification() [${response.statusCode}] ${response.body}');
+    if (response.statusCode != 204) throw Exception('[${response.statusCode}] ${response.body}');
   }
 
   Future<int> countUnseenNotifications() async {
@@ -48,7 +48,7 @@ class NotificationApi {
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) {
-      throw Exception('countUnseenNotifications() [${response.statusCode}] ${response.body}');
+      throw Exception('[${response.statusCode}] ${response.body}');
     }
     return int.parse(response.body);
   }
@@ -59,7 +59,7 @@ class NotificationApi {
       headers: {...bearerHeader},
     );
     if (response.statusCode != 200) {
-      throw Exception('getMyNotifications() [${response.statusCode}] ${response.body}');
+      throw Exception('[${response.statusCode}] ${response.body}');
     }
     return PageResponse.fromJson(jsonDecode(response.body), Notification.fromJsonModel);
   }

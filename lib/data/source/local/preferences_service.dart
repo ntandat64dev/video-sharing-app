@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String _kToken = 'token';
 const String _kUserId = 'user_id';
+const String _kUserImageUrl = 'user_image_url';
 const String _kFirstLaunch = 'is_first_launch';
 
 class PreferencesService {
@@ -42,6 +43,9 @@ class PreferencesService {
 
   void setUserId(String userId) => setData(_kUserId, userId);
   String? getUserId() => getData(_kUserId);
+
+  void setUserImageUrl(String userImageUrl) => setData(_kUserImageUrl, userImageUrl);
+  String? getUserImageUrl() => getData(_kUserImageUrl);
 
   void clearUser() {
     _removeData(_kToken);

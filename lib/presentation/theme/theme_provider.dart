@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:video_sharing_app/data/repository_impl/preference_repository_impl.dart';
 import 'package:video_sharing_app/di.dart';
@@ -7,15 +10,33 @@ import 'package:video_sharing_app/domain/repository/preference_repository.dart';
 class ThemeProvider extends ChangeNotifier {
   final _preferenceRepository = getIt<PreferenceRepository>();
 
-  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode _themeMode = ThemeMode.light;
 
   ThemeProvider() {
-    final mode = _preferenceRepository.getPreference(kSettingTheme, ThemeMode.system.name);
+    final mode = _preferenceRepository.getPreference(kSettingTheme, ThemeMode.light.name);
     _themeMode = mode == 'light'
         ? ThemeMode.light
         : mode == 'dark'
             ? ThemeMode.dark
             : ThemeMode.system;
+  }
+
+  void changeStatusBarColor(BuildContext context) {
+    final platformBrightness = PlatformDispatcher.instance.platformBrightness;
+
+    Brightness determineBrightness() {
+      if (themeMode == ThemeMode.light) return Brightness.dark;
+      if (themeMode == ThemeMode.dark) return Brightness.light;
+      return platformBrightness == Brightness.dark ? Brightness.light : Brightness.dark;
+    }
+
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Theme.of(context).colorScheme.background,
+        statusBarBrightness: determineBrightness(),
+        statusBarIconBrightness: determineBrightness(),
+      ),
+    );
   }
 
   String getLocalizedThemeModeName(BuildContext context) {

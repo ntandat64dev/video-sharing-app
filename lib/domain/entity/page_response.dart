@@ -1,3 +1,5 @@
+
+
 class PageResponse<T> {
   PageResponse({
     required this.pageNumber,
@@ -24,6 +26,19 @@ class PageResponse<T> {
         totalPages: json['totalPages'],
         items: List<T>.from(json['items'].map((itemsJson) => fromJsonModel(itemsJson))),
       );
+
+  factory PageResponse.fromSearchJson(Map<String, dynamic> json, T Function(Map<String, dynamic>) fromJson) {
+    var itemsJson = json['items'] as List<dynamic>;
+    var items = itemsJson.map((itemJson) => fromJson(itemJson)).toList();
+
+    return PageResponse<T>(
+      pageNumber: json['pageNumber'],
+      pageSize: json['pageSize'],
+      totalElements: json['totalElements'],
+      totalPages: json['totalPages'],
+      items: items,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'pageNumber': pageNumber,

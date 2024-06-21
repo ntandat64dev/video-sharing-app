@@ -44,6 +44,24 @@
             }
         }
     },
+    "nUnwatchedVideos": "{count, plural, other{{count} video chưa xem} zero{0 video chưa xem} one{1 video chưa xem}}",
+    "@nUnwatchedVideos": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nLikedVideos": "{count, plural, other{{count} video đã thích} zero{0 video đã thích} one{1 video đã thích}}",
+    "@nLikedVideos": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
     "playlists": "Danh sách phát",
     "playlistNew": "Tạo Danh Sách Phát",
     "playlistWatchLater": "Xem Sau",
@@ -69,10 +87,19 @@
     "downloadButton": "Tải xuống",
     "saveButton": "Lưu",
     "followButton": "Theo dõi",
-    "followedButton": "Đã theo dõi",
+    "followingButton": "Đang theo dõi",
     "comments": "Bình luận",
     "hintAddComment": "Thêm bình luận...",
     "hintAddReply": "Thêm phản hồi...",
+    "n": "{count, plural, other{{count}} zero{0} one{1}}",
+    "@n": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
     "nFollowers": "{count, plural, other{{count} followers} zero{0 follower} one{1 follower}}",
     "@nFollowers": {
         "placeholders": {
@@ -88,7 +115,7 @@
         "placeholders": {
             "count": {
                 "type": "int",
-                "example": "1"
+                "format": "compact"
             }
         }
     },
@@ -153,5 +180,43 @@
                 "format": "compact"
             }
         }
-    }
+    },
+    "reset": "Xóa bộ lọc",
+    "titleSearchFilter": "Bộ lọc tìm kiếm",
+    "searchSortBy": "Sắp xếp",
+    "type": "Loại",
+    "sortByRelevance": "Liên quan",
+    "sortByUploadDate": "Ngày đăng",
+    "sortByViewCount": "Lượt xem",
+    "video": "Video",
+    "user": "User",
+    "playlist": "Playlist",
+    "search": "Tìm kiếm",
+    "emptyFollowing": "Video mới dành cho bạn",
+    "explainEmptyFollowing": "Theo dõi để nhận được những video mới nhất từ người dùng mà bạn yêu thích.",
+    "notFound": "Không tìm thấy",
+    "explainNotFound": "Video không được tìm thấy. Vui lòng tìm kiếm với từ khóa khác.",
+    "create": "Tạo",
+    "playlistTitle": "Tên Danh Sách Phát",
+    "editPlaylist": "Sửa Danh Sách Phát",
+    "title": "Tựa đề",
+    "update": "Cập nhật",
+    "saveVideoTo": "Lưu Video vào",
+    "play": "Phát",
+    "shuffle": "Trộn",
+    "removeFrom": "Xóa khỏi {param}",
+    "@removeFrom": {
+        "placeholders": {
+            "param": {
+                "type": "String"
+            }
+        }
+    },
+    "playlistNoVideos": "Danh sách phát chưa có videos nào.",
+    "saveToPlaylist": "Lưu vào danh sách phát",
+    "recentlyAdded": "Đã Thêm Gần Đây",
+     "loginFailed": "Đăng nhập thất bại",
+    "signupFailed": "Đăng ký thất bại",
+    "followers": "Người theo đõi",
+    "videos": "Videos"
 }
