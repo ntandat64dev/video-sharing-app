@@ -1,3 +1,3 @@
-# video_sharing_app
+# Video Sharing App
 
-An online video sharing app written in Flutter, featuring a REST API.
+This project is a Flutter-based frontend application designed to interact with the [Video Sharing REST API](https://github.com/ntandat64dev/video-sharing-api) built on Spring Boot.
